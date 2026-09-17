@@ -5,5 +5,5 @@
   "display": "standalone",
   "background_color": "#08100c",
   "theme_color": "#16351d",
-  "description": "Interactive WebGL 3D virtual horse racing prediction market with broadcast cameras and paper trading."
+  "description": "Interactive WebGL 3D horse racing prediction market with a skinned 22-bone thoroughbred rig, broadcast cameras, and paper trading."
 }

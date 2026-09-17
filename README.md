@@ -1,41 +1,84 @@
-# RaceMarket — Full WebGL 3D Upgrade
+# RaceMarket — Horse Model 3.0 Rigged Thoroughbred
 
-This release builds on the Broadcast and Trading upgrades and replaces the racecourse presentation with a real, dependency-free WebGL scene. The existing race simulation remains the source of truth for distance, position, speed, finish order, pricing, orders, and settlement.
+This build keeps the existing RaceMarket simulation, trading system, broadcast controls, labels, weather, camera modes, and WebGL racecourse. It replaces the Horse Model 2 drawing path with a reusable GPU-skinned horse and jockey rig.
 
-## What is new
+The race simulation remains the source of truth for speed, distance, position, finish order, pricing, orders, and settlement. The rig only changes presentation.
 
-- Actual perspective-projected 3D racecourse geometry
-- Procedural low-poly 3D horses and jockeys
-- Articulated gallop cycles driven by each runner's live speed
-- Dynamic directional lighting, atmospheric fog, and weather palettes
-- 3D dirt/turf materials, lane markings, rails, support posts, gates, and finish line
-- Venue-specific grandstands, trees, palms, mountains, and Churchill-style spires
-- Ground-contact shadows plus leader, selected-runner, and ability highlights
-- Dirt kickback, turf clods, wet-track treatment, and WebGL rain
-- Broadcast camera modes synchronized with Auto, Wide, Leader, Runner, Finish, Top Down, and Free Camera controls
-- 3D-to-screen runner labels with position and live contract price
-- Click/tap runner selection and keyboard runner navigation
-- Auto, High, and Eco rendering-quality settings
-- ANGLE instanced rendering to batch repeated scene geometry when supported
-- Automatic quality reduction on software or persistently slow renderers
-- Automatic fallback to the existing classic 3D presentation when WebGL is unavailable
-- Updated offline/PWA cache for the new renderer
+## Horse Model 3.0
 
-This release deliberately does **not** include slow-motion replay or a photo-finish feature.
+### Skinned thoroughbred
+
+- One reusable weighted horse mesh
+- 22-bone skeletal rig
+- Separate pelvis, chest, lower neck, upper neck, head, jaw, three tail bones, and three bones per leg
+- Smooth weighted deformation around the barrel, shoulders, hindquarters, neck, and joints
+- Distinct coat, highlight, mane/tail, muzzle, hoof, marking, saddlecloth, and saddle materials
+- High and Eco mesh variants selected automatically according to quality and camera distance
+
+### Rigged jockey
+
+- Separate reusable weighted jockey mesh
+- 11-bone rig
+- Spine, head, paired arms, paired forearms, thighs, and lower legs
+- Speed-dependent racing crouch
+- Moving hands connected to the horse's bridle by live reins
+- Post-color silks and helmet, plus varied pants and boots
+
+### Gallop system
+
+- Four-beat racing-gallop sequencing
+- Separate foreleg and hind-leg inverse-kinematics solutions
+- Planted hoof stance phase
+- Recovery, fold, reach, and suspension phases
+- Speed-sensitive stride length and cadence
+- Pelvis/chest counter-rotation
+- Spine extension and compression
+- Neck and head counter-motion
+- Tail follow-through
+- Individual stride, bounce, neck, tail, and jockey motion biases
+- Energy and running-style posture adjustments
+- Finished horses stop individually; unfinished runners continue galloping after the winner crosses
+
+### Surface interaction
+
+- Hoof-contact events are generated when each foot enters stance
+- Dirt impact bursts and turf-clod particles are emitted at the actual contact moments
+- The existing continuous speed wake remains in place
+- Wetness and track condition continue to control spray and particle appearance
+
+### Compatibility
+
+If GPU skinning cannot initialize on a device, the renderer automatically falls back to the previous compatible procedural horse instead of interrupting the race.
+
+## Existing features retained
+
+- WebGL and Classic render modes
+- Auto, Wide, Leader, Runner, Finish, Top Down, and Free cameras
+- Drag/orbit and zoom controls in Free mode
+- Stable projected runner labels
+- Broadcast event captions and sound
+- Dirt and turf courses
+- Weather, rain, fog, and wet-track treatments
+- Dynamic order book and paper trading
+- Automatic High/Eco rendering quality
+- Offline PWA cache
+
+This release does not add replay or photo-finish functionality.
 
 ## Files
 
-- `index.html` — application markup, WebGL canvases, and render controls
-- `app.js` — simulation, broadcast, trading, and renderer integration
-- `race3d.js` — self-contained WebGL 1 renderer
-- `styles.css` — complete application styling and WebGL/classic mode presentation
+- `horse3d-rig.js` — skeletal definitions, weighted mesh generation, gait sampling, inverse kinematics, and horse/jockey pose generation
+- `race3d.js` — WebGL renderer and integration with the rig
+- `app.js` — race simulation, trading, broadcast controls, and renderer state
+- `index.html` — application markup and script loading
+- `styles.css` — interface and Classic-renderer styling
 - `sw.js` — offline asset cache
 - `manifest.json` — PWA metadata
 - `icon.svg` — application icon
 
 ## Run locally
 
-The service worker requires an HTTP origin. From this directory, run:
+A service worker requires an HTTP origin. From this directory:
 
 ```bash
 python3 -m http.server 8080
@@ -47,78 +90,34 @@ Then open:
 http://localhost:8080/
 ```
 
-A static hosting service also works. No build step, package manager, CDN, external model, or third-party rendering library is required.
+No build step, package manager, CDN, or external model download is required.
 
 ## Controls
 
 ### Rendering
 
-- **3D** — enables the WebGL racecourse
-- **Classic** — restores the prior CSS/DOM perspective scene
+- **3D** — WebGL racecourse with the rigged horse and jockey
+- **Classic** — CSS/DOM fallback presentation
 - **Quality** — cycles through Auto, High, and Eco
-
-Auto selects High on capable desktop devices and Eco on smaller or lower-memory devices.
 
 ### Camera
 
-- **Auto** — directs shots according to race state
-- **Wide** — shows the whole field
-- **Leader** — follows the front runner
-- **Runner** — follows the selected horse
-- **Finish** — frames the finish line
+- **Auto** — directed broadcast shots
+- **Wide** — whole field
+- **Leader** — front runner
+- **Runner** — selected runner
+- **Finish** — finish line
+- **Top** — elevated top-down view
+- **Free** — manual orbit camera
 
-### Runner interaction
+In Free mode:
 
-- Click or tap a 3D horse to select it
-- Double-click a horse to select and follow it
-- Focus the race canvas and use the arrow keys to cycle runners
-- Press Enter or Space to follow the selected runner
-
-## Compatibility
-
-The renderer uses WebGL 1 for broad mobile and desktop support. If WebGL creation fails or the graphics context is interrupted, RaceMarket switches to the classic view without affecting the race or market. The selected render mode and quality preference are stored locally.
+- Drag to orbit
+- Scroll to zoom
+- Use W/A/S/D or the arrow keys to rotate
+- Use `+` and `-` to zoom
+- Press `R` to reset the camera
 
 ## Architecture
 
-`race3d.js` receives read-only access to the application's current presentation state on each animation frame. It maintains its own visual interpolation, camera, particle system, geometry buffers, and projected labels. It does not write simulation, pricing, order, portfolio, or settlement values.
-
-
-## Targeted fixes in this build
-
-- Unfinished runners continue their gallop after the first horse wins; the global `finished` race phase no longer freezes the remaining field.
-- Only the individually finished runner stops its articulated animation.
-- WebGL broadcast runner labels are reduced to compact name/position callouts to avoid oversized rounded boxes.
-
-
-## Horse Model 2.0 — Enhanced Procedural Animation
-
-This update keeps the existing dependency-free WebGL renderer and improves only the horse presentation layer.
-
-- More natural body, shoulder, chest, and hindquarter proportions
-- Four-beat gallop approximation with offset fore/hind leg timing
-- Speed-sensitive stride cadence and extension
-- Suspension, body bounce, and forward lean
-- Counter-motion in neck and head
-- Jockey crouch and suspension movement
-- More dynamic mane and tail inertia
-- Small individual stride/cadence variations so the field does not look synchronized
-- Existing post colors, special abilities, dirt/turf effects, camera system, and race/trading logic are unchanged
-
-The renderer still falls back to the existing classic presentation when WebGL is unavailable.
-
-
-## V2.0.1 — Horse visibility fix
-
-Fixed an initialization bug introduced by Horse Model 2.0: the renderer reset each horse's visual record with only position and phase, while the new model immediately expected per-horse animation DNA (cadence, stride, bounce, neck/tail/jockey motion, and fore bias). Those undefined values propagated into transforms as NaN when the race went live, making the WebGL horses disappear. The reset path now initializes the complete animation record, with a defensive backfill for older visual records.
-
-
-## Horse Model 2.0 Enhanced Anatomy
-
-This build adds a second procedural horse pass focused on silhouette and motion:
-- longer racing proportions and stronger shoulder/hindquarter mass
-- three-segment neck/head treatment and more detailed muzzle/face
-- four-beat procedural gallop with speed-sensitive stride and suspension
-- two-bone procedural leg IK with distinct fore/hind bend behavior
-- fetlock/hoof geometry, mane and tail inertia, and rider posture changes
-- deterministic per-horse cadence/body-roll variation
-- individually finished runners settle into a still pose while remaining runners continue galloping
+`horse3d-rig.js` generates the shared horse and jockey meshes once. Each horse receives its own pose matrices every render frame. The WebGL vertex shader applies up to four bone influences per vertex, while the race engine continues to control all competitive outcomes.

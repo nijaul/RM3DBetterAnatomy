@@ -1,9 +1,10 @@
-const CACHE = "racemarket-v42-horse-model-2-enhanced";
+const CACHE = "racemarket-v43-horse-model-3-rigged";
 
 const ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
+  "./horse3d-rig.js",
   "./race3d.js",
   "./app.js",
   "./manifest.json",

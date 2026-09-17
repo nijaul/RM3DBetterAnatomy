@@ -644,6 +644,15 @@
       this.particleBuffer=null;
       this.rainBuffer=null;
 
+      /* Horse Model 3.0 skeletal renderer. It is optional at
+         runtime and falls back to the proven procedural model if
+         skinning cannot be initialized on a device. */
+      this.skinProgram=null;
+      this.skinLocations={};
+      this.rigMeshes={};
+      this.rigReady=false;
+      this.skinBoneCapacity=24;
+
       this.instanceExtension=null;
       this.instancedProgram=null;
       this.instancedLocations={};
@@ -1383,6 +1392,7 @@
       gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
 
       this.buildRainSeeds();
+      this.initializeRiggedHorseRenderer();
     }
 
     buildRainSeeds(){
@@ -1396,6 +1406,833 @@
           speed:.82+seededUnit(index*1867+97)*.42
         });
       }
+    }
+
+
+    initializeRiggedHorseRenderer(){
+      this.rigReady=false;
+      this.rigMeshes={};
+
+      const rig=global.RaceMarketHorseRig;
+      const gl=this.gl;
+
+      if(!rig||!gl){
+        return false;
+      }
+
+      try{
+        const requiredVectors=
+          this.skinBoneCapacity*
+          4+
+          18;
+
+        const availableVectors=
+          Number(
+            gl.getParameter(
+              gl.MAX_VERTEX_UNIFORM_VECTORS
+            )
+          )||
+          0;
+
+        if(availableVectors<requiredVectors){
+          throw new Error(
+            `Horse skinning requires ${requiredVectors} vertex uniform vectors; this device exposes ${availableVectors}.`
+          );
+        }
+
+        const vertexSource=`
+          precision highp float;
+
+          attribute vec3 aPosition;
+          attribute vec3 aNormal;
+          attribute vec4 aBoneIndices;
+          attribute vec4 aBoneWeights;
+          attribute float aMaterial;
+
+          uniform mat4 uModel;
+          uniform mat4 uViewProjection;
+          uniform mat3 uNormalMatrix;
+          uniform mat4 uBones[24];
+
+          varying vec3 vNormal;
+          varying vec3 vWorldPosition;
+          varying float vMaterial;
+
+          mat4 boneMatrix(float index){
+          if(index<0.5){ return uBones[0]; }
+          if(index<1.5){ return uBones[1]; }
+          if(index<2.5){ return uBones[2]; }
+          if(index<3.5){ return uBones[3]; }
+          if(index<4.5){ return uBones[4]; }
+          if(index<5.5){ return uBones[5]; }
+          if(index<6.5){ return uBones[6]; }
+          if(index<7.5){ return uBones[7]; }
+          if(index<8.5){ return uBones[8]; }
+          if(index<9.5){ return uBones[9]; }
+          if(index<10.5){ return uBones[10]; }
+          if(index<11.5){ return uBones[11]; }
+          if(index<12.5){ return uBones[12]; }
+          if(index<13.5){ return uBones[13]; }
+          if(index<14.5){ return uBones[14]; }
+          if(index<15.5){ return uBones[15]; }
+          if(index<16.5){ return uBones[16]; }
+          if(index<17.5){ return uBones[17]; }
+          if(index<18.5){ return uBones[18]; }
+          if(index<19.5){ return uBones[19]; }
+          if(index<20.5){ return uBones[20]; }
+          if(index<21.5){ return uBones[21]; }
+          if(index<22.5){ return uBones[22]; }
+          return uBones[23];
+          }
+
+          void main(){
+            mat4 skin=
+              boneMatrix(aBoneIndices.x)*aBoneWeights.x+
+              boneMatrix(aBoneIndices.y)*aBoneWeights.y+
+              boneMatrix(aBoneIndices.z)*aBoneWeights.z+
+              boneMatrix(aBoneIndices.w)*aBoneWeights.w;
+
+            vec4 skinnedPosition=
+              skin*
+              vec4(aPosition,1.0);
+
+            vec3 skinnedNormal=
+              mat3(skin)*
+              aNormal;
+
+            vec4 worldPosition=
+              uModel*
+              skinnedPosition;
+
+            vWorldPosition=
+              worldPosition.xyz;
+            vNormal=
+              normalize(
+                uNormalMatrix*
+                skinnedNormal
+              );
+            vMaterial=
+              aMaterial;
+
+            gl_Position=
+              uViewProjection*
+              worldPosition;
+          }
+        `;
+
+        const fragmentSource=`
+          precision mediump float;
+
+          uniform vec3 uCoat;
+          uniform vec3 uCoatLight;
+          uniform vec3 uDark;
+          uniform vec3 uMuzzle;
+          uniform vec3 uHoof;
+          uniform vec3 uMarking;
+          uniform vec3 uSilk;
+          uniform vec3 uSaddle;
+          uniform vec3 uSkin;
+          uniform vec3 uHelmet;
+          uniform vec3 uPants;
+
+          uniform vec3 uLightDirection;
+          uniform vec3 uLightColor;
+          uniform vec3 uAmbientColor;
+          uniform vec3 uFogColor;
+          uniform vec3 uCameraPosition;
+          uniform vec3 uRimColor;
+          uniform float uFogNear;
+          uniform float uFogFar;
+          uniform float uRimAmount;
+          uniform float uEmissive;
+
+          varying vec3 vNormal;
+          varying vec3 vWorldPosition;
+          varying float vMaterial;
+
+          vec3 materialColor(){
+            if(vMaterial<.5){ return uCoat; }
+            if(vMaterial<1.5){ return uCoatLight; }
+            if(vMaterial<2.5){ return uDark; }
+            if(vMaterial<3.5){ return uMuzzle; }
+            if(vMaterial<4.5){ return uHoof; }
+            if(vMaterial<5.5){ return uMarking; }
+            if(vMaterial<6.5){ return uSilk; }
+            if(vMaterial<7.5){ return uSaddle; }
+            if(vMaterial<8.5){ return uSkin; }
+            if(vMaterial<9.5){ return uHelmet; }
+            return uPants;
+          }
+
+          void main(){
+            vec3 baseColor=
+              materialColor();
+
+            vec3 normal=
+              normalize(vNormal);
+
+            vec3 lightDirection=
+              normalize(
+                -uLightDirection
+              );
+
+            float diffuse=
+              max(
+                dot(
+                  normal,
+                  lightDirection
+                ),
+                0.0
+              );
+
+            float hemisphere=
+              .5+
+              .5*
+              normal.y;
+
+            vec3 viewDirection=
+              normalize(
+                uCameraPosition-
+                vWorldPosition
+              );
+
+            float rim=
+              pow(
+                1.0-
+                max(
+                  dot(
+                    viewDirection,
+                    normal
+                  ),
+                  0.0
+                ),
+                2.7
+              )*
+              uRimAmount;
+
+            vec3 lighting=
+              uAmbientColor+
+              uLightColor*
+                diffuse*
+                .80+
+              vec3(.09,.105,.09)*
+                hemisphere;
+
+            /*
+              A restrained warm sheen follows the coat without
+              making the horse look plastic.
+            */
+            float coatMask=
+              1.0-
+              smoothstep(
+                1.5,
+                2.5,
+                vMaterial
+              );
+
+            float specular=
+              pow(
+                max(
+                  dot(
+                    reflect(
+                      -lightDirection,
+                      normal
+                    ),
+                    viewDirection
+                  ),
+                  0.0
+                ),
+                22.0
+              )*
+              .16*
+              coatMask;
+
+            vec3 litColor=
+              baseColor*
+              lighting+
+              uRimColor*
+              rim+
+              uLightColor*
+              specular;
+
+            litColor=
+              mix(
+                litColor,
+                baseColor,
+                uEmissive
+              );
+
+            float distanceToCamera=
+              length(
+                uCameraPosition-
+                vWorldPosition
+              );
+
+            float fogAmount=
+              smoothstep(
+                uFogNear,
+                uFogFar,
+                distanceToCamera
+              );
+
+            gl_FragColor=
+              vec4(
+                mix(
+                  litColor,
+                  uFogColor,
+                  fogAmount
+                ),
+                1.0
+              );
+          }
+        `;
+
+        this.skinProgram=
+          createProgram(
+            gl,
+            vertexSource,
+            fragmentSource
+          );
+
+        const program=
+          this.skinProgram;
+
+        this.skinLocations={
+          position:
+            gl.getAttribLocation(
+              program,
+              "aPosition"
+            ),
+          normal:
+            gl.getAttribLocation(
+              program,
+              "aNormal"
+            ),
+          boneIndices:
+            gl.getAttribLocation(
+              program,
+              "aBoneIndices"
+            ),
+          boneWeights:
+            gl.getAttribLocation(
+              program,
+              "aBoneWeights"
+            ),
+          material:
+            gl.getAttribLocation(
+              program,
+              "aMaterial"
+            ),
+          model:
+            gl.getUniformLocation(
+              program,
+              "uModel"
+            ),
+          viewProjection:
+            gl.getUniformLocation(
+              program,
+              "uViewProjection"
+            ),
+          normalMatrix:
+            gl.getUniformLocation(
+              program,
+              "uNormalMatrix"
+            ),
+          bones:
+            gl.getUniformLocation(
+              program,
+              "uBones[0]"
+            ),
+          coat:
+            gl.getUniformLocation(
+              program,
+              "uCoat"
+            ),
+          coatLight:
+            gl.getUniformLocation(
+              program,
+              "uCoatLight"
+            ),
+          dark:
+            gl.getUniformLocation(
+              program,
+              "uDark"
+            ),
+          muzzle:
+            gl.getUniformLocation(
+              program,
+              "uMuzzle"
+            ),
+          hoof:
+            gl.getUniformLocation(
+              program,
+              "uHoof"
+            ),
+          marking:
+            gl.getUniformLocation(
+              program,
+              "uMarking"
+            ),
+          silk:
+            gl.getUniformLocation(
+              program,
+              "uSilk"
+            ),
+          saddle:
+            gl.getUniformLocation(
+              program,
+              "uSaddle"
+            ),
+          skin:
+            gl.getUniformLocation(
+              program,
+              "uSkin"
+            ),
+          helmet:
+            gl.getUniformLocation(
+              program,
+              "uHelmet"
+            ),
+          pants:
+            gl.getUniformLocation(
+              program,
+              "uPants"
+            ),
+          lightDirection:
+            gl.getUniformLocation(
+              program,
+              "uLightDirection"
+            ),
+          lightColor:
+            gl.getUniformLocation(
+              program,
+              "uLightColor"
+            ),
+          ambientColor:
+            gl.getUniformLocation(
+              program,
+              "uAmbientColor"
+            ),
+          fogColor:
+            gl.getUniformLocation(
+              program,
+              "uFogColor"
+            ),
+          cameraPosition:
+            gl.getUniformLocation(
+              program,
+              "uCameraPosition"
+            ),
+          rimColor:
+            gl.getUniformLocation(
+              program,
+              "uRimColor"
+            ),
+          fogNear:
+            gl.getUniformLocation(
+              program,
+              "uFogNear"
+            ),
+          fogFar:
+            gl.getUniformLocation(
+              program,
+              "uFogFar"
+            ),
+          rimAmount:
+            gl.getUniformLocation(
+              program,
+              "uRimAmount"
+            ),
+          emissive:
+            gl.getUniformLocation(
+              program,
+              "uEmissive"
+            )
+        };
+
+        this.rigMeshes={
+          horseHigh:
+            this.createSkinnedMesh(
+              rig.createHorseGeometry(
+                "high"
+              )
+            ),
+          horseEco:
+            this.createSkinnedMesh(
+              rig.createHorseGeometry(
+                "eco"
+              )
+            ),
+          jockeyHigh:
+            this.createSkinnedMesh(
+              rig.createJockeyGeometry(
+                "high"
+              )
+            ),
+          jockeyEco:
+            this.createSkinnedMesh(
+              rig.createJockeyGeometry(
+                "eco"
+              )
+            )
+        };
+
+        this.rigReady=
+          Boolean(
+            this.rigMeshes.horseHigh&&
+            this.rigMeshes.jockeyHigh
+          );
+
+        return this.rigReady;
+      }catch(error){
+        console.warn(
+          "Horse Model 3.0 skinning is unavailable; retaining the compatible procedural horse.",
+          error
+        );
+
+        this.skinProgram=null;
+        this.skinLocations={};
+        this.rigMeshes={};
+        this.rigReady=false;
+
+        return false;
+      }
+    }
+
+    createSkinnedMesh(geometry){
+      const gl=this.gl;
+
+      if(
+        !gl||
+        !geometry||
+        !geometry.positions||
+        !geometry.indices
+      ){
+        return null;
+      }
+
+      const vertexCount=
+        geometry.positions.length/
+        3;
+
+      const strideFloats=15;
+      const interleaved=
+        new Float32Array(
+          vertexCount*
+          strideFloats
+        );
+
+      for(let index=0;index<vertexCount;index++){
+        const offset=
+          index*
+          strideFloats;
+
+        interleaved[offset+0]=
+          geometry.positions[index*3+0];
+        interleaved[offset+1]=
+          geometry.positions[index*3+1];
+        interleaved[offset+2]=
+          geometry.positions[index*3+2];
+
+        interleaved[offset+3]=
+          geometry.normals[index*3+0];
+        interleaved[offset+4]=
+          geometry.normals[index*3+1];
+        interleaved[offset+5]=
+          geometry.normals[index*3+2];
+
+        for(let slot=0;slot<4;slot++){
+          interleaved[offset+6+slot]=
+            geometry.boneIndices[index*4+slot]||
+            0;
+
+          interleaved[offset+10+slot]=
+            geometry.boneWeights[index*4+slot]||
+            0;
+        }
+
+        interleaved[offset+14]=
+          geometry.materials[index]||
+          0;
+      }
+
+      const vertexBuffer=
+        gl.createBuffer();
+
+      gl.bindBuffer(
+        gl.ARRAY_BUFFER,
+        vertexBuffer
+      );
+
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        interleaved,
+        gl.STATIC_DRAW
+      );
+
+      const indexBuffer=
+        gl.createBuffer();
+
+      gl.bindBuffer(
+        gl.ELEMENT_ARRAY_BUFFER,
+        indexBuffer
+      );
+
+      gl.bufferData(
+        gl.ELEMENT_ARRAY_BUFFER,
+        geometry.indices,
+        gl.STATIC_DRAW
+      );
+
+      return{
+        vertexBuffer,
+        indexBuffer,
+        count:
+          geometry.indices.length,
+        type:
+          gl.UNSIGNED_SHORT,
+        strideBytes:
+          strideFloats*
+          4
+      };
+    }
+
+    drawSkinnedModel(
+      mesh,
+      model,
+      boneMatrices,
+      colors,
+      options={}
+    ){
+      const gl=this.gl;
+      const locations=
+        this.skinLocations;
+
+      if(
+        !this.rigReady||
+        !mesh||
+        !this.skinProgram||
+        !boneMatrices
+      ){
+        return;
+      }
+
+      gl.useProgram(
+        this.skinProgram
+      );
+
+      gl.bindBuffer(
+        gl.ARRAY_BUFFER,
+        mesh.vertexBuffer
+      );
+
+      const stride=
+        mesh.strideBytes;
+
+      const attributes=[
+        [
+          locations.position,
+          3,
+          0
+        ],
+        [
+          locations.normal,
+          3,
+          12
+        ],
+        [
+          locations.boneIndices,
+          4,
+          24
+        ],
+        [
+          locations.boneWeights,
+          4,
+          40
+        ],
+        [
+          locations.material,
+          1,
+          56
+        ]
+      ];
+
+      attributes.forEach(
+        (
+          [
+            location,
+            size,
+            offset
+          ]
+        )=>{
+          gl.enableVertexAttribArray(
+            location
+          );
+
+          gl.vertexAttribPointer(
+            location,
+            size,
+            gl.FLOAT,
+            false,
+            stride,
+            offset
+          );
+        }
+      );
+
+      gl.bindBuffer(
+        gl.ELEMENT_ARRAY_BUFFER,
+        mesh.indexBuffer
+      );
+
+      gl.uniformMatrix4fv(
+        locations.model,
+        false,
+        model
+      );
+
+      gl.uniformMatrix4fv(
+        locations.viewProjection,
+        false,
+        this.viewProjection
+      );
+
+      gl.uniformMatrix3fv(
+        locations.normalMatrix,
+        false,
+        normalMatrixFromTRS(
+          model
+        )
+      );
+
+      gl.uniformMatrix4fv(
+        locations.bones,
+        false,
+        boneMatrices
+      );
+
+      gl.uniform3fv(
+        locations.coat,
+        colors.coat
+      );
+      gl.uniform3fv(
+        locations.coatLight,
+        colors.coatLight
+      );
+      gl.uniform3fv(
+        locations.dark,
+        colors.dark
+      );
+      gl.uniform3fv(
+        locations.muzzle,
+        colors.muzzle
+      );
+      gl.uniform3fv(
+        locations.hoof,
+        colors.hoof
+      );
+      gl.uniform3fv(
+        locations.marking,
+        colors.marking
+      );
+      gl.uniform3fv(
+        locations.silk,
+        colors.silk
+      );
+      gl.uniform3fv(
+        locations.saddle,
+        colors.saddle
+      );
+      gl.uniform3fv(
+        locations.skin,
+        colors.skin
+      );
+      gl.uniform3fv(
+        locations.helmet,
+        colors.helmet
+      );
+      gl.uniform3fv(
+        locations.pants,
+        colors.pants
+      );
+
+      const palette=
+        this.activePalette||
+        {
+          lightDirection:[-.48,-1,-.34],
+          light:[1,.92,.76],
+          ambient:[.39,.43,.40],
+          fog:[.52,.64,.65]
+        };
+
+      gl.uniform3fv(
+        locations.lightDirection,
+        palette.lightDirection
+      );
+      gl.uniform3fv(
+        locations.lightColor,
+        palette.light
+      );
+      gl.uniform3fv(
+        locations.ambientColor,
+        palette.ambient
+      );
+      gl.uniform3fv(
+        locations.fogColor,
+        palette.fog
+      );
+      gl.uniform3fv(
+        locations.cameraPosition,
+        this.camera.eye
+      );
+      gl.uniform3fv(
+        locations.rimColor,
+        options.rimColor||
+        [.40,.48,.54]
+      );
+      gl.uniform1f(
+        locations.fogNear,
+        45
+      );
+      gl.uniform1f(
+        locations.fogFar,
+        150
+      );
+      gl.uniform1f(
+        locations.rimAmount,
+        clamp(
+          options.rim||
+          .09,
+          0,
+          1
+        )
+      );
+      gl.uniform1f(
+        locations.emissive,
+        clamp(
+          options.emissive||
+          0,
+          0,
+          1
+        )
+      );
+
+      gl.enable(
+        gl.DEPTH_TEST
+      );
+      gl.depthMask(
+        true
+      );
+      gl.enable(
+        gl.CULL_FACE
+      );
+
+      gl.drawElements(
+        gl.TRIANGLES,
+        mesh.count,
+        mesh.type,
+        0
+      );
     }
 
     wireControls(){
@@ -1665,6 +2502,12 @@
           this.instanceExtension&&
           this.instancedProgram
         ),
+        rigged:Boolean(
+          this.rigReady
+        ),
+        rigVersion:
+          global.RaceMarketHorseRig?.version||
+          null,
         renderer:this.gpuRenderer,
         contextLost:this.contextLost,
         fps:this.fps
@@ -1744,7 +2587,9 @@
           tailMotion:.80+seededUnit(seed+53)*.42,
           jockeyMotion:.82+seededUnit(seed+67)*.26,
           foreBias:seededUnit(seed+79)*.16-.08,
-          bodyRoll:.88+seededUnit(seed+91)*.28
+          bodyRoll:.88+seededUnit(seed+91)*.28,
+          hoofContacts:[false,false,false,false],
+          pendingImpacts:[]
         });
       });
     }
@@ -2077,7 +2922,9 @@
             tailMotion:.80+seededUnit(seed+53)*.42,
             jockeyMotion:.82+seededUnit(seed+67)*.26,
             foreBias:seededUnit(seed+79)*.16-.08,
-            bodyRoll:.88+seededUnit(seed+91)*.28
+            bodyRoll:.88+seededUnit(seed+91)*.28,
+          hoofContacts:[false,false,false,false],
+          pendingImpacts:[]
           };
 
           this.horseVisuals.set(horse.id,visual);
@@ -2116,6 +2963,12 @@
           if(!Number.isFinite(visual.bodyRoll)){
             visual.bodyRoll=.88+seededUnit(seed+91)*.28;
           }
+          if(!Array.isArray(visual.hoofContacts)){
+            visual.hoofContacts=[false,false,false,false];
+          }
+          if(!Array.isArray(visual.pendingImpacts)){
+            visual.pendingImpacts=[];
+          }
         }
 
         visual.targetX=target.x;
@@ -2140,15 +2993,153 @@
           Cadence is driven by actual race speed while each horse
           retains a slightly different natural stride rate.
         */
-        const gaitRate=isRunning
-          ?(
-            5.15+
-            speed*5.15
+        /*
+          Match cadence to visual world velocity so the hooves do
+          not appear to cycle independently of forward movement.
+          The animation remains presentation-only; race distance
+          still comes entirely from the simulation.
+        */
+        const speedFactor=
+          clamp(
+            speed/
+            1.35,
+            0,
+            1
+          );
+
+        const visualWorldVelocity=
+          speed*
+          (
+            137/
+            Math.max(
+              1,
+              Number(
+                appState?.raceDistance
+              )||
+              100
+            )
+          );
+
+        const effectiveStrideLength=
+          (
+            .92+
+            speedFactor*
+            .42
           )*
-          visual.cadence
+          visual.stride;
+
+        const gaitRate=isRunning
+          ?clamp(
+              (
+                visualWorldVelocity/
+                Math.max(
+                  .35,
+                  effectiveStrideLength
+                )
+              )*
+              Math.PI*
+              2,
+              4.1,
+              8.8
+            )*
+            visual.cadence
           :0;
 
-        visual.phase+=deltaSeconds*gaitRate;
+        const previousPhase=
+          visual.phase;
+
+        visual.phase+=
+          deltaSeconds*
+          gaitRate;
+
+        /*
+          Horse Model 3.0 emits hoof-contact events at the moment
+          each foot enters stance. These events drive surface
+          particles independently from the continuous speed wake.
+        */
+        const rig=
+          global.RaceMarketHorseRig;
+
+        if(
+          rig&&
+          typeof rig.sampleGaitLeg==="function"
+        ){
+          const speedFactor=
+            clamp(
+              speed/
+              1.35,
+              0,
+              1
+            );
+
+          for(
+            let legIndex=0;
+            legIndex<4;
+            legIndex++
+          ){
+            const sample=
+              rig.sampleGaitLeg(
+                visual.phase,
+                speedFactor,
+                legIndex,
+                visual.stride,
+                clamp(
+                  (
+                    Number(
+                      horse.energy
+                    )||
+                    100
+                  )/
+                  100,
+                  .12,
+                  1
+                ),
+                isRunning
+              );
+
+            const wasContact=
+              Boolean(
+                visual.hoofContacts[
+                  legIndex
+                ]
+              );
+
+            if(
+              isRunning&&
+              sample.contact&&
+              !wasContact
+            ){
+              visual.pendingImpacts.push({
+                legIndex,
+                x:
+                  sample.x,
+                z:
+                  legIndex===0||
+                  legIndex===2
+                    ?.36
+                    :-.36,
+                strength:
+                  .55+
+                  speedFactor*
+                  .65,
+                phase:
+                  previousPhase
+              });
+
+              if(
+                visual.pendingImpacts.length>
+                12
+              ){
+                visual.pendingImpacts.shift();
+              }
+            }
+
+            visual.hoofContacts[
+              legIndex
+            ]=
+              sample.contact;
+          }
+        }
       });
 
       [...this.horseVisuals.keys()].forEach(id=>{
@@ -3747,7 +4738,374 @@
       );
     }
 
-    drawHorse(horse,visual,appState,palette,timestamp){
+
+    drawRiggedHorse(
+      horse,
+      visual,
+      appState,
+      palette,
+      timestamp
+    ){
+      const rig=
+        global.RaceMarketHorseRig;
+
+      if(
+        !this.rigReady||
+        !rig
+      ){
+        this.drawHorseLegacy(
+          horse,
+          visual,
+          appState,
+          palette,
+          timestamp
+        );
+
+        return;
+      }
+
+      const colors=
+        this.horseColors(
+          horse
+        );
+
+      const selected=
+        horse.id===
+        appState?.selected;
+
+      const leader=
+        !horse.finished&&
+        horse.position===1&&
+        (
+          appState?.phase==="live"||
+          appState?.phase==="finished"
+        );
+
+      const running=
+        (
+          appState?.phase==="live"||
+          appState?.phase==="finished"
+        )&&
+        !horse.finished;
+
+      const speed=
+        clamp(
+          Number(
+            horse.currentSpeed
+          )||
+          0,
+          0,
+          1.6
+        );
+
+      const pose=
+        rig.createHorsePose({
+          speed,
+          running,
+          phase:
+            visual.phase,
+          energy:
+            horse.energy,
+          runningStyle:
+            horse.runningStyle,
+          strideBias:
+            visual.stride,
+          bounceBias:
+            visual.bounce,
+          neckBias:
+            visual.neckMotion,
+          tailBias:
+            visual.tailMotion,
+          time:
+            timestamp,
+          seed:
+            horse.id
+        });
+
+      const jockeyPose=
+        rig.createJockeyPose({
+          speedFactor:
+            pose.speedFactor,
+          running,
+          phase:
+            visual.phase,
+          suspension:
+            pose.suspension,
+          motionBias:
+            visual.jockeyMotion
+        });
+
+      visual.rigPose=
+        pose;
+
+      visual.jockeyPose=
+        jockeyPose;
+
+      this.drawHorseShadow(
+        visual,
+        horse,
+        selected,
+        leader,
+        palette
+      );
+
+      const distanceToCamera=
+        Math.hypot(
+          this.camera.eye[0]-
+            visual.x,
+          this.camera.eye[1]-
+            rig.HORSE_MODEL_HEIGHT,
+          this.camera.eye[2]-
+            visual.z
+        );
+
+      const highDetail=
+        this.effectiveQuality==="high"&&
+        distanceToCamera<
+          92;
+
+      const horseMesh=
+        highDetail
+          ?this.rigMeshes.horseHigh
+          :this.rigMeshes.horseEco;
+
+      const jockeyMesh=
+        highDetail
+          ?this.rigMeshes.jockeyHigh
+          :this.rigMeshes.jockeyEco;
+
+      const model=
+        mat4TRS(
+          visual.x,
+          rig.HORSE_MODEL_HEIGHT,
+          visual.z,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        );
+
+      const markingSeed=
+        (
+          horse.id*
+          37
+        )%
+        7;
+
+      const marking=
+        markingSeed<=3
+          ?[
+              .88,
+              .86,
+              .78
+            ]
+          :mixColor(
+              colors.main,
+              colors.light,
+              .14
+            );
+
+      const materialColors={
+        coat:
+          colors.main,
+        coatLight:
+          mixColor(
+            colors.main,
+            colors.light,
+            .38
+          ),
+        dark:
+          colors.dark,
+        muzzle:
+          colors.muzzle,
+        hoof:[
+          .035,
+          .026,
+          .021
+        ],
+        marking,
+        silk:
+          colors.silk,
+        saddle:[
+          .10,
+          .060,
+          .038
+        ],
+        skin:[
+          .73,
+          .50,
+          .34
+        ],
+        helmet:
+          colors.silk,
+        pants:
+          horse.post%3===0
+            ?[
+                .92,
+                .91,
+                .86
+              ]
+            :horse.post%3===1
+              ?[
+                  .13,
+                  .14,
+                  .15
+                ]
+              :[
+                  .80,
+                  .81,
+                  .84
+                ]
+      };
+
+      const emphasis=
+        horse.specialAbilityActive
+          ?.28
+          :selected
+            ?.22
+            :leader
+              ?.18
+              :.07;
+
+      this.drawSkinnedModel(
+        horseMesh,
+        model,
+        pose.bones,
+        materialColors,
+        {
+          rim:
+            .09+
+            emphasis,
+          emissive:
+            horse.specialAbilityActive
+              ?.08
+              :0,
+          rimColor:
+            horse.specialAbilityActive
+              ?[
+                  1.0,
+                  .78,
+                  .28
+                ]
+              :selected
+                ?[
+                    .38,
+                    .64,
+                    1.0
+                  ]
+                :leader
+                  ?[
+                      .94,
+                      .76,
+                      .32
+                    ]
+                  :[
+                      .40,
+                      .48,
+                      .54
+                    ]
+        }
+      );
+
+      this.drawSkinnedModel(
+        jockeyMesh,
+        model,
+        jockeyPose.bones,
+        materialColors,
+        {
+          rim:
+            selected
+              ?.24
+              :.10,
+          emissive:
+            horse.specialAbilityActive
+              ?.045
+              :0,
+          rimColor:
+            selected
+              ?[
+                  .38,
+                  .64,
+                  1.0
+                ]
+              :[
+                  .42,
+                  .48,
+                  .52
+                ]
+        }
+      );
+
+      const toWorld=
+        point=>[
+          visual.x+
+            point[0],
+          rig.HORSE_MODEL_HEIGHT+
+            point[1],
+          visual.z+
+            point[2]
+        ];
+
+      /*
+        Reins remain thin independent geometry so they can connect
+        the moving bridle and the separately skinned jockey hands
+        without adding another deformable mesh.
+      */
+      this.drawSegment(
+        toWorld(
+          pose.anchors.bridleLeft
+        ),
+        toWorld(
+          jockeyPose.anchors.leftHand
+        ),
+        .022,
+        [
+          .07,
+          .045,
+          .030
+        ],
+        {
+          rim:.02
+        }
+      );
+
+      this.drawSegment(
+        toWorld(
+          pose.anchors.bridleRight
+        ),
+        toWorld(
+          jockeyPose.anchors.rightHand
+        ),
+        .022,
+        [
+          .07,
+          .045,
+          .030
+        ],
+        {
+          rim:.02
+        }
+      );
+
+      const labelWorld=
+        toWorld(
+          pose.anchors.label
+        );
+
+      this.screenHorses.push({
+        id:
+          horse.id,
+        horse,
+        world:
+          labelWorld,
+        selected,
+        leader
+      });
+    }
+
+    drawHorseLegacy(horse,visual,appState,palette,timestamp){
       const colors=this.horseColors(horse);
       const selected=horse.id===appState?.selected;
       const leader=
@@ -4777,13 +6135,23 @@
         const visual=this.horseVisuals.get(horse.id);
 
         if(visual){
-          this.drawHorse(
-            horse,
-            visual,
-            appState,
-            palette,
-            timestamp
-          );
+          if(this.rigReady){
+            this.drawRiggedHorse(
+              horse,
+              visual,
+              appState,
+              palette,
+              timestamp
+            );
+          }else{
+            this.drawHorseLegacy(
+              horse,
+              visual,
+              appState,
+              palette,
+              timestamp
+            );
+          }
         }
       });
     }
@@ -4809,8 +6177,18 @@
         particle.vz*=Math.pow(.40,deltaSeconds);
       }
 
+      const fieldStillRunning=
+        (
+          appState?.phase==="live"||
+          appState?.phase==="finished"
+        )&&
+        (appState?.horses||[]).some(
+          horse=>
+            !horse.finished
+        );
+
       if(
-        appState?.phase!=="live"||
+        !fieldStillRunning||
         this.reducedMotion
       ){
         return;
@@ -4826,7 +6204,144 @@
         const visual=this.horseVisuals.get(horse.id);
         const speed=clamp(Number(horse.currentSpeed)||0,0,1.6);
 
-        if(!visual||speed<.72){
+        if(!visual){
+          return;
+        }
+
+        if(
+          Array.isArray(visual.pendingImpacts)&&
+          visual.pendingImpacts.length
+        ){
+          const impacts=
+            visual.pendingImpacts.splice(
+              0,
+              visual.pendingImpacts.length
+            );
+
+          impacts.forEach((impact,impactIndex)=>{
+            const count=
+              palette.surface==="Dirt"
+                ?3+
+                  Math.round(
+                    impact.strength*
+                    3
+                  )
+                :2+
+                  Math.round(
+                    impact.strength*
+                    2
+                  );
+
+            for(
+              let particleIndex=0;
+              particleIndex<count&&
+              this.dustParticles.length<
+                settings.dustLimit;
+              particleIndex++
+            ){
+              const seed=
+                this.sceneSeed+
+                horse.id*
+                9157+
+                this.frameCounter*
+                131+
+                impactIndex*
+                43+
+                particleIndex*
+                17;
+
+              const lateral=
+                seededUnit(
+                  seed
+                )-
+                .5;
+
+              const life=
+                .26+
+                seededUnit(
+                  seed+
+                  11
+                )*
+                (
+                  palette.surface==="Dirt"
+                    ?.42
+                    :.28
+                );
+
+              this.dustParticles.push({
+                x:
+                  visual.x+
+                  impact.x-
+                  .14-
+                  seededUnit(
+                    seed+
+                    19
+                  )*
+                  .35,
+                y:
+                  .08+
+                  seededUnit(
+                    seed+
+                    23
+                  )*
+                  .12,
+                z:
+                  visual.z+
+                  impact.z+
+                  lateral*
+                  .42,
+                vx:
+                  -(
+                    .45+
+                    seededUnit(
+                      seed+
+                      29
+                    )*
+                    1.35
+                  )*
+                  impact.strength,
+                vy:
+                  (
+                    .30+
+                    seededUnit(
+                      seed+
+                      31
+                    )*
+                    .70
+                  )*
+                  impact.strength,
+                vz:
+                  lateral*
+                  (
+                    .55+
+                    impact.strength*
+                    .70
+                  ),
+                life,
+                maxLife:life,
+                size:
+                  palette.surface==="Dirt"
+                    ?10+
+                      seededUnit(
+                        seed+
+                        37
+                      )*
+                      15
+                    :6+
+                      seededUnit(
+                        seed+
+                        37
+                      )*
+                      9
+              });
+            }
+          });
+        }
+
+        if(
+          horse.finished||
+          speed<.72
+        ){
           return;
         }
 
