@@ -1,4 +1,4 @@
-const CACHE = "racemarket-v43-horse-model-3-rigged";
+const CACHE = "racemarket-v44-horse-model-3-1-anatomy";
 
 const ASSETS = [
   "./",

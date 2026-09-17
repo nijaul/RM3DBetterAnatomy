@@ -1,123 +1,88 @@
-# RaceMarket — Horse Model 3.0 Rigged Thoroughbred
+# RaceMarket — Horse Model 3.1 Anatomy & Jockey Refinement
 
-This build keeps the existing RaceMarket simulation, trading system, broadcast controls, labels, weather, camera modes, and WebGL racecourse. It replaces the Horse Model 2 drawing path with a reusable GPU-skinned horse and jockey rig.
+This release starts from the working Horse Model 3.0 build and leaves the race simulation, pricing, orders, settlement, camera controls, projected labels, weather, and track presentation unchanged. It focuses on the visible horse-and-rider model.
 
-The race simulation remains the source of truth for speed, distance, position, finish order, pricing, orders, and settlement. The rig only changes presentation.
+The simulation remains the source of truth. Model and animation changes are presentation-only.
 
-## Horse Model 3.0
+## What changed in 3.1
 
-### Skinned thoroughbred
+### Jockey and reins
 
-- One reusable weighted horse mesh
-- 22-bone skeletal rig
-- Separate pelvis, chest, lower neck, upper neck, head, jaw, three tail bones, and three bones per leg
-- Smooth weighted deformation around the barrel, shoulders, hindquarters, neck, and joints
-- Distinct coat, highlight, mane/tail, muzzle, hoof, marking, saddlecloth, and saddle materials
-- High and Eco mesh variants selected automatically according to quality and camera distance
+- Corrected the arm-chain orientation that placed the jockey's hands behind the saddle
+- Added two-bone inverse kinematics so both hands stay compactly positioned above the withers
+- Replaced the two rigid cylindrical “stick” reins with thin, curved, dynamically moving rein lines
+- Added a separate pelvis, waist, chest, neck, face, helmet brim, and restrained goggle band
+- Changed the forearms to long racing-silk sleeves; only the hands use skin material
+- Added clearer elbows, knees, boots, feet, and small stirrup irons
+- Improved crouch, head balance, knee absorption, and saddle-following motion
+- Kept individual rider motion variation without allowing the rider to disconnect from the horse
 
-### Rigged jockey
+### Thoroughbred anatomy
 
-- Separate reusable weighted jockey mesh
-- 11-bone rig
-- Spine, head, paired arms, paired forearms, thighs, and lower legs
-- Speed-dependent racing crouch
-- Moving hands connected to the horse's bridle by live reins
-- Post-color silks and helmet, plus varied pants and boots
+- Leaner barrel and belly profile
+- Longer legs and a higher thoroughbred stance
+- More tapered cannon bones and smaller hooves
+- Separate upper-leg muscle, knee/hock, fetlock, and hoof forms
+- Smoother shoulder, withers, chest, croup, and hindquarter proportions
+- Longer, lower racing neck with a smaller head and muzzle
+- Smaller ears, subtler blaze, and high-detail eyes and nostrils
+- Increased High-quality mesh resolution while retaining the existing Eco meshes
 
-### Gallop system
+### Gallop refinement
 
-- Four-beat racing-gallop sequencing
-- Separate foreleg and hind-leg inverse-kinematics solutions
-- Planted hoof stance phase
-- Recovery, fold, reach, and suspension phases
-- Speed-sensitive stride length and cadence
-- Pelvis/chest counter-rotation
-- Spine extension and compression
-- Neck and head counter-motion
-- Tail follow-through
-- Individual stride, bounce, neck, tail, and jockey motion biases
-- Energy and running-style posture adjustments
-- Finished horses stop individually; unfinished runners continue galloping after the winner crosses
+- Lead-side variation between runners
+- Revised transverse four-beat sequence
+- Distinct push-off, fold, recovery, forward pass, reach, and touchdown portions
+- Shorter high-speed stance and a clearer suspension phase
+- Better hoof locking during contact
+- More natural neck extension for racing speed and running style
+- Finished runners still stop individually; unfinished runners continue through the line
 
-### Surface interaction
+## Compatibility
 
-- Hoof-contact events are generated when each foot enters stance
-- Dirt impact bursts and turf-clod particles are emitted at the actual contact moments
-- The existing continuous speed wake remains in place
-- Wetness and track condition continue to control spray and particle appearance
-
-### Compatibility
-
-If GPU skinning cannot initialize on a device, the renderer automatically falls back to the previous compatible procedural horse instead of interrupting the race.
+The renderer remains dependency-free and uses the existing WebGL 1 GPU-skinning path. If skeletal rendering is unavailable, RaceMarket retains its compatible procedural fallback.
 
 ## Existing features retained
 
 - WebGL and Classic render modes
 - Auto, Wide, Leader, Runner, Finish, Top Down, and Free cameras
-- Drag/orbit and zoom controls in Free mode
+- Free-camera orbit and zoom controls
 - Stable projected runner labels
-- Broadcast event captions and sound
-- Dirt and turf courses
-- Weather, rain, fog, and wet-track treatments
+- Broadcast captions and opt-in sound
+- Dirt/turf and weather effects
 - Dynamic order book and paper trading
-- Automatic High/Eco rendering quality
-- Offline PWA cache
-
-This release does not add replay or photo-finish functionality.
+- High, Eco, and Auto quality
+- Offline PWA caching
 
 ## Files
 
-- `horse3d-rig.js` — skeletal definitions, weighted mesh generation, gait sampling, inverse kinematics, and horse/jockey pose generation
-- `race3d.js` — WebGL renderer and integration with the rig
-- `app.js` — race simulation, trading, broadcast controls, and renderer state
-- `index.html` — application markup and script loading
-- `styles.css` — interface and Classic-renderer styling
+- `horse3d-rig.js` — horse/jockey geometry, skeletons, gait, IK, and pose generation
+- `race3d.js` — WebGL rendering, curved reins, cameras, particles, and labels
+- `app.js` — race simulation, trading, and broadcast state
+- `index.html` — application markup and loading order
+- `styles.css` — application and Classic-renderer styling
 - `sw.js` — offline asset cache
 - `manifest.json` — PWA metadata
 - `icon.svg` — application icon
 
 ## Run locally
 
-A service worker requires an HTTP origin. From this directory:
-
 ```bash
 python3 -m http.server 8080
 ```
 
-Then open:
+Open:
 
 ```text
 http://localhost:8080/
 ```
 
-No build step, package manager, CDN, or external model download is required.
+A hard refresh may be needed once after replacing an installed PWA build so the new service-worker cache becomes active.
 
-## Controls
-
-### Rendering
-
-- **3D** — WebGL racecourse with the rigged horse and jockey
-- **Classic** — CSS/DOM fallback presentation
-- **Quality** — cycles through Auto, High, and Eco
-
-### Camera
-
-- **Auto** — directed broadcast shots
-- **Wide** — whole field
-- **Leader** — front runner
-- **Runner** — selected runner
-- **Finish** — finish line
-- **Top** — elevated top-down view
-- **Free** — manual orbit camera
-
-In Free mode:
+## Free camera controls
 
 - Drag to orbit
 - Scroll to zoom
-- Use W/A/S/D or the arrow keys to rotate
-- Use `+` and `-` to zoom
-- Press `R` to reset the camera
-
-## Architecture
-
-`horse3d-rig.js` generates the shared horse and jockey meshes once. Each horse receives its own pose matrices every render frame. The WebGL vertex shader applies up to four bone influences per vertex, while the race engine continues to control all competitive outcomes.
+- W/A/S/D or arrow keys to rotate
+- `+` and `-` to zoom
+- `R` to reset

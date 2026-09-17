@@ -643,8 +643,9 @@
       this.particleLocations={};
       this.particleBuffer=null;
       this.rainBuffer=null;
+      this.detailLineBuffer=null;
 
-      /* Horse Model 3.0 skeletal renderer. It is optional at
+      /* Horse Model 3.1 skeletal renderer. It is optional at
          runtime and falls back to the proven procedural model if
          skinning cannot be initialized on a device. */
       this.skinProgram=null;
@@ -1378,6 +1379,7 @@
 
       this.particleBuffer=gl.createBuffer();
       this.rainBuffer=gl.createBuffer();
+      this.detailLineBuffer=gl.createBuffer();
       this.instanceBuffer=
         this.instanceExtension
           ?gl.createBuffer()
@@ -1886,7 +1888,7 @@
         return this.rigReady;
       }catch(error){
         console.warn(
-          "Horse Model 3.0 skinning is unavailable; retaining the compatible procedural horse.",
+          "Horse Model 3.1 skinning is unavailable; retaining the compatible procedural horse.",
           error
         );
 
@@ -3053,7 +3055,7 @@
           gaitRate;
 
         /*
-          Horse Model 3.0 emits hoof-contact events at the moment
+          Horse Model 3.1 emits hoof-contact events at the moment
           each foot enters stance. These events drive surface
           particles independently from the continuous speed wake.
         */
@@ -3406,6 +3408,303 @@
         ),
         color,
         options
+      );
+    }
+
+    drawWorldPolyline(
+      points,
+      color=[
+        .08,
+        .05,
+        .03
+      ],
+      alpha=.78
+    ){
+      const gl=this.gl;
+
+      if(
+        !gl||
+        !this.detailLineBuffer||
+        !this.lineProgram||
+        !Array.isArray(
+          points
+        )||
+        points.length<2
+      ){
+        return;
+      }
+
+      const values=
+        new Float32Array(
+          points.length*
+          3
+        );
+
+      points.forEach(
+        (
+          point,
+          index
+        )=>{
+          values[
+            index*
+            3+
+            0
+          ]=
+            Number(
+              point[0]
+            )||
+            0;
+          values[
+            index*
+            3+
+            1
+          ]=
+            Number(
+              point[1]
+            )||
+            0;
+          values[
+            index*
+            3+
+            2
+          ]=
+            Number(
+              point[2]
+            )||
+            0;
+        }
+      );
+
+      gl.useProgram(
+        this.lineProgram
+      );
+      gl.bindBuffer(
+        gl.ARRAY_BUFFER,
+        this.detailLineBuffer
+      );
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        values,
+        gl.DYNAMIC_DRAW
+      );
+      gl.enableVertexAttribArray(
+        this.lineLocations.position
+      );
+      gl.vertexAttribPointer(
+        this.lineLocations.position,
+        3,
+        gl.FLOAT,
+        false,
+        12,
+        0
+      );
+      gl.uniformMatrix4fv(
+        this.lineLocations.viewProjection,
+        false,
+        this.viewProjection
+      );
+      gl.uniform4fv(
+        this.lineLocations.color,
+        [
+          color[0],
+          color[1],
+          color[2],
+          clamp(
+            alpha,
+            0,
+            1
+          )
+        ]
+      );
+
+      gl.enable(
+        gl.BLEND
+      );
+      gl.enable(
+        gl.DEPTH_TEST
+      );
+      gl.depthMask(
+        false
+      );
+      gl.disable(
+        gl.CULL_FACE
+      );
+      gl.lineWidth(
+        1
+      );
+      gl.drawArrays(
+        gl.LINE_STRIP,
+        0,
+        points.length
+      );
+      gl.depthMask(
+        true
+      );
+      gl.enable(
+        gl.CULL_FACE
+      );
+    }
+
+    drawReinCurve(
+      hand,
+      bit,
+      side,
+      running,
+      phase
+    ){
+      if(
+        !hand||
+        !bit
+      ){
+        return;
+      }
+
+      const distance=
+        Math.hypot(
+          bit[0]-
+            hand[0],
+          bit[1]-
+            hand[1],
+          bit[2]-
+            hand[2]
+        );
+
+      const motion=
+        running
+          ?Math.sin(
+              phase*
+              1.35+
+              side*
+              .55
+            )*
+            .018
+          :0;
+
+      const slack=
+        .045+
+        distance*
+        .022;
+
+      const controlA=[
+        lerp(
+          hand[0],
+          bit[0],
+          .30
+        ),
+        lerp(
+          hand[1],
+          bit[1],
+          .30
+        )-
+          slack+
+          motion,
+        lerp(
+          hand[2],
+          bit[2],
+          .30
+        )+
+          side*
+          .025
+      ];
+
+      const controlB=[
+        lerp(
+          hand[0],
+          bit[0],
+          .72
+        ),
+        lerp(
+          hand[1],
+          bit[1],
+          .72
+        )-
+          slack*
+          .72-
+          motion*
+          .45,
+        lerp(
+          hand[2],
+          bit[2],
+          .72
+        )+
+          side*
+          .014
+      ];
+
+      const points=[];
+      const segments=9;
+
+      for(
+        let index=0;
+        index<=segments;
+        index++
+      ){
+        const t=
+          index/
+          segments;
+        const inverse=
+          1-
+          t;
+        const a=
+          inverse*
+          inverse*
+          inverse;
+        const b=
+          3*
+          inverse*
+          inverse*
+          t;
+        const c=
+          3*
+          inverse*
+          t*
+          t;
+        const d=
+          t*
+          t*
+          t;
+
+        points.push([
+          hand[0]*
+            a+
+          controlA[0]*
+            b+
+          controlB[0]*
+            c+
+          bit[0]*
+            d,
+          hand[1]*
+            a+
+          controlA[1]*
+            b+
+          controlB[1]*
+            c+
+          bit[1]*
+            d,
+          hand[2]*
+            a+
+          controlA[2]*
+            b+
+          controlB[2]*
+            c+
+          bit[2]*
+            d
+        ]);
+      }
+
+      /*
+        A one-pixel curved line reads as leather at every camera
+        distance. It replaces the old lit cylinders that looked
+        like two rigid sticks in the jockey's hands.
+      */
+      this.drawWorldPolyline(
+        points,
+        [
+          .075,
+          .047,
+          .030
+        ],
+        .82
       );
     }
 
@@ -4831,6 +5130,10 @@
             visual.phase,
           suspension:
             pose.suspension,
+          compression:
+            pose.compression,
+          rootPitch:
+            pose.rootPitch,
           motionBias:
             visual.jockeyMotion
         });
@@ -5049,44 +5352,44 @@
         ];
 
       /*
-        Reins remain thin independent geometry so they can connect
-        the moving bridle and the separately skinned jockey hands
-        without adding another deformable mesh.
+        Curved screen-space-thin reins connect the moving hands to
+        the bit. The previous cylinder segments ignored their Z
+        difference, so they appeared as two rigid black sticks.
       */
-      this.drawSegment(
-        toWorld(
-          pose.anchors.bridleLeft
-        ),
+      const leftHand=
         toWorld(
           jockeyPose.anchors.leftHand
-        ),
-        .022,
-        [
-          .07,
-          .045,
-          .030
-        ],
-        {
-          rim:.02
-        }
-      );
+        );
 
-      this.drawSegment(
-        toWorld(
-          pose.anchors.bridleRight
-        ),
+      const rightHand=
         toWorld(
           jockeyPose.anchors.rightHand
-        ),
-        .022,
-        [
-          .07,
-          .045,
-          .030
-        ],
-        {
-          rim:.02
-        }
+        );
+
+      const leftBit=
+        toWorld(
+          pose.anchors.bridleLeft
+        );
+
+      const rightBit=
+        toWorld(
+          pose.anchors.bridleRight
+        );
+
+      this.drawReinCurve(
+        leftHand,
+        leftBit,
+        1,
+        running,
+        visual.phase
+      );
+
+      this.drawReinCurve(
+        rightHand,
+        rightBit,
+        -1,
+        running,
+        visual.phase
       );
 
       const labelWorld=
@@ -6075,7 +6378,7 @@
           colors.silk
         );
 
-        this.drawSegment(
+        this.drawReinCurve(
           hand,
           [
             visual.x+2.12+
@@ -6084,8 +6387,9 @@
               headBob*.20,
             visual.z+.28
           ],
-          .026,
-          [.09,.055,.038]
+          1,
+          running,
+          cycle
         );
 
         this.drawSegment(

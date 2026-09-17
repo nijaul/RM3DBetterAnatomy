@@ -14,7 +14,7 @@
   const TAU=PI*2;
   const HORSE_BONE_COUNT=22;
   const JOCKEY_BONE_COUNT=11;
-  const HORSE_MODEL_HEIGHT=2.12;
+  const HORSE_MODEL_HEIGHT=2.24;
 
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
   const lerp=(a,b,t)=>a+(b-a)*t;
@@ -213,48 +213,57 @@
     bone("root",-1,[0,0,0]),
     bone("pelvis",0,[-.78,.08,0]),
     bone("chest",0,[.78,.12,0]),
-    bone("neckLower",2,[.58,.25,0],[0,0,-.06]),
-    bone("neckUpper",3,[.52,.46,0],[0,0,-.04]),
-    bone("head",4,[.46,.39,0],[0,0,-.10]),
+    bone("neckLower",2,[.63,.21,0],[0,0,-.08]),
+    bone("neckUpper",3,[.58,.37,0],[0,0,-.06]),
+    bone("head",4,[.53,.30,0],[0,0,-.12]),
     bone("tailBase",1,[-.64,.08,0],[0,0,.18]),
     bone("tailMid",6,[-.56,-.08,0],[0,0,.10]),
     bone("tailTip",7,[-.48,-.16,0],[0,0,.06]),
 
     bone("leftForeUpper",2,[.40,-.32,.36]),
-    bone("leftForeLower",9,[0,-1.05,0]),
-    bone("leftForeHoof",10,[0,-1.05,0]),
+    bone("leftForeLower",9,[0,-1.12,0]),
+    bone("leftForeHoof",10,[0,-1.10,0]),
 
     bone("rightForeUpper",2,[.40,-.32,-.36]),
-    bone("rightForeLower",12,[0,-1.05,0]),
-    bone("rightForeHoof",13,[0,-1.05,0]),
+    bone("rightForeLower",12,[0,-1.12,0]),
+    bone("rightForeHoof",13,[0,-1.10,0]),
 
     bone("leftHindUpper",1,[-.30,-.30,.36]),
-    bone("leftHindLower",15,[0,-1.06,0]),
-    bone("leftHindHoof",16,[0,-1.06,0]),
+    bone("leftHindLower",15,[0,-1.13,0]),
+    bone("leftHindHoof",16,[0,-1.11,0]),
 
     bone("rightHindUpper",1,[-.30,-.30,-.36]),
-    bone("rightHindLower",18,[0,-1.06,0]),
-    bone("rightHindHoof",19,[0,-1.06,0]),
+    bone("rightHindLower",18,[0,-1.13,0]),
+    bone("rightHindHoof",19,[0,-1.11,0]),
 
     bone("jaw",5,[.42,-.09,0],[0,0,.02])
   ];
 
+  /*
+    Horse Model 3.1 jockey bind pose.
+
+    The previous arm chain pointed behind the rider once the
+    racing crouch was applied. That placed the hand anchors well
+    behind the saddle and made the two reins read as rigid sticks.
+    This bind pose keeps the elbows bent forward and the hands
+    near the withers, matching a real racing posture.
+  */
   const JOCKEY_DEFS=[
-    bone("root",-1,[-.12,1.02,0],[0,0,-.42]),
-    bone("spine",0,[0,.36,0],[0,0,-.15]),
-    bone("head",1,[.04,.48,0],[0,0,.08]),
+    bone("root",-1,[-.05,1.00,0],[0,0,-.58]),
+    bone("spine",0,[0,.34,0],[0,0,-.08]),
+    bone("head",1,[.08,.43,0],[0,0,.18]),
 
-    bone("leftUpperArm",1,[.06,.31,.24],[0,0,-1.03]),
-    bone("leftForeArm",3,[0,-.58,0],[0,0,.52]),
+    bone("leftUpperArm",1,[.02,.28,.25],[0,0,1.56]),
+    bone("leftForeArm",3,[0,-.46,0],[0,0,1.36]),
 
-    bone("rightUpperArm",1,[.06,.31,-.24],[0,0,-1.03]),
-    bone("rightForeArm",5,[0,-.58,0],[0,0,.52]),
+    bone("rightUpperArm",1,[.02,.28,-.25],[0,0,1.56]),
+    bone("rightForeArm",5,[0,-.46,0],[0,0,1.36]),
 
-    bone("leftThigh",0,[-.06,-.04,.27],[0,0,.64]),
-    bone("leftShin",7,[0,-.65,0],[0,0,-1.22]),
+    bone("leftThigh",0,[-.07,-.02,.30],[0,0,.78]),
+    bone("leftShin",7,[0,-.58,0],[0,0,-1.42]),
 
-    bone("rightThigh",0,[-.06,-.04,-.27],[0,0,.64]),
-    bone("rightShin",9,[0,-.65,0],[0,0,-1.22])
+    bone("rightThigh",0,[-.07,-.02,-.30],[0,0,.78]),
+    bone("rightShin",9,[0,-.58,0],[0,0,-1.42])
   ];
 
   function localsFromDefs(defs){
@@ -1258,52 +1267,79 @@
         hoofBone
       );
 
+    const upperMid=[
+      lerp(hip[0],knee[0],.34),
+      lerp(hip[1],knee[1],.34),
+      lerp(hip[2],knee[2],.34)
+    ];
+
+    const lowerMid=[
+      lerp(knee[0],hoofJoint[0],.54),
+      lerp(knee[1],hoofJoint[1],.54),
+      lerp(knee[2],hoofJoint[2],.54)
+    ];
+
     const toe=[
       hoofJoint[0]+
         (
           hind
             ?.18
-            :.22
+            :.24
         ),
-      hoofJoint[1]-.02,
+      hoofJoint[1]-.025,
       hoofJoint[2]
     ];
+
+    /*
+      The upper limb carries visible muscle mass while the cannon
+      bone remains slim. Separate knee/hock and fetlock volumes
+      keep the silhouette anatomical instead of looking like a
+      single tapered stick.
+    */
+    addEllipsoid(
+      builder,
+      {
+        center:upperMid,
+        scale:
+          hind
+            ?[.27,.41,.25]
+            :[.205,.37,.21],
+        rotationZ:0,
+        longitude:Math.max(8,radial+1),
+        latitude:Math.max(6,radial-2),
+        weights:[
+          {
+            bone:upperBone,
+            weight:.82
+          },
+          {
+            bone:lowerBone,
+            weight:.18
+          }
+        ],
+        material:1
+      }
+    );
 
     addTube(
       builder,
       {
         points:[
           hip,
-          [
-            lerp(
-              hip[0],
-              knee[0],
-              .52
-            ),
-            lerp(
-              hip[1],
-              knee[1],
-              .52
-            ),
-            lerp(
-              hip[2],
-              knee[2],
-              .52
-            )
-          ],
+          upperMid,
           knee
         ],
         radii:
           hind
             ?[
-                .19,
-                .145,
-                .115
+                .180,
+                .135,
+                .100
               ]
             :[
-                .175,
-                .128,
-                .10
+                .150,
+                .112,
+                .082
               ],
         radial,
         influences:t=>
@@ -1311,7 +1347,7 @@
             upperBone,
             lowerBone,
             smoothstep(
-              .62,
+              .64,
               1,
               t
             )
@@ -1320,34 +1356,42 @@
       }
     );
 
+    addEllipsoid(
+      builder,
+      {
+        center:knee,
+        scale:
+          hind
+            ?[.135,.125,.14]
+            :[.120,.115,.125],
+        longitude:Math.max(7,radial),
+        latitude:Math.max(5,radial-2),
+        weights:[
+          {
+            bone:upperBone,
+            weight:.30
+          },
+          {
+            bone:lowerBone,
+            weight:.70
+          }
+        ],
+        material:1
+      }
+    );
+
     addTube(
       builder,
       {
         points:[
           knee,
-          [
-            lerp(
-              knee[0],
-              hoofJoint[0],
-              .55
-            ),
-            lerp(
-              knee[1],
-              hoofJoint[1],
-              .55
-            ),
-            lerp(
-              knee[2],
-              hoofJoint[2],
-              .55
-            )
-          ],
+          lowerMid,
           hoofJoint
         ],
         radii:[
-          .105,
-          .073,
-          .058
+          .086,
+          .057,
+          .043
         ],
         radial,
         influences:t=>
@@ -1355,11 +1399,32 @@
             lowerBone,
             hoofBone,
             smoothstep(
-              .64,
+              .68,
               1,
               t
             )
           ),
+        material:2
+      }
+    );
+
+    addEllipsoid(
+      builder,
+      {
+        center:hoofJoint,
+        scale:[.088,.080,.098],
+        longitude:Math.max(7,radial),
+        latitude:Math.max(5,radial-2),
+        weights:[
+          {
+            bone:lowerBone,
+            weight:.22
+          },
+          {
+            bone:hoofBone,
+            weight:.78
+          }
+        ],
         material:2
       }
     );
@@ -1373,14 +1438,16 @@
           toe[2]
         ],
         scale:[
-          .42,
-          .16,
-          .30
+          hind
+            ?.30
+            :.33,
+          .12,
+          .23
         ],
         rotationZ:
           hind
-            ?.035
-            :-.055,
+            ?.045
+            :-.065,
         weights:
           singleWeight(
             hoofBone
@@ -1398,17 +1465,17 @@
 
     const longitude=
       high
-        ?16
+        ?22
         :10;
 
     const latitude=
       high
-        ?10
+        ?13
         :7;
 
     const radial=
       high
-        ?9
+        ?11
         :6;
 
     const builder=
@@ -1418,9 +1485,9 @@
     addEllipsoid(
       builder,
       {
-        center:[-.10,.02,0],
-        scale:[1.78,.64,.58],
-        rotationZ:.012,
+        center:[-.08,.04,0],
+        scale:[1.88,.54,.51],
+        rotationZ:.010,
         longitude,
         latitude,
         weightFunction:
@@ -1433,9 +1500,9 @@
     addEllipsoid(
       builder,
       {
-        center:[-1.12,.12,0],
-        scale:[.88,.75,.67],
-        rotationZ:.05,
+        center:[-1.16,.15,0],
+        scale:[.78,.64,.58],
+        rotationZ:.045,
         longitude:
           Math.max(
             8,
@@ -1460,9 +1527,9 @@
     addEllipsoid(
       builder,
       {
-        center:[.93,.15,0],
-        scale:[.82,.77,.64],
-        rotationZ:-.055,
+        center:[.94,.17,0],
+        scale:[.68,.66,.55],
+        rotationZ:-.060,
         longitude:
           Math.max(
             8,
@@ -1487,9 +1554,9 @@
     addEllipsoid(
       builder,
       {
-        center:[1.39,.00,0],
-        scale:[.46,.57,.57],
-        rotationZ:-.10,
+        center:[1.38,-.01,0],
+        scale:[.36,.48,.47],
+        rotationZ:-.105,
         longitude:
           Math.max(
             8,
@@ -1512,8 +1579,8 @@
     addEllipsoid(
       builder,
       {
-        center:[-.12,-.30,0],
-        scale:[1.28,.31,.50],
+        center:[-.10,-.29,0],
+        scale:[1.34,.25,.43],
         longitude:
           Math.max(
             8,
@@ -1527,6 +1594,55 @@
         weightFunction:
           bodyWeightsForPosition,
         material:2
+      }
+    );
+
+    /*
+      Withers and croup define the topline. They also give the
+      saddle a believable seat and stop the barrel from reading
+      as a single capsule.
+    */
+    addEllipsoid(
+      builder,
+      {
+        center:[.56,.56,0],
+        scale:[.64,.18,.39],
+        rotationZ:-.045,
+        longitude:Math.max(10,longitude-4),
+        latitude:Math.max(7,latitude-3),
+        weights:[
+          {
+            bone:2,
+            weight:.70
+          },
+          {
+            bone:0,
+            weight:.30
+          }
+        ],
+        material:1
+      }
+    );
+
+    addEllipsoid(
+      builder,
+      {
+        center:[-1.00,.57,0],
+        scale:[.66,.19,.42],
+        rotationZ:.035,
+        longitude:Math.max(10,longitude-4),
+        latitude:Math.max(7,latitude-3),
+        weights:[
+          {
+            bone:1,
+            weight:.74
+          },
+          {
+            bone:0,
+            weight:.26
+          }
+        ],
+        material:1
       }
     );
 
@@ -1568,10 +1684,10 @@
           headPoint
         ],
         radii:[
-          .46,
-          .40,
-          .31,
-          .25
+          .43,
+          .36,
+          .275,
+          .215
         ],
         radial,
         influences:t=>{
@@ -1616,8 +1732,8 @@
           headPoint[1]+.04,
           0
         ],
-        scale:[.72,.38,.35],
-        rotationZ:-.10,
+        scale:[.61,.31,.29],
+        rotationZ:-.11,
         longitude:
           Math.max(
             10,
@@ -1645,8 +1761,8 @@
           headPoint[1]-.10,
           0
         ],
-        scale:[.48,.25,.28],
-        rotationZ:-.06,
+        scale:[.40,.20,.23],
+        rotationZ:-.07,
         longitude:
           Math.max(
             8,
@@ -1680,8 +1796,8 @@
           headPoint[1]-.25,
           0
         ],
-        scale:[.42,.18,.29],
-        rotationZ:-.04,
+        scale:[.34,.145,.24],
+        rotationZ:-.05,
         longitude:
           Math.max(
             8,
@@ -1706,6 +1822,84 @@
       }
     );
 
+    /* Cheek / masseter */
+    addEllipsoid(
+      builder,
+      {
+        center:[
+          headPoint[0]+.13,
+          headPoint[1]-.07,
+          0
+        ],
+        scale:[.32,.24,.30],
+        rotationZ:-.08,
+        longitude:Math.max(9,longitude-4),
+        latitude:Math.max(6,latitude-3),
+        weights:
+          singleWeight(
+            5
+          ),
+        material:1
+      }
+    );
+
+    if(high){
+      /* Eyes and nostrils remain subtle at broadcast distance. */
+      [
+        -.305,
+        .305
+      ].forEach(z=>{
+        addEllipsoid(
+          builder,
+          {
+            center:[
+              headPoint[0]+.31,
+              headPoint[1]+.13,
+              z
+            ],
+            scale:[.055,.050,.026],
+            longitude:7,
+            latitude:5,
+            weights:
+              singleWeight(
+                5
+              ),
+            material:4
+          }
+        );
+      });
+
+      [
+        -.205,
+        .205
+      ].forEach(z=>{
+        addEllipsoid(
+          builder,
+          {
+            center:[
+              headPoint[0]+.99,
+              headPoint[1]-.11,
+              z
+            ],
+            scale:[.060,.035,.024],
+            longitude:7,
+            latitude:5,
+            weights:[
+              {
+                bone:5,
+                weight:.55
+              },
+              {
+                bone:21,
+                weight:.45
+              }
+            ],
+            material:4
+          }
+        );
+      });
+    }
+
     /* Ears */
     [
       -.17,
@@ -1727,7 +1921,7 @@
             tip:[
               headPoint[0]-.09+
                 index*.15,
-              headPoint[1]+.84,
+              headPoint[1]+.66,
               z+
                 (
                   index===0
@@ -1735,7 +1929,7 @@
                     :.025
                 )
             ],
-            radius:.14,
+            radius:.078,
             radial:
               high
                 ?7
@@ -2048,9 +2242,9 @@
           .337
         ],
         scale:[
-          .45,
-          .055,
-          .018
+          .34,
+          .038,
+          .014
         ],
         rotationZ:-.28,
         weights:
@@ -2072,17 +2266,17 @@
 
     const radial=
       high
-        ?8
+        ?10
         :5;
 
     const longitude=
       high
-        ?11
+        ?16
         :8;
 
     const latitude=
       high
-        ?8
+        ?10
         :6;
 
     const builder=
@@ -2106,51 +2300,129 @@
         2
       );
 
-    /* Torso / silks */
+    const waist=[
+      lerp(root[0],spine[0],.48),
+      lerp(root[1],spine[1],.48),
+      0
+    ];
+
+    /*
+      Pelvis, waist and chest are separate masses. This creates a
+      recognizable racing crouch instead of the old single capsule
+      torso and keeps the rider visibly seated over the saddle.
+    */
     addEllipsoid(
       builder,
       {
         center:[
-          spine[0],
-          spine[1]+.04,
-          spine[2]
+          root[0]-.02,
+          root[1]+.02,
+          0
         ],
-        scale:[
-          .40,
-          .55,
-          .34
-        ],
-        rotationZ:-.18,
+        scale:[.32,.25,.34],
+        longitude,
+        latitude,
+        weights:
+          singleWeight(
+            0
+          ),
+        material:10
+      }
+    );
+
+    addEllipsoid(
+      builder,
+      {
+        center:waist,
+        scale:[.28,.31,.28],
+        rotationZ:-.12,
         longitude,
         latitude,
         weights:[
           {
-            bone:1,
-            weight:.78
+            bone:0,
+            weight:.46
           },
           {
-            bone:0,
-            weight:.22
+            bone:1,
+            weight:.54
           }
         ],
         material:6
       }
     );
 
-    /* Head */
+    addEllipsoid(
+      builder,
+      {
+        center:[
+          spine[0]+.015,
+          spine[1]+.08,
+          spine[2]
+        ],
+        scale:[.39,.31,.34],
+        rotationZ:-.15,
+        longitude,
+        latitude,
+        weights:[
+          {
+            bone:1,
+            weight:.84
+          },
+          {
+            bone:0,
+            weight:.16
+          }
+        ],
+        material:6
+      }
+    );
+
+    /* Short neck prevents the helmet/head from floating. */
+    addTube(
+      builder,
+      {
+        points:[
+          [
+            head[0]-.03,
+            head[1]-.22,
+            0
+          ],
+          [
+            head[0],
+            head[1]-.05,
+            0
+          ]
+        ],
+        radii:[
+          .115,
+          .095
+        ],
+        radial,
+        influences:t=>
+          twoWeights(
+            1,
+            2,
+            smoothstep(
+              .35,
+              1,
+              t
+            )
+          ),
+        material:8
+      }
+    );
+
+    /* Head and small facial projection */
     addEllipsoid(
       builder,
       {
         center:[
           head[0],
-          head[1]+.05,
+          head[1]+.03,
           head[2]
         ],
-        scale:[
-          .27,
-          .30,
-          .25
-        ],
+        scale:[.225,.255,.210],
         longitude,
         latitude,
         weights:
@@ -2161,24 +2433,47 @@
       }
     );
 
-    /* Helmet */
+    addEllipsoid(
+      builder,
+      {
+        center:[
+          head[0]+.16,
+          head[1]+.01,
+          head[2]
+        ],
+        scale:[.130,.105,.132],
+        longitude:
+          Math.max(
+            8,
+            longitude-4
+          ),
+        latitude:
+          Math.max(
+            6,
+            latitude-3
+          ),
+        weights:
+          singleWeight(
+            2
+          ),
+        material:8
+      }
+    );
+
+    /* Helmet shell, brim and restrained goggle band */
     addEllipsoid(
       builder,
       {
         center:[
           head[0]-.02,
-          head[1]+.25,
+          head[1]+.235,
           head[2]
         ],
-        scale:[
-          .31,
-          .17,
-          .30
-        ],
+        scale:[.290,.152,.280],
         longitude,
         latitude:
           Math.max(
-            4,
+            5,
             latitude-2
           ),
         weights:
@@ -2189,106 +2484,170 @@
       }
     );
 
+    addBox(
+      builder,
+      {
+        center:[
+          head[0]+.16,
+          head[1]+.17,
+          head[2]
+        ],
+        scale:[.30,.045,.34],
+        rotationZ:-.08,
+        weights:
+          singleWeight(
+            2
+          ),
+        material:9
+      }
+    );
+
+    if(high){
+      addBox(
+        builder,
+        {
+          center:[
+            head[0]+.19,
+            head[1]+.08,
+            head[2]
+          ],
+          scale:[.18,.045,.285],
+          rotationZ:-.05,
+          weights:
+            singleWeight(
+              2
+            ),
+          material:4
+        }
+      );
+    }
+
     const armData=[
       [3,4],
       [5,6]
     ];
 
-    armData.forEach(
-      (
-        pair,
-        sideIndex
-      )=>{
-        const upper=
-          bindPosition(
-            JOCKEY_BIND,
-            pair[0]
-          );
+    armData.forEach(pair=>{
+      const upper=
+        bindPosition(
+          JOCKEY_BIND,
+          pair[0]
+        );
 
-        const fore=
-          bindPosition(
-            JOCKEY_BIND,
+      const fore=
+        bindPosition(
+          JOCKEY_BIND,
+          pair[1]
+        );
+
+      const hand=
+        transformPoint(
+          JOCKEY_BIND.globals[
             pair[1]
-          );
-
-        const hand=[
-          fore[0]+.43,
-          fore[1]-.32,
-          fore[2]
-        ];
-
-        addTube(
-          builder,
-          {
-            points:[
-              upper,
-              fore
-            ],
-            radii:[
-              .11,
-              .09
-            ],
-            radial,
-            influences:t=>
-              twoWeights(
-                pair[0],
-                pair[1],
-                smoothstep(
-                  .65,
-                  1,
-                  t
-                )
-              ),
-            material:6
-          }
+          ],
+          [
+            0,
+            -.42,
+            0
+          ]
         );
 
-        addTube(
-          builder,
-          {
-            points:[
-              fore,
-              hand
-            ],
-            radii:[
-              .085,
-              .055
-            ],
-            radial,
-            influences:
-              singleWeight(
-                pair[1]
-              ),
-            material:8
-          }
-        );
+      addTube(
+        builder,
+        {
+          points:[
+            upper,
+            fore
+          ],
+          radii:[
+            .105,
+            .082
+          ],
+          radial,
+          influences:t=>
+            twoWeights(
+              pair[0],
+              pair[1],
+              smoothstep(
+                .66,
+                1,
+                t
+              )
+            ),
+          material:6
+        }
+      );
 
-        addEllipsoid(
-          builder,
-          {
-            center:hand,
-            scale:[
-              .10,
-              .09,
-              .08
-            ],
-            longitude:
-              high
-                ?8
-                :6,
-            latitude:
-              high
-                ?6
-                :4,
-            weights:
-              singleWeight(
-                pair[1]
-              ),
-            material:8
-          }
-        );
-      }
-    );
+      addEllipsoid(
+        builder,
+        {
+          center:fore,
+          scale:[.105,.095,.10],
+          longitude:
+            high
+              ?9
+              :6,
+          latitude:
+            high
+              ?7
+              :5,
+          weights:
+            singleWeight(
+              pair[1]
+            ),
+          material:6
+        }
+      );
+
+      /*
+        Racing silks have long sleeves. Only the hand is skin;
+        the previous bare forearm amplified the "stick" look.
+      */
+      addTube(
+        builder,
+        {
+          points:[
+            fore,
+            hand
+          ],
+          radii:[
+            .080,
+            .052
+          ],
+          radial,
+          influences:
+            singleWeight(
+              pair[1]
+            ),
+          material:6
+        }
+      );
+
+      addEllipsoid(
+        builder,
+        {
+          center:hand,
+          scale:[
+            .082,
+            .070,
+            .067
+          ],
+          longitude:
+            high
+              ?8
+              :6,
+          latitude:
+            high
+              ?6
+              :4,
+          weights:
+            singleWeight(
+              pair[1]
+            ),
+          material:8
+        }
+      );
+    });
 
     const legData=[
       [7,8],
@@ -2308,11 +2667,17 @@
           pair[1]
         );
 
-      const foot=[
-        shin[0]+.34,
-        shin[1]-.44,
-        shin[2]
-      ];
+      const foot=
+        transformPoint(
+          JOCKEY_BIND.globals[
+            pair[1]
+          ],
+          [
+            0,
+            -.38,
+            0
+          ]
+        );
 
       addTube(
         builder,
@@ -2322,8 +2687,8 @@
             shin
           ],
           radii:[
-            .15,
-            .11
+            .145,
+            .103
           ],
           radial,
           influences:t=>
@@ -2331,10 +2696,31 @@
               pair[0],
               pair[1],
               smoothstep(
-                .66,
+                .68,
                 1,
                 t
               )
+            ),
+          material:10
+        }
+      );
+
+      addEllipsoid(
+        builder,
+        {
+          center:shin,
+          scale:[.125,.105,.115],
+          longitude:
+            high
+              ?9
+              :6,
+          latitude:
+            high
+              ?7
+              :5,
+          weights:
+            singleWeight(
+              pair[1]
             ),
           material:10
         }
@@ -2348,8 +2734,8 @@
             foot
           ],
           radii:[
-            .095,
-            .065
+            .090,
+            .060
           ],
           radial,
           influences:
@@ -2369,8 +2755,8 @@
             foot[2]
           ],
           scale:[
-            .32,
-            .11,
+            .30,
+            .105,
             .16
           ],
           rotationZ:-.08,
@@ -2381,6 +2767,30 @@
           material:4
         }
       );
+
+      if(high){
+        /* Small stirrup iron under the boot. */
+        addBox(
+          builder,
+          {
+            center:[
+              foot[0]+.02,
+              foot[1]-.09,
+              foot[2]
+            ],
+            scale:[
+              .18,
+              .035,
+              .22
+            ],
+            weights:
+              singleWeight(
+                pair[1]
+              ),
+            material:7
+          }
+        );
+      }
     });
 
     return builder.finish();
@@ -2495,7 +2905,8 @@
     legIndex,
     strideBias=1,
     energy=1,
-    running=true
+    running=true,
+    leadSide=1
   ){
     const sprint=
       smoothstep(
@@ -2514,19 +2925,35 @@
 
     const stance=
       lerp(
-        .46,
-        .30,
+        .45,
+        .285,
         sprint
       )+
       canter*
-      .025;
+      .030;
 
-    const phaseOffsets=[
+    /*
+      A transverse racing gallop: trailing hind, leading hind,
+      trailing fore, leading fore, then suspension. Swapping each
+      left/right pair gives individual horses a different lead
+      without changing their simulated speed.
+    */
+    const baseOffsets=[
       0,
-      .13,
-      .50,
-      .64
+      .115,
+      .47,
+      .59
     ];
+
+    const phaseOffsets=
+      leadSide<0
+        ?[
+            baseOffsets[1],
+            baseOffsets[0],
+            baseOffsets[3],
+            baseOffsets[2]
+          ]
+        :baseOffsets;
 
     const cycle=
       fract(
@@ -2544,19 +2971,19 @@
       (
         isFore
           ?lerp(
-              .52,
-              .88,
+              .50,
+              .94,
               speedFactor
             )
           :lerp(
-              .45,
-              .78,
+              .44,
+              .82,
               speedFactor
             )
       )*
       strideBias*
       lerp(
-        .88,
+        .86,
         1,
         energy
       );
@@ -2565,13 +2992,13 @@
       (
         isFore
           ?lerp(
-              .43,
-              .72,
+              .42,
+              .74,
               speedFactor
             )
           :lerp(
-              .48,
-              .82,
+              .50,
+              .90,
               speedFactor
             )
       )*
@@ -2581,28 +3008,28 @@
       (
         isFore
           ?lerp(
-              .27,
-              .62,
+              .26,
+              .66,
               speedFactor
             )
           :lerp(
               .24,
-              .54,
+              .58,
               speedFactor
             )
       )*
       lerp(
-        .86,
+        .84,
         1,
         energy
       );
 
     if(!running){
       const neutral=[
-        -.04,
-        .08,
-        .12,
-        -.08
+        -.05,
+        .07,
+        .11,
+        -.07
       ][
         legIndex
       ];
@@ -2611,6 +3038,7 @@
         x:neutral,
         lift:0,
         contact:true,
+        contactWeight:1,
         phase:cycle,
         stance
       };
@@ -2621,19 +3049,36 @@
         cycle/
         stance;
 
+      /*
+        During stance the planted hoof travels rearward relative
+        to the body. A smooth acceleration prevents skating at
+        touchdown and snap at push-off.
+      */
+      const travel=
+        smoothstep(
+          0,
+          1,
+          t
+        );
+
       return{
         x:
           lerp(
             reach,
             -push,
-            smoothstep(
-              0,
-              1,
-              t
-            )
+            travel
           ),
         lift:0,
         contact:true,
+        contactWeight:
+          Math.sin(
+            PI*
+            clamp(
+              t,
+              0,
+              1
+            )
+          ),
         phase:cycle,
         stance
       };
@@ -2649,33 +3094,96 @@
         stance
       );
 
-    const arc=
-      Math.pow(
-        Math.max(
-          0,
-          Math.sin(
-            PI*
-            flight
-          )
-        ),
-        .78
-      );
+    let x;
+    let lift;
 
-    return{
-      x:
+    if(flight<.34){
+      const t=
+        smoothstep(
+          0,
+          1,
+          flight/.34
+        );
+
+      /* Fold immediately after push-off. */
+      x=
         lerp(
           -push,
+          -push*.24,
+          t
+        );
+
+      lift=
+        lerp(
+          .02,
+          liftHeight,
+          t
+        );
+
+    }else if(flight<.72){
+      const t=
+        smoothstep(
+          0,
+          1,
+          (
+            flight-.34
+          )/
+          .38
+        );
+
+      /* The folded limb passes beneath the body. */
+      x=
+        lerp(
+          -push*.24,
+          reach*.43,
+          t
+        );
+
+      lift=
+        liftHeight*
+        lerp(
+          1,
+          .84,
+          t
+        );
+
+    }else{
+      const t=
+        smoothstep(
+          0,
+          1,
+          (
+            flight-.72
+          )/
+          .28
+        );
+
+      /* Reach and unfold for the next contact. */
+      x=
+        lerp(
+          reach*.43,
           reach,
-          smoothstep(
-            0,
-            1,
-            flight
-          )
-        ),
+          t
+        );
+
+      lift=
+        liftHeight*
+        .84*
+        (
+          1-
+          t
+        );
+    }
+
+    return{
+      x,
       lift:
-        arc*
-        liftHeight,
+        Math.max(
+          0,
+          lift
+        ),
       contact:false,
+      contactWeight:0,
       phase:cycle,
       stance
     };
@@ -2849,6 +3357,150 @@
     );
   }
 
+  function solveJockeyArmIK(
+    locals,
+    globalsBefore,
+    {
+      upper,
+      lower,
+      target,
+      upperLength=.46,
+      lowerLength=.42
+    }
+  ){
+    const parent=1;
+    const parentGlobal=
+      globalsBefore[
+        parent
+      ];
+
+    const inverseParent=
+      mat4Invert(
+        parentGlobal
+      );
+
+    const targetInParent=
+      transformPoint(
+        inverseParent,
+        target
+      );
+
+    const joint=
+      JOCKEY_DEFS[
+        upper
+      ].translation;
+
+    const dx=
+      targetInParent[0]-
+      joint[0];
+
+    const dy=
+      targetInParent[1]-
+      joint[1];
+
+    const distance=
+      clamp(
+        Math.hypot(
+          dx,
+          dy
+        ),
+        Math.abs(
+          upperLength-
+          lowerLength
+        )+
+        .015,
+        upperLength+
+        lowerLength-
+        .015
+      );
+
+    const direction=
+      Math.atan2(
+        dx,
+        -dy
+      );
+
+    const shoulderAlpha=
+      Math.acos(
+        clamp(
+          (
+            upperLength*
+              upperLength+
+            distance*
+              distance-
+            lowerLength*
+              lowerLength
+          )/
+          (
+            2*
+            upperLength*
+            distance
+          ),
+          -1,
+          1
+        )
+      );
+
+    const elbowInner=
+      Math.acos(
+        clamp(
+          (
+            upperLength*
+              upperLength+
+            lowerLength*
+              lowerLength-
+            distance*
+              distance
+          )/
+          (
+            2*
+            upperLength*
+            lowerLength
+          ),
+          -1,
+          1
+        )
+      );
+
+    /*
+      Positive bend keeps the elbows down and behind the hands,
+      the characteristic compact racing position.
+    */
+    const upperAngle=
+      direction-
+      shoulderAlpha;
+
+    const lowerAngle=
+      PI-
+      elbowInner;
+
+    setLocal(
+      locals,
+      JOCKEY_DEFS,
+      upper,
+      {
+        rotation:[
+          0,
+          0,
+          upperAngle
+        ]
+      }
+    );
+
+    setLocal(
+      locals,
+      JOCKEY_DEFS,
+      lower,
+      {
+        rotation:[
+          0,
+          0,
+          lowerAngle
+        ]
+      }
+    );
+  }
+
   function createHorsePose(
     parameters={}
   ){
@@ -2939,6 +3591,22 @@
         parameters.runningStyle||
         ""
       );
+
+    const leadSide=
+      (
+        Math.abs(
+          Math.floor(
+            Number(
+              parameters.seed
+            )||
+            0
+          )
+        )%
+        2
+      )===
+      0
+        ?1
+        :-1;
 
     const locals=
       makePoseLocals(
@@ -3154,6 +3822,15 @@
             ?.028
             :0;
 
+    const racingPosture=
+      running
+        ?speedFactor*
+          .050+
+          sprint*
+          .040+
+          frontRunnerPosture
+        :0;
+
     const neckWave=
       running
         ?Math.sin(
@@ -3192,8 +3869,8 @@
           0,
           HORSE_DEFS[3].rotation[2]+
             neckWave*
-            .58-
-            frontRunnerPosture
+            .52-
+            racingPosture
         ]
       }
     );
@@ -3208,9 +3885,9 @@
           0,
           HORSE_DEFS[4].rotation[2]+
             neckWave*
-            .72-
-            frontRunnerPosture*
-            .72
+            .66-
+            racingPosture*
+            .82
         ]
       }
     );
@@ -3226,7 +3903,9 @@
           HORSE_DEFS[5].rotation[2]+
             headWave-
             neckWave*
-            .22
+            .24-
+            racingPosture*
+            .18
         ]
       }
     );
@@ -3402,7 +4081,8 @@
           definition.index,
           strideBias,
           energy,
-          running
+          running,
+          leadSide
         );
 
       const parentGlobal=
@@ -3448,12 +4128,12 @@
           target,
           upperLength:
             definition.fore
-              ?1.05
-              :1.06,
+              ?1.12
+              :1.13,
           lowerLength:
             definition.fore
-              ?1.05
-              :1.06,
+              ?1.10
+              :1.11,
           bendSign:
             definition.fore
               ?1
@@ -3592,37 +4272,72 @@
         1.30
       );
 
-    const locals=
-      makePoseLocals(
-        JOCKEY_DEFS
-      );
-
     const suspension=
       Number(
         parameters.suspension
       )||
       0;
 
+    const compression=
+      Number(
+        parameters.compression
+      )||
+      0;
+
+    const horsePitch=
+      Number(
+        parameters.rootPitch
+      )||
+      0;
+
+    const locals=
+      makePoseLocals(
+        JOCKEY_DEFS
+      );
+
     const crouch=
       lerp(
-        .46,
-        .73,
+        .56,
+        .78,
         speedFactor
       );
 
-    const rise=
+    const stridePulse=
       running
         ?Math.sin(
             phase+
             PI*.38
-          )*
+          )
+        :0;
+
+    /*
+      The rider absorbs the horse's vertical motion through the
+      knees and hips. The torso therefore moves much less than the
+      horse's back and stays visually connected to the saddle.
+    */
+    const rise=
+      running
+        ?stridePulse*
           (
-            .018+
-            .040*
+            .012+
+            .026*
             speedFactor
           )*
           motionBias
         :0;
+
+    const rootX=
+      JOCKEY_DEFS[0].translation[0]+
+      speedFactor*
+      .055;
+
+    const rootY=
+      JOCKEY_DEFS[0].translation[1]+
+      suspension*
+      .48-
+      compression*
+      .22+
+      rise;
 
     setLocal(
       locals,
@@ -3630,17 +4345,16 @@
       0,
       {
         translation:[
-          JOCKEY_DEFS[0].translation[0],
-          JOCKEY_DEFS[0].translation[1]+
-            suspension*
-            .65+
-            rise,
+          rootX,
+          rootY,
           0
         ],
         rotation:[
           0,
           0,
-          -crouch
+          -crouch+
+            horsePitch*
+            .30
         ]
       }
     );
@@ -3653,11 +4367,13 @@
         rotation:[
           0,
           0,
-          -.10-
+          -.055-
             speedFactor*
-            .16-
+            .075-
             rise*
-            .35
+            .28+
+            compression*
+            .18
         ]
       }
     );
@@ -3670,68 +4386,85 @@
         rotation:[
           0,
           0,
-          .16+
+          .20+
             speedFactor*
-            .10
+            .075-
+            horsePitch*
+            .34-
+            stridePulse*
+            .012
         ]
       }
     );
 
-    const armReach=
-      .94+
+    /*
+      Hands are solved to compact targets above the withers. This
+      keeps the elbows bent and prevents the reins from projecting
+      backwards as rigid rods.
+    */
+    const handForward=
+      1.03+
       speedFactor*
-      .14;
+      .17+
+      stridePulse*
+      .022*
+      motionBias;
 
-    [
-      3,
-      5
-    ].forEach(
-      (
-        upper,
-        index
-      )=>{
-        setLocal(
-          locals,
-          JOCKEY_DEFS,
-          upper,
-          {
-            rotation:[
-              0,
-              0,
-              -1.00-
-                speedFactor*
-                .10+
-                (
-                  index===0
-                    ?.012
-                    :-.012
-                )
-            ]
-          }
-        );
+    const handHeight=
+      1.17+
+      suspension*
+      .34-
+      compression*
+      .18+
+      stridePulse*
+      .012;
+
+    const handSpread=
+      lerp(
+        .19,
+        .15,
+        speedFactor
+      );
+
+    const globalsBefore=
+      globalsFromLocals(
+        JOCKEY_DEFS,
+        locals
+      );
+
+    solveJockeyArmIK(
+      locals,
+      globalsBefore,
+      {
+        upper:3,
+        lower:4,
+        target:[
+          handForward,
+          handHeight,
+          handSpread
+        ]
       }
     );
 
-    [
-      4,
-      6
-    ].forEach(lower=>{
-      setLocal(
-        locals,
-        JOCKEY_DEFS,
-        lower,
-        {
-          rotation:[
-            0,
-            0,
-            .48+
-              armReach*
-              .10
-          ]
-        }
-      );
-    });
+    solveJockeyArmIK(
+      locals,
+      globalsBefore,
+      {
+        upper:5,
+        lower:6,
+        target:[
+          handForward+.012,
+          handHeight+.008,
+          -handSpread
+        ]
+      }
+    );
 
+    /*
+      The lower legs remain tucked into short racing stirrups.
+      Small opposing pulses keep the rider alive without making
+      the legs swing independently of the saddle.
+    */
     [
       7,
       9
@@ -3740,6 +4473,18 @@
         thigh,
         index
       )=>{
+        const sidePulse=
+          running
+            ?Math.sin(
+                phase+
+                index*
+                PI+
+                .55
+              )*
+              .018*
+              speedFactor
+            :0;
+
         setLocal(
           locals,
           JOCKEY_DEFS,
@@ -3748,14 +4493,10 @@
             rotation:[
               0,
               0,
-              .62+
+              .77+
                 speedFactor*
-                .08+
-                (
-                  index===0
-                    ?.015
-                    :-.015
-                )
+                .075+
+                sidePulse
             ]
           }
         );
@@ -3765,22 +4506,40 @@
     [
       8,
       10
-    ].forEach(shin=>{
-      setLocal(
-        locals,
-        JOCKEY_DEFS,
+    ].forEach(
+      (
         shin,
-        {
-          rotation:[
-            0,
-            0,
-            -1.18-
-              speedFactor*
-              .08
-          ]
-        }
-      );
-    });
+        index
+      )=>{
+        const sidePulse=
+          running
+            ?Math.sin(
+                phase+
+                index*
+                PI+
+                .55
+              )*
+              .022*
+              speedFactor
+            :0;
+
+        setLocal(
+          locals,
+          JOCKEY_DEFS,
+          shin,
+          {
+            rotation:[
+              0,
+              0,
+              -1.40-
+                speedFactor*
+                .065-
+                sidePulse
+            ]
+          }
+        );
+      }
+    );
 
     const skin=
       createSkinMatrices(
@@ -3795,18 +4554,30 @@
     const rightFore=
       skin.globals[6];
 
+    const leftShin=
+      skin.globals[8];
+
+    const rightShin=
+      skin.globals[10];
+
     return{
       bones:
         skin.flattened,
       globals:
         skin.globals,
+      posture:{
+        crouch,
+        rise,
+        handForward,
+        handHeight
+      },
       anchors:{
         leftHand:
           transformPoint(
             leftFore,
             [
               0,
-              -.54,
+              -.42,
               0
             ]
           ),
@@ -3815,7 +4586,25 @@
             rightFore,
             [
               0,
-              -.54,
+              -.42,
+              0
+            ]
+          ),
+        leftFoot:
+          transformPoint(
+            leftShin,
+            [
+              0,
+              -.38,
+              0
+            ]
+          ),
+        rightFoot:
+          transformPoint(
+            rightShin,
+            [
+              0,
+              -.38,
               0
             ]
           ),
@@ -3824,7 +4613,16 @@
             skin.globals[2],
             [
               0,
-              .32,
+              .30,
+              0
+            ]
+          ),
+        seat:
+          transformPoint(
+            skin.globals[0],
+            [
+              0,
+              0,
               0
             ]
           )
@@ -3833,7 +4631,7 @@
   }
 
   global.RaceMarketHorseRig={
-    version:"3.0.0",
+    version:"3.1.0",
     HORSE_BONE_COUNT,
     JOCKEY_BONE_COUNT,
     HORSE_MODEL_HEIGHT,
