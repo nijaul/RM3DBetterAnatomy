@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0e13">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <title>RaceMarket — Live Horse Exchange</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="brand-row">
+          <div class="brand-mark">♞</div>
+          <div>
+            <div class="brand">RaceMarket</div>
+            <div class="subtitle">Live Horse Exchange • Virtual Paddock • Paper Trading</div>
+          </div>
+        </div>
+      </div>
+      <div class="wallet">
+        <div class="wallet-label">PAPER BALANCE</div>
+        <div id="cash" class="wallet-value">$10,000.00</div>
+      </div>
+    </header>
+
+    <section class="race-head card">
+      <div class="track-line">
+        <div>
+          <div id="trackName" class="eyebrow">CHURCHILL DOWNS</div>
+          <h1 id="raceNumber">Race 6</h1>
+        </div>
+        <div id="raceStatus" class="status-badge">OPENS IN 00:30</div>
+      </div>
+
+      <div class="race-meta">
+        <span id="raceDistance">🏇 1 Mile</span>
+        <span>•</span>
+        <span id="surface">Dirt</span>
+        <span>•</span>
+        <span id="raceType">Stakes</span>
+        <span>•</span>
+        <span id="horseCount">8 Horses</span>
+        <span>•</span>
+        <span id="raceStyle">Strong Favorite</span>
+      </div>
+
+      <div class="race-time-strip">
+        <div>
+          <div id="raceTimeLabel" class="race-time-label">MARKET OPENS IN</div>
+          <div id="raceClock" class="race-time-value">00:30</div>
+        </div>
+        <div id="raceTimeSubtext" class="race-time-subtext">
+          COUNTDOWN TO MARKET OPEN
+        </div>
+      </div>
+
+
+    </section>
+
+    <section class="card race-card">
+      <div class="section-title-row compact">
+        <div>
+          <div class="eyebrow">VIRTUAL RACE CARD</div>
+          <h2>Today's field</h2>
+        </div>
+        <button id="restartBtn" class="ghost-btn">New race</button>
+      </div>
+
+      <div class="race-card-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>PP</th>
+              <th>HORSE</th>
+              <th>ML</th>
+              <th>RATING</th>
+              <th>PROFILE</th>
+            </tr>
+          </thead>
+          <tbody id="raceCardBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card visual-track-card">
+      <div class="section-title-row compact">
+        <div>
+          <div class="eyebrow">RACE VISUALIZER</div>
+          <h2>Watch the field</h2>
+        </div>
+        <div id="visualTrackStatus" class="profile-badge">PREFLIGHT</div>
+      </div>
+
+      <div id="visualTrack" class="visual-track perspective-3d" aria-label="Three-dimensional racecourse visualization">
+        <canvas
+          id="race3dCanvas"
+          class="race3d-canvas"
+          tabindex="0"
+          role="application"
+          aria-label="Interactive WebGL 3D racecourse. Use the arrow keys to select a runner and Enter to follow."
+        ></canvas>
+        <canvas
+          id="race3dOverlay"
+          class="race3d-overlay"
+          aria-hidden="true"
+        ></canvas>
+        <div
+          id="race3dFallback"
+          class="race3d-fallback"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+        <div class="track-skyline" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+          <i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="track-rail track-rail-top" aria-hidden="true"></div>
+        <div class="track-rail track-rail-bottom" aria-hidden="true"></div>
+        <div class="track-start-gate" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><b></b>
+        </div>
+        <div class="track-lane-lines"></div>
+        <div class="track-speed-lines" aria-hidden="true"></div>
+        <div id="visualRunnerLayer"></div>
+        <div class="finish-zone" aria-hidden="true">
+          <div class="finish-line"></div>
+          <div class="finish-glow"></div>
+        </div>
+        <div class="track-vignette" aria-hidden="true"></div>
+
+        <nav
+          id="broadcastCameraControls"
+          class="broadcast-camera-controls"
+          aria-label="Broadcast camera controls"
+        >
+          <span id="cameraShotLabel" class="camera-shot-label">AUTO • WIDE</span>
+          <div class="camera-mode-buttons">
+            <button type="button" class="camera-mode active" data-camera-mode="auto" aria-pressed="true">AUTO</button>
+            <button type="button" class="camera-mode" data-camera-mode="wide" aria-pressed="false">WIDE</button>
+            <button type="button" class="camera-mode" data-camera-mode="leader" aria-pressed="false">LEADER</button>
+            <button type="button" class="camera-mode" data-camera-mode="selected" aria-pressed="false">RUNNER</button>
+            <button type="button" class="camera-mode" data-camera-mode="finish" aria-pressed="false">FINISH</button>
+            <button type="button" class="camera-mode" data-camera-mode="topdown" aria-pressed="false">TOP</button>
+            <button type="button" class="camera-mode" data-camera-mode="free" aria-pressed="false">FREE</button>
+          </div>
+          <button
+            id="broadcastSoundToggle"
+            type="button"
+            class="broadcast-sound-toggle"
+            aria-pressed="false"
+            aria-label="Enable race sound"
+          >
+            <span aria-hidden="true">🔇</span>
+            <b>SOUND</b>
+          </button>
+          <div id="freeCameraHint" class="free-camera-hint" hidden>
+            DRAG • ORBIT &nbsp; WHEEL • ZOOM
+          </div>
+        </nav>
+
+        <nav
+          id="raceRenderControls"
+          class="race-render-controls"
+          aria-label="Race rendering mode"
+        >
+          <span
+            id="race3dStatus"
+            class="race3d-status"
+            data-state="webgl"
+          >WEBGL 3D</span>
+          <div class="race-render-buttons">
+            <button
+              type="button"
+              class="active"
+              data-render-mode="webgl"
+              aria-pressed="true"
+            >3D</button>
+            <button
+              type="button"
+              data-render-mode="classic"
+              aria-pressed="false"
+            >CLASSIC</button>
+          </div>
+          <button
+            id="race3dQuality"
+            type="button"
+            class="race3d-quality"
+            data-quality="auto"
+            aria-label="Rendering quality auto. Activate to change quality."
+          >QUALITY • AUTO</button>
+        </nav>
+
+
+        <aside
+          id="runnerHud"
+          class="runner-hud is-open"
+          aria-label="Tracked runner telemetry"
+          aria-hidden="false"
+        >
+          <div class="runner-hud-head">
+            <div>
+              <span>TRACKED RUNNER</span>
+              <strong id="runnerHudName">Loading field…</strong>
+            </div>
+            <button id="runnerHudClose" type="button" aria-label="Hide tracked runner telemetry">×</button>
+          </div>
+          <div class="runner-hud-grid">
+            <div><span>POS</span><strong id="runnerHudPosition">—</strong></div>
+            <div><span>GAP</span><strong id="runnerHudGap">—</strong></div>
+            <div><span>SPEED</span><strong id="runnerHudSpeed">—</strong></div>
+            <div><span>ENERGY</span><strong id="runnerHudEnergy">—</strong></div>
+            <div><span>PRICE</span><strong id="runnerHudPrice">—</strong></div>
+            <div><span>ABILITY</span><strong id="runnerHudAbility">—</strong></div>
+          </div>
+          <button id="runnerHudFollow" type="button" class="runner-hud-follow">FOLLOW RUNNER</button>
+        </aside>
+
+        <div
+          id="broadcastCaption"
+          class="broadcast-caption"
+          data-type="preflight"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <span id="broadcastCaptionKicker">RACE CALL</span>
+          <strong id="broadcastCaptionText">Broadcast ready.</strong>
+        </div>
+
+        <div
+          id="broadcastEventFeed"
+          class="broadcast-event-feed"
+          aria-label="Recent race calls"
+          aria-hidden="true"
+        ></div>
+      </div>
+    </section>
+
+    <section class="card live-race-card">
+      <div class="section-title-row compact">
+        <div>
+          <div class="eyebrow">LIVE RACE STATE</div>
+          <h2>On the track</h2>
+        </div>
+        <div id="liveRaceSummary" class="profile-badge">WAITING FOR START</div>
+      </div>
+      <div id="liveRaceState" class="live-race-state empty">
+        The live race board will populate when the gates open.
+      </div>
+    </section>
+
+    <section class="card paddock-card">
+      <div class="section-title-row compact">
+        <div>
+          <div class="eyebrow">VIRTUAL PADDOCK</div>
+          <h2 id="profileTitle">Select a runner</h2>
+        </div>
+        <div id="profileBadge" class="profile-badge">RUNNER PROFILE</div>
+      </div>
+
+      <div id="horseProfile" class="horse-profile empty">
+        Select a horse from the race card to view its simulated profile.
+      </div>
+    </section>
+
+    <section class="market-section">
+      <div class="section-title-row">
+        <div>
+          <div class="eyebrow">WINNER MARKET</div>
+          <h2>Trade the field</h2>
+        </div>
+        <div id="marketPill" class="market-pill">
+          <span class="market-dot"></span>
+          <span id="marketPillText">PRICES LIVE</span>
+        </div>
+      </div>
+      <div id="marketClosedBanner" class="market-closed-banner hidden">
+        <div class="market-closed-icon">🏁</div>
+        <div>
+          <strong>WINNER MARKET CLOSED</strong>
+          <span id="marketClosedText">The winner market has been settled.</span>
+        </div>
+      </div>
+      <div id="horseList" class="horse-list"></div>
+    </section>
+
+    <section class="card chart-card">
+      <div class="section-title-row compact">
+        <div>
+          <div class="eyebrow">PRICE MOVEMENT</div>
+          <h2 id="selectedHorseTitle">Select a runner</h2>
+        </div>
+        <div id="selectedPrice" class="big-price">$0.00</div>
+      </div>
+      <canvas id="chart" width="900" height="300"></canvas>
+    </section>
+
+    <section class="grid-two">
+      <section class="card">
+        <div class="section-title-row compact">
+          <div>
+            <div class="eyebrow">ORDER BOOK</div>
+            <h2 id="bookTitle">Select a runner</h2>
+          </div>
+          <button id="flipSide" class="ghost-btn">Buy</button>
+        </div>
+
+        <div class="order-book-summary" aria-live="polite">
+          <div>
+            <span>BEST BID</span>
+            <strong id="bestBidPrice">—</strong>
+          </div>
+          <div>
+            <span>SPREAD</span>
+            <strong id="orderBookSpread">—</strong>
+          </div>
+          <div>
+            <span>BEST ASK</span>
+            <strong id="bestAskPrice">—</strong>
+          </div>
+        </div>
+
+        <div class="book-grid enhanced-book-grid">
+          <div>
+            <div class="book-head"><span>SELL / ASK</span><span>QTY</span></div>
+            <div id="asks" class="depth-ladder" aria-label="Ask depth"></div>
+          </div>
+          <div>
+            <div class="book-head"><span>BUY / BID</span><span>QTY</span></div>
+            <div id="bids" class="depth-ladder" aria-label="Bid depth"></div>
+          </div>
+        </div>
+
+        <p class="book-help">Select a price level to prefill a limit order.</p>
+      </section>
+
+      <section class="card order-card enhanced-order-card">
+        <div class="eyebrow">TRADE TICKET</div>
+        <h2 id="ticketTitle">Select a runner</h2>
+
+        <div class="trade-tabs">
+          <button id="buyTab" class="trade-tab active" type="button">BUY YES</button>
+          <button id="sellTab" class="trade-tab" type="button">SELL YES</button>
+        </div>
+
+        <div class="order-type-tabs" aria-label="Order type">
+          <button id="marketOrderTab" class="order-type-tab active" type="button" aria-pressed="true">
+            MARKET
+            <small>Best available</small>
+          </button>
+          <button id="limitOrderTab" class="order-type-tab" type="button" aria-pressed="false">
+            LIMIT
+            <small>Set your price</small>
+          </button>
+        </div>
+
+        <div id="limitPriceField" class="trade-field is-market">
+          <div class="field-label-row">
+            <label for="priceInput">
+              <span id="orderPriceTitle">Estimated price</span>
+              <span id="priceLabel">(BEST AVAILABLE)</span>
+            </label>
+          </div>
+
+          <div class="price-entry-row">
+            <span class="currency-prefix">$</span>
+            <input
+              id="priceInput"
+              type="number"
+              min="0.01"
+              max="0.99"
+              step="0.01"
+              value="0.30"
+              inputmode="decimal"
+              aria-describedby="priceLabel"
+            >
+          </div>
+
+          <div class="price-shortcuts" aria-label="Price shortcuts">
+            <button type="button" data-price-source="bid">JOIN BID</button>
+            <button type="button" data-price-source="mid">MID</button>
+            <button type="button" data-price-source="ask">JOIN ASK</button>
+          </div>
+        </div>
+
+        <div class="trade-field">
+          <label for="qtyInput">Contracts</label>
+          <input id="qtyInput" type="number" min="1" max="1000" step="1" value="25" inputmode="numeric">
+
+          <div class="quantity-shortcuts" aria-label="Contract quantity shortcuts">
+            <button type="button" data-qty="10">10</button>
+            <button type="button" data-qty="25">25</button>
+            <button type="button" data-qty="50">50</button>
+            <button type="button" data-qty="100">100</button>
+            <button type="button" data-qty="max">MAX</button>
+          </div>
+        </div>
+
+        <div id="timeInForceControls" class="time-in-force-controls" aria-label="Time in force">
+          <span>TIME IN FORCE</span>
+          <div>
+            <button id="tifGtc" class="tif-button active" type="button" aria-pressed="true">GTC</button>
+            <button id="tifIoc" class="tif-button" type="button" aria-pressed="false">IOC</button>
+          </div>
+        </div>
+
+        <div class="ticket-summary enhanced-ticket-summary">
+          <div><span>EST. NOTIONAL</span><strong id="notional">$7.50</strong></div>
+          <div><span>PAYOUT AT $1</span><strong id="payout">$25.00</strong></div>
+          <div><span>MAX PROFIT</span><strong id="maxProfit">$17.50</strong></div>
+          <div><span>MAX LOSS</span><strong id="maxLoss">$7.50</strong></div>
+          <div><span>AVAILABLE</span><strong id="availableToTrade">$10,000.00</strong></div>
+          <div><span>EST. FILL</span><strong id="estimatedFill">—</strong></div>
+        </div>
+
+        <button id="placeBtn" class="primary-btn" type="button">PLACE BUY YES MARKET ORDER</button>
+
+        <div id="tradeMsg" class="trade-msg" role="status" aria-live="polite">
+          Market orders fill against available depth. Limit orders can rest until the race closes.
+        </div>
+
+        <div class="ticket-shortcuts">
+          <span>Shortcuts</span>
+          <kbd>Shift+B</kbd> Buy
+          <kbd>Shift+S</kbd> Sell
+          <kbd>Shift+M</kbd> Market
+          <kbd>Shift+L</kbd> Limit
+          <kbd>Ctrl/⌘+Enter</kbd> Submit
+        </div>
+      </section>
+    </section>
+
+    <section class="card trading-account-card" aria-labelledby="accountSummaryTitle">
+      <div class="section-title-row compact">
+        <div>
+          <div class="eyebrow">TRADING ACCOUNT</div>
+          <h2 id="accountSummaryTitle">Session summary</h2>
+        </div>
+        <div id="accountEquityChange" class="portfolio-pnl neutral">$0.00</div>
+      </div>
+
+      <div class="trading-account-grid">
+        <div><span>ACCOUNT EQUITY</span><strong id="accountEquity">$10,000.00</strong></div>
+        <div><span>AVAILABLE CASH</span><strong id="availableCash">$10,000.00</strong></div>
+        <div><span>RESERVED CASH</span><strong id="reservedCash">$0.00</strong></div>
+        <div><span>MARKET VALUE</span><strong id="positionMarketValue">$0.00</strong></div>
+        <div><span>UNREALIZED P/L</span><strong id="unrealizedPnl">$0.00</strong></div>
+        <div><span>REALIZED P/L</span><strong id="realizedPnl">$0.00</strong></div>
+      </div>
+    </section>
+
+    <section class="trading-activity-grid">
+      <section class="card open-orders-card">
+        <div class="section-title-row compact">
+          <div>
+            <div class="eyebrow">ORDER MANAGEMENT</div>
+            <h2>Open orders <span id="openOrderCount" class="inline-count">0</span></h2>
+          </div>
+          <button id="cancelAllOrdersBtn" class="ghost-btn" type="button" disabled>Cancel all</button>
+        </div>
+        <div id="openOrders" class="open-orders-list empty">No open orders.</div>
+      </section>
+
+      <section class="card trade-tape-card">
+        <div class="section-title-row compact">
+          <div>
+            <div class="eyebrow">ACTIVITY</div>
+            <h2>Your trade tape</h2>
+          </div>
+          <div id="sessionFillCount" class="profile-badge">0 FILLS</div>
+        </div>
+        <div id="tradeTape" class="trade-tape empty">Fills and settlements will appear here.</div>
+      </section>
+    </section>
+
+    <section id="resultsCard" class="card results-card hidden">
+      <div class="section-title-row compact">
+        <div>
+          <div class="eyebrow">OFFICIAL RESULTS</div>
+          <h2>Race 6 Results</h2>
+        </div>
+        <div id="resultWinnerBadge" class="profile-badge">FINISHED</div>
+      </div>
+
+      <div id="resultsSummary" class="results-summary"></div>
+
+      <div class="results-table-wrap">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>POS</th>
+              <th>PP</th>
+              <th>HORSE</th>
+              <th>TIME</th>
+              <th>MARGIN</th>
+              <th>RESULT</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card positions-card">
+      <div class="section-title-row compact">
+        <div>
+          <div class="eyebrow">YOUR POSITIONS</div>
+          <h2>Portfolio</h2>
+        </div>
+        <div class="positions-head-actions">
+          <div id="portfolioPnl" class="portfolio-pnl">$0.00</div>
+          <button id="closeAllPositionsBtn" class="ghost-btn" type="button" disabled>Close all</button>
+        </div>
+      </div>
+      <div id="positions"></div>
+    </section>
+
+    <footer class="footer">
+      Paper-trading prototype • Simulated race data • Historical data fields are simulation-only
+    </footer>
+  </main>
+
+  <script src="race3d.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js");
+    }
+  </script>
+</body>
+</html>

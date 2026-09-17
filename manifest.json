@@ -1,0 +1,9 @@
+{
+  "name": "RaceMarket — Live Horse Exchange",
+  "short_name": "RaceMarket",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#08100c",
+  "theme_color": "#16351d",
+  "description": "Interactive WebGL 3D virtual horse racing prediction market with broadcast cameras and paper trading."
+}

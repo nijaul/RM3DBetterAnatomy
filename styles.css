@@ -1,0 +1,7810 @@
+:root{
+  --bg:#0b0e13;--card:#121720;--card2:#171d28;--line:#26303d;--text:#f5f7fa;
+  --muted:#8e99a8;--accent:#7ee787;--danger:#ff7b72;--blue:#7aa2ff;--amber:#f2cc60;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif}
+body{padding:max(14px,env(safe-area-inset-top)) 14px max(24px,env(safe-area-inset-bottom))}
+button,input{font:inherit}
+.app-shell{max-width:1100px;margin:0 auto}
+.topbar{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding:8px 2px 18px}
+.brand{font-size:22px;font-weight:800;letter-spacing:-.02em}.subtitle{font-size:12px;color:var(--muted);margin-top:3px}
+.wallet{text-align:right}.wallet-label{font-size:10px;color:var(--muted);letter-spacing:.08em}.wallet-value{font-size:19px;font-weight:800;margin-top:2px}
+.card{background:linear-gradient(180deg,var(--card),#10151d);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 10px 35px rgba(0,0,0,.15)}
+.race-head{margin-bottom:14px}.track-line{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.eyebrow{font-size:10px;letter-spacing:.09em;color:var(--muted);font-weight:800}
+h1,h2{margin:3px 0 0;letter-spacing:-.03em}h1{font-size:30px}h2{font-size:18px}
+.status-badge{border:1px solid var(--line);background:#0d1219;border-radius:999px;padding:8px 10px;font-size:11px;font-weight:800;white-space:nowrap}
+.race-meta{display:flex;gap:8px;color:var(--muted);font-size:12px;margin:8px 0 14px;flex-wrap:wrap}
+.video-placeholder{height:170px;border-radius:14px;border:1px dashed #3a4556;background:radial-gradient(circle at center,#1c2532,#0e131b);display:flex;align-items:center;justify-content:center;gap:12px;position:relative}
+.video-icon{font-size:34px}.muted{font-size:12px;color:var(--muted);margin-top:2px}.video-live{position:absolute;right:10px;top:10px;font-size:9px;color:var(--accent);border:1px solid #2b5032;padding:5px 6px;border-radius:6px}
+.section-title-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 2px 10px}.compact{margin-bottom:12px}
+.ghost-btn{border:1px solid var(--line);background:transparent;color:var(--muted);padding:8px 10px;border-radius:10px;font-weight:700;font-size:12px}
+.race-card{margin-bottom:14px}
+.race-card-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th{font-size:10px;color:var(--muted);text-align:left;letter-spacing:.07em;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:11px 10px;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px}
+tbody tr{cursor:pointer}.runner-row.selected{background:rgba(122,162,255,.06)}
+.post-pill{display:inline-flex;width:28px;height:28px;align-items:center;justify-content:center;border-radius:8px;background:var(--card2);font-weight:900}
+.horse-cell{font-weight:800}.horse-cell small{display:block;color:var(--muted);font-weight:500;margin-top:2px}
+.ml{font-weight:800}.rating{font-variant-numeric:tabular-nums}.style-chip{font-size:10px;color:var(--muted)}
+.paddock-card{margin-bottom:14px}
+.profile-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}
+.profile-main{background:var(--card2);border-radius:14px;padding:14px}
+.profile-name{font-size:23px;font-weight:900;letter-spacing:-.03em}.profile-tag{color:var(--muted);font-size:11px;margin-top:4px}
+.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.stat{background:#10151d;border:1px solid var(--line);border-radius:10px;padding:9px}.stat span{display:block;color:var(--muted);font-size:9px}.stat strong{display:block;margin-top:3px}
+.profile-side{background:#10151d;border:1px solid var(--line);border-radius:14px;padding:14px}.profile-side h3{margin:0 0 9px;font-size:13px}.profile-list{display:grid;gap:8px}.profile-list div{display:flex;justify-content:space-between;gap:10px;font-size:11px}.profile-list span{color:var(--muted)}
+.profile-badge{border:1px solid var(--line);color:var(--muted);font-size:9px;padding:6px 8px;border-radius:999px;letter-spacing:.07em}
+.empty{color:var(--muted);font-size:12px;padding:6px 0}
+.horse-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.horse-card{border:1px solid var(--line);background:var(--card);border-radius:15px;padding:11px;cursor:pointer;transition:.15s}
+.horse-card.selected{border-color:#5a6f90;transform:translateY(-1px)}
+.horse-row{display:flex;align-items:center;justify-content:space-between;gap:8px}.horse-id{width:30px;height:30px;border-radius:9px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-weight:900}
+.horse-name{font-weight:800;font-size:14px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.price{font-size:18px;font-weight:900}.move{font-size:11px;font-weight:800}.up{color:var(--accent)}.down{color:var(--danger)}.neutral{color:var(--muted)}
+.bar{height:4px;background:#202a36;border-radius:99px;overflow:hidden;margin-top:9px}.bar>span{display:block;height:100%;background:var(--blue);border-radius:99px}
+.subline{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin-top:6px}
+.chart-card{margin-top:14px}.big-price{font-size:25px;font-weight:900}.chart-card canvas{width:100%;height:160px;display:block}
+.grid-two{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-top:14px}
+.book-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.book-head{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin-bottom:6px}
+.book-line{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}.book-line strong{font-weight:800}.ask{color:#ff9b95}.bid{color:#95e5a0}
+.trade-tabs{display:flex;gap:6px;margin:12px 0}.trade-tab{flex:1;border:1px solid var(--line);background:transparent;color:var(--muted);padding:9px;border-radius:9px;font-size:11px;font-weight:900}
+.trade-tab.active{background:var(--card2);color:var(--text);border-color:#51627b}
+label{display:block;color:var(--muted);font-size:11px;margin:10px 0 6px}
+input{width:100%;background:#0d1218;border:1px solid var(--line);border-radius:10px;color:var(--text);padding:11px;outline:none}input:focus{border-color:#526b8f}
+.ticket-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.ticket-summary>div{background:var(--card2);border-radius:10px;padding:9px}
+.ticket-summary span{display:block;font-size:10px;color:var(--muted)}.ticket-summary strong{display:block;margin-top:3px}
+.primary-btn{width:100%;padding:12px;border:0;border-radius:11px;background:var(--accent);color:#09110b;font-weight:900}
+.trade-msg{color:var(--muted);font-size:10px;line-height:1.35;margin-top:8px}
+.positions-card{margin-top:14px}.position-row{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.position-row:last-child{border-bottom:0}.position-meta{font-size:12px;font-weight:800}.position-meta span{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.pos-val{text-align:right}.pos-val small,.pos-extra small{display:block;color:var(--muted);font-size:10px}.portfolio-pnl{font-weight:900}
+.footer{color:#667080;font-size:10px;text-align:center;padding:18px 0 4px}
+@media(max-width:760px){
+  .horse-list{grid-template-columns:1fr}.profile-grid{grid-template-columns:1fr}.profile-stats{grid-template-columns:repeat(2,1fr)}
+  .grid-two{grid-template-columns:1fr}.video-placeholder{height:145px}.position-row{grid-template-columns:1fr auto}.position-row .pos-extra{display:none}
+}
+@media(min-width:761px){.video-placeholder{height:250px}}
+
+
+.live-race-card{margin-bottom:14px}
+.live-race-state{display:grid;gap:6px}
+.live-row{
+  display:grid;
+  grid-template-columns:34px 1fr 62px 70px 75px;
+  gap:10px;
+  align-items:center;
+  padding:10px;
+  background:var(--card2);
+  border:1px solid rgba(255,255,255,.04);
+  border-radius:11px;
+}
+.live-rank{
+  width:28px;height:28px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  background:#0d1219;font-weight:900;
+}
+.live-horse strong{display:block;font-size:12px}
+.live-horse span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.live-stat small{display:block;color:var(--muted);font-size:8px}
+.live-stat strong{display:block;margin-top:2px;font-size:11px}
+.live-gap{text-align:right;font-size:10px;font-weight:900}
+@media(max-width:760px){
+  .live-row{grid-template-columns:30px 1fr 54px 54px 62px;gap:7px;padding:9px}
+  .live-horse strong{font-size:11px}
+  .live-horse span{font-size:9px}
+  .live-stat strong{font-size:10px}
+  .live-gap{font-size:9px}
+}
+
+
+.race-time-strip{
+  margin-top:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#0d1219;
+}
+.race-time-label{
+  color:var(--muted);
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.09em;
+}
+.race-time-value{
+  margin-top:2px;
+  font-size:30px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:-.04em;
+  font-variant-numeric:tabular-nums;
+}
+.race-time-subtext{
+  color:var(--muted);
+  font-size:10px;
+  text-align:right;
+  font-weight:800;
+  letter-spacing:.05em;
+}
+@media(max-width:760px){
+  .race-time-value{font-size:27px}
+  .race-time-subtext{max-width:130px;line-height:1.25}
+}
+
+.live-row{
+  transition:transform .18s ease, background .18s ease;
+}
+.position-shift{
+  font-size:9px;
+  font-weight:900;
+  margin-left:5px;
+}
+.shift-up{color:var(--accent)}
+.shift-down{color:var(--danger)}
+
+.visual-track-card{margin-bottom:14px}
+.visual-track{
+  position:relative;
+  min-height:330px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  overflow:hidden;
+  background:
+    linear-gradient(180deg,#152019 0%,#102017 56%,#0d1712 100%);
+}
+.track-lane-lines{
+  position:absolute;
+  inset:0;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 58px,
+      rgba(255,255,255,.07) 59px,
+      rgba(255,255,255,.07) 60px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.04),
+      transparent 20%,
+      transparent 80%,
+      rgba(255,255,255,.04)
+    );
+  pointer-events:none;
+}
+.track-lane{
+  position:absolute;
+  left:12px;
+  right:12px;
+  height:48px;
+  transform:translateY(-50%);
+}
+.runner-visual{
+  position:absolute;
+  width:118px;
+  height:42px;
+  transform:translate(0,-50%);
+  transition:left .65s cubic-bezier(.2,.8,.2,1), top .35s ease;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  pointer-events:none;
+}
+.horse-art{
+  width:72px;
+  height:38px;
+  flex:0 0 auto;
+  position:relative;
+  filter:drop-shadow(0 6px 5px rgba(0,0,0,.28));
+}
+.horse-art .body{
+  position:absolute;left:21px;top:14px;width:32px;height:16px;border-radius:55% 45% 50% 45%;
+  background:var(--horse-body,#4a3a2c);
+}
+.horse-art .neck{
+  position:absolute;left:44px;top:7px;width:9px;height:17px;border-radius:8px 8px 2px 6px;
+  background:var(--horse-body,#4a3a2c);transform:rotate(25deg);
+}
+.horse-art .head{
+  position:absolute;left:51px;top:4px;width:13px;height:11px;border-radius:50% 45% 45% 35%;
+  background:var(--horse-body,#4a3a2c);transform:rotate(10deg);
+}
+.horse-art .ear{
+  position:absolute;left:57px;top:1px;width:4px;height:7px;border-radius:3px 3px 0 0;background:var(--horse-body,#4a3a2c);transform:rotate(15deg);
+}
+.horse-art .leg{
+  position:absolute;top:26px;width:4px;height:13px;border-radius:3px;background:var(--horse-body,#4a3a2c);
+}
+.horse-art .leg.l1{left:27px;transform:rotate(8deg)}
+.horse-art .leg.l2{left:39px;transform:rotate(-8deg)}
+.horse-art .leg.l3{left:47px;transform:rotate(10deg)}
+.horse-art .tail{
+  position:absolute;left:15px;top:13px;width:13px;height:5px;border-radius:5px;background:var(--horse-body,#4a3a2c);transform:rotate(-25deg);
+}
+.horse-art .silks{
+  position:absolute;left:26px;top:15px;width:23px;height:12px;border-radius:6px;background:var(--silk,#7aa2ff);
+  box-shadow:inset 0 -5px rgba(255,255,255,.16);
+}
+.horse-art .jockey{
+  position:absolute;left:30px;top:6px;width:10px;height:10px;border-radius:50%;background:#dadfe7;
+}
+.runner-label{
+  min-width:42px;
+  padding:4px 6px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(5,10,8,.72);
+  border-radius:8px;
+  backdrop-filter:blur(3px);
+}
+.runner-label strong{display:block;font-size:9px;white-space:nowrap}
+.runner-label span{display:block;font-size:8px;color:var(--muted)}
+.finish-line{
+  position:absolute;
+  right:18px;
+  top:0;
+  bottom:0;
+  width:10px;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #f5f7fa 0,
+      #f5f7fa 12px,
+      #121720 12px,
+      #121720 24px
+    );
+  opacity:.85;
+}
+.runner-visual.leading .runner-label{border-color:#7ee787}
+.runner-visual.selected-runner .runner-label{box-shadow:0 0 0 1px rgba(122,162,255,.6)}
+@media(max-width:760px){
+  .visual-track{min-height:390px}
+  .runner-visual{width:108px}
+  .runner-label strong{font-size:8px}
+}
+
+/* V4.4 horizontal race track */
+.visual-track{
+  min-height:380px;
+  background:
+    linear-gradient(180deg,#172119 0%,#122117 100%);
+}
+.visual-track::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  height:36px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.08),
+      transparent 20%,
+      transparent 80%,
+      rgba(255,255,255,.08)
+    );
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.visual-track::after{
+  content:"START";
+  position:absolute;
+  left:14px;
+  bottom:10px;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.10em;
+  color:rgba(255,255,255,.32);
+}
+.track-lane-lines{
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 45px,
+      rgba(255,255,255,.055) 46px,
+      rgba(255,255,255,.055) 47px
+    ),
+    repeating-linear-gradient(
+      to right,
+      rgba(255,255,255,.02) 0,
+      rgba(255,255,255,.02) 1px,
+      transparent 1px,
+      transparent 80px
+    );
+}
+.runner-visual{
+  left:0;
+  width:118px;
+  height:44px;
+  transform:translate(-59px,-50%);
+  transition:
+    left .65s cubic-bezier(.2,.8,.2,1),
+    top .25s ease;
+}
+.runner-visual .horse-art{
+  transform:scaleX(-1);
+}
+.finish-line{
+  right:18px;
+  width:12px;
+}
+.finish-line::before{
+  content:"FINISH";
+  position:absolute;
+  top:-18px;
+  left:-12px;
+  color:rgba(255,255,255,.62);
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.08em;
+  white-space:nowrap;
+}
+@media(max-width:760px){
+  .visual-track{min-height:390px}
+  .runner-visual{width:108px}
+}
+
+/* V4.5: more realistic horizontal race animation */
+.visual-track{
+  background:
+    linear-gradient(180deg,#172119 0%,#122117 52%,#0f1b13 100%);
+}
+.runner-visual{
+  transition:
+    left .9s linear,
+    top .25s ease;
+}
+.runner-visual .horse-art{
+  transform:scaleX(-1);
+}
+
+/* V4.6: visual lanes now follow the live race ranking */
+.runner-visual{
+  transition:
+    left .9s linear,
+    top .55s cubic-bezier(.2,.8,.2,1);
+}
+.runner-visual.leading .runner-label{
+  border-color:var(--accent);
+  box-shadow:0 0 0 1px rgba(126,231,135,.18);
+}
+.runner-visual.passing .runner-label{
+  border-color:#7aa2ff;
+  box-shadow:0 0 0 1px rgba(122,162,255,.18);
+}
+.runner-label .position-change{
+  font-weight:950;
+  margin-left:2px;
+}
+
+/* V4.7: fixed horse lanes; horizontal motion only */
+.runner-visual{
+  transition:
+    left .9s linear;
+}
+.runner-visual .horse-art{
+  transform:scaleX(-1);
+}
+
+.finished-runner .runner-label{
+  border-color:var(--accent);
+}
+.finished-check{
+  color:var(--accent);
+  font-weight:900;
+}
+
+.results-card{margin-top:14px}
+.hidden{display:none}
+.results-summary{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.result-stat{
+  background:var(--card2);
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:10px 12px;
+  min-width:120px;
+}
+.result-stat span{
+  display:block;
+  color:var(--muted);
+  font-size:9px;
+  letter-spacing:.06em;
+}
+.result-stat strong{
+  display:block;
+  margin-top:3px;
+  font-size:14px;
+}
+.results-table-wrap{overflow-x:auto}
+.results-table{min-width:690px}
+.results-table tbody tr{cursor:default}
+.results-table .winner-row{
+  background:rgba(126,231,135,.06);
+}
+.results-table .winner-row td{
+  border-bottom-color:#31523a;
+}
+.result-pos{
+  font-weight:950;
+  font-size:14px;
+}
+.result-horse{
+  font-weight:850;
+}
+.result-horse small{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:2px;
+}
+.result-time{
+  font-variant-numeric:tabular-nums;
+  font-weight:800;
+}
+.result-margin{
+  color:var(--muted);
+}
+.result-win{
+  color:var(--accent);
+  font-weight:900;
+}
+.result-finish{
+  color:var(--muted);
+  font-size:10px;
+}
+
+.style-chip{font-weight:800}
+.live-horse span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+
+/* ==========================================================
+   RaceMarket V4.15 — Horse Racing Theme
+   Presentation-only layer. Race/trading logic is unchanged.
+   ========================================================== */
+
+:root{
+  --bg:#08100c;
+  --bg2:#0d1711;
+  --card:#101a14;
+  --card2:#17241b;
+  --card3:#1d2d22;
+  --line:#2a3d30;
+  --line2:#3a5140;
+  --text:#f5f2e9;
+  --muted:#99a89b;
+  --cream:#ece4ce;
+  --gold:#d3ad55;
+  --gold2:#f0d38a;
+  --green:#78c98a;
+  --green2:#9be2a8;
+  --red:#dc7d70;
+  --blue:#91afe8;
+  --track:#29432c;
+  --track2:#355b38;
+}
+
+html,body{
+  background:
+    radial-gradient(circle at 50% -10%,rgba(61,98,62,.24),transparent 40%),
+    linear-gradient(180deg,#08100c 0%,#0a120d 45%,#07100b 100%);
+  color:var(--text);
+}
+
+body{
+  letter-spacing:-.01em;
+}
+
+.app-shell{
+  max-width:1120px;
+}
+
+.topbar{
+  padding:14px 4px 20px;
+}
+
+.brand-row{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.brand-mark{
+  width:38px;
+  height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:11px;
+  color:var(--gold2);
+  background:
+    linear-gradient(145deg,#263d29,#15231a);
+  border:1px solid #49604b;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.07),
+    0 6px 20px rgba(0,0,0,.25);
+  font-size:21px;
+}
+
+.brand{
+  color:var(--cream);
+  font-weight:900;
+  letter-spacing:-.04em;
+}
+
+.subtitle{
+  color:#9aaa9e;
+}
+
+.wallet{
+  padding:8px 12px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:rgba(12,22,16,.75);
+}
+
+.wallet-label{
+  color:#7e9182;
+}
+
+.wallet-value{
+  color:var(--gold2);
+}
+
+.card{
+  background:
+    linear-gradient(180deg,rgba(20,32,24,.98),rgba(12,21,15,.98));
+  border:1px solid var(--line);
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.20),
+    inset 0 1px rgba(255,255,255,.035);
+}
+
+.race-head{
+  position:relative;
+  overflow:hidden;
+  border-color:#38503e;
+}
+
+.race-head::before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto 0;
+  height:3px;
+  background:linear-gradient(90deg,transparent 0%,var(--gold) 18%,var(--green) 50%,var(--gold) 82%,transparent 100%);
+  opacity:.85;
+}
+
+.eyebrow{
+  color:#84988b;
+  letter-spacing:.12em;
+}
+
+h1{
+  font-size:32px;
+  color:var(--cream);
+}
+
+h2{
+  color:#f1eee4;
+}
+
+.status-badge{
+  background:#0c1510;
+  border-color:#405447;
+  color:#e9e0c9;
+  box-shadow:inset 0 1px rgba(255,255,255,.04);
+}
+
+.race-meta{
+  color:#9aad9f;
+}
+
+.race-meta span:nth-child(even){
+  color:#52685a;
+}
+
+.video-placeholder{
+  height:225px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid #39533d;
+  background:
+    linear-gradient(180deg,rgba(19,45,24,.85) 0%,rgba(17,46,24,.82) 48%,rgba(29,55,34,.96) 48%,rgba(27,50,32,.98) 100%);
+  box-shadow:inset 0 0 60px rgba(0,0,0,.22);
+}
+
+.video-placeholder::before{
+  content:"";
+  position:absolute;
+  left:-8%;
+  right:-8%;
+  bottom:28%;
+  height:42%;
+  border-top:2px solid rgba(220,235,219,.12);
+  border-bottom:2px solid rgba(220,235,219,.10);
+  border-radius:50%;
+  transform:rotate(-3deg);
+}
+
+.video-placeholder::after{
+  content:"";
+  position:absolute;
+  left:8%;
+  right:8%;
+  bottom:12%;
+  height:18px;
+  border-top:2px solid rgba(255,255,255,.15);
+  background:repeating-linear-gradient(90deg,rgba(242,233,205,.12) 0 20px,transparent 20px 42px);
+}
+
+.grandstand-glow{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:35%;
+  background:
+    linear-gradient(180deg,rgba(8,18,12,.8),rgba(8,18,12,0));
+}
+
+.video-overlay-badge{
+  position:absolute;
+  top:11px;
+  left:11px;
+  padding:6px 8px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(7,15,10,.68);
+  color:#dfeadd;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.09em;
+}
+
+.video-center{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-44%);
+  text-align:center;
+  z-index:2;
+}
+
+.video-icon{
+  margin-bottom:4px;
+  font-size:38px;
+  filter:drop-shadow(0 5px 9px rgba(0,0,0,.35));
+}
+
+.video-live{
+  background:rgba(15,33,20,.82);
+  border-color:#42634a;
+  color:var(--green2);
+}
+
+.track-post{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:18%;
+  display:flex;
+  justify-content:space-around;
+  opacity:.8;
+}
+
+.track-post-light{
+  display:block;
+  width:3px;
+  height:26px;
+  background:#dddfcd;
+  box-shadow:0 -10px 9px rgba(248,247,225,.17);
+}
+
+.section-title-row{
+  margin:10px 2px 11px;
+}
+
+.market-pill{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  color:#a8b9ac;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.07em;
+  border:1px solid #35503d;
+  background:#0c1710;
+  padding:7px 9px;
+  border-radius:999px;
+}
+
+.market-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 9px rgba(120,201,138,.75);
+}
+
+.race-card,
+.paddock-card,
+.live-race-card,
+.results-card,
+.positions-card{
+  border-color:#304636;
+}
+
+.race-card-wrap{
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.045);
+  overflow:hidden;
+}
+
+table{
+  background:rgba(6,14,9,.18);
+}
+
+th{
+  color:#84978a;
+  background:#0d1811;
+  padding:10px;
+  letter-spacing:.1em;
+}
+
+td{
+  border-bottom-color:rgba(255,255,255,.05);
+  padding:12px 10px;
+}
+
+.runner-row:hover,
+.horse-card:hover{
+  background:rgba(100,144,105,.08);
+}
+
+.runner-row.selected{
+  background:
+    linear-gradient(90deg,rgba(211,173,85,.06),rgba(110,154,116,.045));
+  box-shadow:inset 3px 0 var(--gold);
+}
+
+.post-pill{
+  background:
+    linear-gradient(145deg,#24382a,#16241b);
+  border:1px solid #405847;
+  color:#e6e0cf;
+}
+
+.ml{
+  color:var(--gold2);
+}
+
+.rating{
+  color:#d7e5d8;
+  font-weight:850;
+}
+
+.style-chip{
+  color:#93aa98;
+}
+
+.paddock-card{
+  background:
+    linear-gradient(135deg,rgba(25,41,30,.98),rgba(11,20,14,.98));
+}
+
+.profile-main{
+  background:
+    linear-gradient(180deg,#1a2b1f,#111c15);
+  border:1px solid #304a36;
+}
+
+.profile-side{
+  background:#0d1710;
+  border-color:#2c4332;
+}
+
+.stat{
+  background:#0c1510;
+  border-color:#263a2b;
+}
+
+.stat span{
+  color:#809183;
+}
+
+.stat strong{
+  color:#eae6d7;
+}
+
+.profile-badge{
+  color:#aaab9b;
+  border-color:#405446;
+  background:#0c1510;
+}
+
+.horse-list{
+  gap:10px;
+}
+
+.horse-card{
+  background:
+    linear-gradient(145deg,#132019,#0e1812);
+  border-color:#29402f;
+}
+
+.horse-card.selected{
+  border-color:#637c69;
+  box-shadow:
+    inset 3px 0 var(--gold),
+    0 6px 18px rgba(0,0,0,.15);
+}
+
+.horse-id{
+  background:#203328;
+  border:1px solid #405947;
+  color:#eee9dc;
+}
+
+.price{
+  color:var(--cream);
+}
+
+.bar{
+  height:5px;
+  background:#1a2a1e;
+}
+
+.bar>span{
+  background:linear-gradient(90deg,#56795b,var(--gold));
+  box-shadow:0 0 6px rgba(211,173,85,.13);
+}
+
+.chart-card{
+  background:
+    linear-gradient(180deg,#101b14,#0c1510);
+}
+
+.chart-card canvas{
+  border-radius:12px;
+  background:
+    radial-gradient(circle at 10% 80%,rgba(107,147,112,.08),transparent 28%),
+    linear-gradient(180deg,#0d1711,#0a130d);
+  border:1px solid rgba(255,255,255,.04);
+}
+
+.grid-two{
+  gap:16px;
+}
+
+.book-grid{
+  background:#0b140e;
+  border:1px solid rgba(255,255,255,.035);
+  border-radius:12px;
+  padding:8px 10px;
+}
+
+.book-line{
+  border-bottom-color:rgba(255,255,255,.045);
+}
+
+.ask{
+  color:#d9887f;
+}
+
+.bid{
+  color:#84d193;
+}
+
+.order-card{
+  background:
+    linear-gradient(150deg,#16251b,#0c1610);
+}
+
+.trade-tabs{
+  background:#0b140e;
+  padding:4px;
+  border:1px solid rgba(255,255,255,.04);
+  border-radius:11px;
+}
+
+.trade-tab{
+  border-color:transparent;
+  background:transparent;
+}
+
+.trade-tab.active{
+  background:#203328;
+  border-color:#425b47;
+  color:#f0eadc;
+}
+
+input{
+  background:#0a130d;
+  border-color:#2d4433;
+  color:#f3eee2;
+}
+
+input:focus{
+  border-color:#687f6c;
+  box-shadow:0 0 0 3px rgba(120,201,138,.08);
+}
+
+.ticket-summary>div{
+  background:#0c1510;
+  border:1px solid #263a2b;
+}
+
+.primary-btn{
+  background:linear-gradient(180deg,#9dddab,#72bd84);
+  color:#09110b;
+  box-shadow:0 8px 18px rgba(61,110,71,.20);
+}
+
+.primary-btn:active{
+  transform:translateY(1px);
+}
+
+.live-race-state{
+  gap:7px;
+}
+
+.live-row{
+  background:
+    linear-gradient(90deg,#142119,#0e1812);
+  border-color:#263b2d;
+}
+
+.live-row:first-child{
+  border-color:#466048;
+  box-shadow:inset 2px 0 var(--gold);
+}
+
+.live-rank{
+  background:#1f3225;
+  border:1px solid #3a5340;
+}
+
+.live-gap{
+  color:#d2d8c9;
+}
+
+.results-card{
+  background:
+    linear-gradient(180deg,#142017,#0d1710);
+}
+
+.results-table .winner-row{
+  background:
+    linear-gradient(90deg,rgba(211,173,85,.09),rgba(126,173,136,.04));
+}
+
+.result-win{
+  color:var(--gold2);
+}
+
+.result-stat{
+  background:#0c1510;
+  border-color:#2a4030;
+}
+
+.footer{
+  color:#65776a;
+}
+
+/* Improve the horizontal visualizer with a turf / dirt racing surface */
+.visual-track{
+  border-color:#3b5a40;
+  background:
+    radial-gradient(circle at 20% 20%,rgba(92,132,85,.10),transparent 30%),
+    linear-gradient(180deg,#19311d 0%,#163019 44%,#2d4b2c 46%,#274226 100%);
+  box-shadow:
+    inset 0 0 45px rgba(0,0,0,.25),
+    0 12px 28px rgba(0,0,0,.18);
+}
+
+.visual-track::before{
+  height:44px;
+  background:
+    linear-gradient(180deg,rgba(9,18,11,.7),rgba(9,18,11,0)),
+    repeating-linear-gradient(90deg,transparent 0 29px,rgba(255,255,255,.045) 29px 30px);
+  border-bottom:1px solid rgba(255,255,255,.055);
+}
+
+.track-lane-lines{
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 45px,
+      rgba(242,241,222,.075) 46px,
+      rgba(242,241,222,.075) 47px
+    ),
+    repeating-linear-gradient(
+      to right,
+      rgba(255,255,255,.015) 0,
+      rgba(255,255,255,.015) 1px,
+      transparent 1px,
+      transparent 80px
+    );
+}
+
+.finish-line{
+  box-shadow:0 0 18px rgba(255,255,255,.10);
+}
+
+.runner-label{
+  border-color:#415646;
+  background:rgba(8,16,11,.78);
+}
+
+.runner-visual.leading .runner-label{
+  border-color:var(--gold);
+}
+
+.position-change{
+  color:var(--gold2);
+}
+
+/* Make the visual horse silhouettes feel more like silk uniforms */
+.horse-art .jockey{
+  background:#e5e4da;
+  box-shadow:0 0 0 1px rgba(0,0,0,.22);
+}
+
+.horse-art .silks{
+  border:1px solid rgba(255,255,255,.22);
+}
+
+/* Responsive polish */
+@media(max-width:760px){
+  .brand-mark{
+    width:34px;
+    height:34px;
+    font-size:18px;
+  }
+
+  .wallet{
+    padding:7px 9px;
+  }
+
+  .video-placeholder{
+    height:185px;
+  }
+
+  .market-pill{
+    display:none;
+  }
+}
+
+.market-closed-banner{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 10px;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid #5a4c2b;
+  background:linear-gradient(90deg,rgba(90,76,43,.18),rgba(22,31,23,.75));
+  color:#e7dfc7;
+}
+.market-closed-banner strong{
+  display:block;
+  font-size:11px;
+  letter-spacing:.06em;
+}
+.market-closed-banner span{
+  display:block;
+  margin-top:2px;
+  color:var(--muted);
+  font-size:9px;
+}
+.market-closed-icon{font-size:20px}
+.market-closed .market-dot{
+  background:var(--gold2);
+  box-shadow:0 0 8px rgba(211,173,85,.35);
+}
+.market-closed{
+  border-color:#5a4c2b !important;
+}
+.order-card{position:relative}
+.order-locked{
+  opacity:.58;
+}
+.order-locked::after{
+  content:"MARKET CLOSED";
+  position:absolute;
+  top:10px;
+  right:10px;
+  padding:5px 7px;
+  border-radius:7px;
+  background:#0b120d;
+  border:1px solid #5a4c2b;
+  color:var(--gold2);
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.06em;
+}
+.hidden{display:none!important}
+
+/* ==========================================================
+   HORSE DIRECTION FIX
+   Runners travel left-to-right, so horses face right.
+   ========================================================== */
+
+.runner-visual .horse-art{
+  transform:none !important;
+}
+
+/* ==========================================================
+   RACEMARKET V4.15 — PREMIUM HORSE RACING VISUALS
+   Add this block at the END of styles.css.
+   It overrides the older V4 horse presentation rules.
+   ========================================================== */
+
+
+/* ==========================================================
+   TRACK
+========================================================== */
+
+.visual-track{
+
+  overflow:hidden;
+
+  position:relative;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 4%,
+      rgba(126,161,109,.15),
+      transparent 36%
+    ),
+
+    linear-gradient(
+      180deg,
+      #203e28 0%,
+      #193822 25%,
+      #15321e 57%,
+      #0d2417 100%
+    );
+
+  border-color:
+    #46614a;
+
+  box-shadow:
+    inset 0 1px
+      rgba(255,255,255,.075),
+
+    inset 0 -90px 100px
+      rgba(0,0,0,.18),
+
+    0 16px 40px
+      rgba(0,0,0,.20);
+}
+
+
+/* distant grandstand / light band */
+
+.visual-track::before{
+
+  height:48px !important;
+
+  background:
+
+    linear-gradient(
+      180deg,
+      rgba(4,11,7,.72),
+      rgba(4,11,7,0)
+    ),
+
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 34px,
+      rgba(255,255,255,.035) 35px,
+      transparent 36px 72px
+    ) !important;
+
+  border-bottom:
+    1px solid
+    rgba(255,255,255,.06);
+}
+
+
+/* ==========================================================
+   TURF MOVEMENT
+========================================================== */
+
+.track-lane-lines{
+
+  z-index:2;
+
+  background:
+
+    repeating-linear-gradient(
+      83deg,
+      rgba(255,255,255,.019) 0 2px,
+      transparent 2px 13px
+    ),
+
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 44px,
+      rgba(246,242,222,.060) 45px,
+      rgba(246,242,222,.060) 46px
+    ) !important;
+
+  animation:
+    turf-rush
+    9s
+    linear
+    infinite;
+}
+
+@keyframes turf-rush{
+
+  from{
+    background-position:
+      0 0,
+      0 0;
+  }
+
+  to{
+    background-position:
+      190px 0,
+      0 0;
+  }
+}
+
+
+/* ==========================================================
+   RUNNER CONTAINER
+========================================================== */
+
+.runner-visual{
+
+  width:118px !important;
+
+  height:50px !important;
+
+  /*
+    Horizontal race position remains JS-controlled.
+
+    There is deliberately NO translateX()
+    animation on the runner.
+  */
+
+  transform:
+    translateY(-50%) !important;
+
+  transition:
+    left .90s linear !important;
+
+  z-index:10;
+}
+
+
+/* ==========================================================
+   HORSE
+========================================================== */
+
+.runner-visual
+.horse-art{
+
+  position:relative;
+
+  width:82px !important;
+  height:50px !important;
+
+  flex:
+    0 0 82px;
+
+  /*
+    The old stylesheet used scaleX(-1).
+    Override that completely.
+
+    These illustrations are drawn facing RIGHT.
+  */
+
+  transform:
+    none !important;
+
+  transform-origin:
+    50% 75%;
+
+  filter:
+    drop-shadow(
+      0 7px 5px
+      rgba(0,0,0,.38)
+    );
+
+  animation:
+    horse-body-bob
+    .56s
+    ease-in-out
+    infinite;
+}
+
+
+/* ==========================================================
+   HORSE BODY
+========================================================== */
+
+.horse-body{
+
+  position:absolute;
+
+  left:18px;
+  top:16px;
+
+  width:42px;
+  height:20px;
+
+  border-radius:
+    58% 46%
+    50% 44%;
+
+  background:
+
+    radial-gradient(
+      ellipse at 28% 23%,
+      rgba(255,255,255,.16),
+      transparent 18%
+    ),
+
+    linear-gradient(
+      145deg,
+      #986447,
+      var(--horse-body,#50392d) 48%,
+      #281914
+    );
+
+  box-shadow:
+
+    inset 3px 2px
+      rgba(255,255,255,.10),
+
+    inset -4px -4px
+      rgba(0,0,0,.22);
+}
+
+.body-sheen{
+
+  position:absolute;
+
+  left:6px;
+  top:4px;
+
+  width:26px;
+  height:4px;
+
+  border-radius:50%;
+
+  background:
+    rgba(255,255,255,.115);
+
+  transform:
+    rotate(-7deg);
+
+  filter:
+    blur(.35px);
+}
+
+.shoulder-detail{
+
+  position:absolute;
+
+  right:4px;
+  top:3px;
+
+  width:12px;
+  height:14px;
+
+  border:
+    1px solid
+    rgba(255,255,255,.055);
+
+  border-radius:50%;
+}
+
+.horse-girth{
+
+  position:absolute;
+
+  left:29px;
+  top:1px;
+
+  width:4px;
+  height:18px;
+
+  border-radius:4px;
+
+  background:
+    rgba(8,8,7,.18);
+
+  transform:
+    rotate(2deg);
+}
+
+
+/* ==========================================================
+   SADDLE / CLOTH
+========================================================== */
+
+.horse-saddlecloth{
+
+  position:absolute;
+
+  left:5px;
+  top:-1px;
+
+  width:28px;
+  height:15px;
+
+  border-radius:
+    8px 8px
+    3px 4px;
+
+  background:
+
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.22),
+      transparent 32%
+    ),
+
+    var(--silk,#7aa2ff);
+
+  border:
+    1px solid
+    rgba(0,0,0,.30);
+
+  box-shadow:
+    0 2px 2px
+      rgba(0,0,0,.20);
+}
+
+.saddle-number{
+
+  position:absolute;
+
+  right:3px;
+  top:3px;
+
+  width:10px;
+  height:9px;
+
+  display:flex;
+
+  justify-content:center;
+  align-items:center;
+
+  border-radius:3px;
+
+  background:
+    rgba(255,255,255,.91);
+
+  color:#172018;
+
+  font-size:6px;
+
+  font-weight:950;
+}
+
+.horse-saddle{
+
+  position:absolute;
+
+  left:4px;
+  top:-3px;
+
+  width:26px;
+  height:8px;
+
+  border-radius:50%;
+
+  border-top:
+    2px solid
+    #23150f;
+}
+
+
+/* ==========================================================
+   NECK
+========================================================== */
+
+.horse-neck{
+
+  position:absolute;
+
+  left:49px;
+  top:7px;
+
+  width:14px;
+  height:28px;
+
+  border-radius:
+    10px 9px
+    4px 7px;
+
+  background:
+
+    linear-gradient(
+      145deg,
+      #946043,
+      var(--horse-body,#50392d) 64%,
+      #271813
+    );
+
+  transform:
+    rotate(23deg);
+
+  transform-origin:
+    bottom center;
+
+  z-index:5;
+}
+
+
+/* ==========================================================
+   MANE
+========================================================== */
+
+.mane{
+
+  position:absolute;
+
+  left:-2px;
+  top:-3px;
+
+  width:20px;
+  height:29px;
+
+  animation:
+    mane-wave
+    .56s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+.mane span{
+
+  position:absolute;
+
+  width:4px;
+
+  border-radius:100%;
+
+  background:
+    linear-gradient(
+      180deg,
+      #2b1811,
+      #0d0806
+    );
+
+  transform-origin:
+    top center;
+}
+
+.mane span:nth-child(1){
+
+  left:2px;
+  top:1px;
+
+  height:17px;
+
+  transform:
+    rotate(7deg);
+}
+
+.mane span:nth-child(2){
+
+  left:6px;
+  top:3px;
+
+  height:19px;
+
+  transform:
+    rotate(14deg);
+}
+
+.mane span:nth-child(3){
+
+  left:10px;
+  top:6px;
+
+  height:17px;
+
+  transform:
+    rotate(22deg);
+}
+
+.mane span:nth-child(4){
+
+  left:14px;
+  top:10px;
+
+  height:13px;
+
+  transform:
+    rotate(30deg);
+}
+
+@keyframes mane-wave{
+
+  from{
+    transform:
+      translateX(1px)
+      rotate(-5deg);
+  }
+
+  to{
+    transform:
+      translateX(-2px)
+      rotate(5deg);
+  }
+}
+
+
+/* ==========================================================
+   HEAD
+========================================================== */
+
+.horse-head{
+
+  position:absolute;
+
+  left:59px;
+  top:4px;
+
+  width:19px;
+  height:15px;
+
+  border-radius:
+    70% 42%
+    47% 34%;
+
+  background:
+
+    linear-gradient(
+      145deg,
+      #956145,
+      var(--horse-body,#50392d)
+    );
+
+  transform:
+    rotate(7deg);
+
+  z-index:8;
+}
+
+.horse-muzzle{
+
+  position:absolute;
+
+  left:13px;
+  top:8px;
+
+  width:10px;
+  height:6px;
+
+  border-radius:
+    55% 45%
+    55% 50%;
+
+  background:
+    #2d1d16;
+}
+
+.horse-nostril{
+
+  position:absolute;
+
+  left:19px;
+  top:10px;
+
+  width:2px;
+  height:2px;
+
+  border-radius:50%;
+
+  background:#050403;
+}
+
+
+/* ==========================================================
+   EARS
+========================================================== */
+
+.horse-ear{
+
+  position:absolute;
+
+  top:-6px;
+
+  width:6px;
+  height:10px;
+
+  border-radius:
+    5px 5px
+    0 0;
+
+  background:
+    #4c2f23;
+
+  transform-origin:
+    bottom center;
+}
+
+.ear-one{
+
+  left:4px;
+
+  transform:
+    rotate(11deg);
+}
+
+.ear-two{
+
+  left:10px;
+
+  transform:
+    rotate(24deg);
+}
+
+
+/* ==========================================================
+   EYE / BLAZE
+========================================================== */
+
+.horse-eye{
+
+  position:absolute;
+
+  left:8px;
+  top:5px;
+
+  width:3px;
+  height:3px;
+
+  border-radius:50%;
+
+  background:#050505;
+
+  box-shadow:
+    0 0 2px
+    rgba(255,255,255,.75);
+}
+
+.horse-blaze{
+
+  position:absolute;
+
+  left:11px;
+  top:5px;
+
+  width:2px;
+  height:8px;
+
+  border-radius:50%;
+
+  background:
+    rgba(255,247,226,.58);
+
+  transform:
+    rotate(8deg);
+}
+
+
+/* ==========================================================
+   BRIDLE / REINS
+========================================================== */
+
+.horse-bridle{
+
+  position:absolute;
+
+  left:2px;
+  top:4px;
+
+  width:15px;
+  height:11px;
+
+  border:
+    1px solid
+    rgba(226,208,165,.78);
+
+  border-left-color:
+    transparent;
+
+  border-radius:70%;
+
+  opacity:.76;
+}
+
+.horse-reins{
+
+  position:absolute;
+
+  left:-14px;
+  top:8px;
+
+  width:27px;
+  height:15px;
+
+  border-top:
+    1px solid
+    rgba(22,15,11,.88);
+
+  border-radius:50%;
+
+  transform:
+    rotate(5deg);
+}
+
+.horse-reins::after{
+
+  content:"";
+
+  position:absolute;
+
+  left:7px;
+  top:1px;
+
+  width:17px;
+  height:12px;
+
+  border-bottom:
+    1px solid
+    rgba(22,15,11,.76);
+
+  border-radius:50%;
+}
+
+
+/* ==========================================================
+   JOCKEY
+========================================================== */
+
+.jockey-body{
+
+  position:absolute;
+
+  left:31px;
+  top:5px;
+
+  width:16px;
+  height:16px;
+
+  border-radius:
+    8px 8px
+    5px 5px;
+
+  background:
+
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.18),
+      transparent 34%
+    ),
+
+    var(--silk,#7aa2ff);
+
+  z-index:12;
+
+  transform-origin:
+    bottom center;
+
+  animation:
+    jockey-bob
+    .56s
+    ease-in-out
+    infinite;
+}
+
+.jockey-arm{
+
+  position:absolute;
+
+  right:-7px;
+  top:3px;
+
+  width:11px;
+  height:3px;
+
+  border-radius:4px;
+
+  background:#d9ad88;
+
+  transform:
+    rotate(19deg);
+
+  transform-origin:
+    left center;
+}
+
+.jockey-glove{
+
+  position:absolute;
+
+  right:-9px;
+  top:5px;
+
+  width:4px;
+  height:4px;
+
+  border-radius:50%;
+
+  background:#eee8da;
+}
+
+.jockey-head{
+
+  position:absolute;
+
+  left:34px;
+  top:-1px;
+
+  width:9px;
+  height:9px;
+
+  border-radius:50%;
+
+  background:#deb18b;
+
+  z-index:13;
+
+  animation:
+    jockey-bob
+    .56s
+    ease-in-out
+    infinite;
+}
+
+.jockey-helmet{
+
+  position:absolute;
+
+  left:32px;
+  top:-4px;
+
+  width:14px;
+  height:8px;
+
+  border-radius:
+    9px 9px
+    3px 3px;
+
+  background:
+
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.22),
+      transparent 35%
+    ),
+
+    var(--silk,#7aa2ff);
+
+  z-index:14;
+}
+
+.jockey-helmet::after{
+
+  content:"";
+
+  position:absolute;
+
+  left:8px;
+  top:5px;
+
+  width:7px;
+  height:2px;
+
+  border-radius:50%;
+
+  background:
+    rgba(30,20,15,.70);
+
+  transform:
+    rotate(8deg);
+}
+
+@keyframes jockey-bob{
+
+  0%,
+  100%{
+    transform:
+      translateY(0);
+  }
+
+  25%{
+    transform:
+      translateY(-1px);
+  }
+
+  50%{
+    transform:
+      translateY(1px);
+  }
+
+  75%{
+    transform:
+      translateY(-.5px);
+  }
+}
+
+
+/* ==========================================================
+   LEGS
+========================================================== */
+
+.horse-leg{
+
+  position:absolute;
+
+  top:31px;
+
+  width:5px;
+  height:19px;
+
+  border-radius:5px;
+
+  background:
+
+    linear-gradient(
+      180deg,
+      var(--horse-body,#50392d) 0 73%,
+      #17100c 74% 100%
+    );
+
+  transform-origin:
+    top center;
+}
+
+.rear-one{
+
+  left:26px;
+
+  z-index:3;
+
+  animation:
+    rear-leg-a
+    .56s
+    steps(8,end)
+    infinite;
+}
+
+.rear-two{
+
+  left:38px;
+
+  z-index:4;
+
+  animation:
+    rear-leg-b
+    .56s
+    steps(8,end)
+    infinite;
+}
+
+.front-one{
+
+  left:56px;
+
+  z-index:9;
+
+  animation:
+    front-leg-a
+    .56s
+    steps(8,end)
+    infinite;
+}
+
+.front-two{
+
+  left:67px;
+
+  z-index:10;
+
+  animation:
+    front-leg-b
+    .56s
+    steps(8,end)
+    infinite;
+}
+
+.hoof{
+
+  position:absolute;
+
+  left:-1px;
+  bottom:-1px;
+
+  width:7px;
+  height:4px;
+
+  border-radius:4px;
+
+  background:
+    #110b08;
+}
+
+
+/* ==========================================================
+   ARTICULATED GALLOP
+========================================================== */
+
+@keyframes rear-leg-a{
+
+  0%{
+    transform:rotate(30deg);
+  }
+
+  12.5%{
+    transform:rotate(9deg);
+  }
+
+  25%{
+    transform:rotate(-18deg);
+  }
+
+  37.5%{
+    transform:rotate(-37deg);
+  }
+
+  50%{
+    transform:rotate(-18deg);
+  }
+
+  62.5%{
+    transform:rotate(8deg);
+  }
+
+  75%{
+    transform:rotate(27deg);
+  }
+
+  87.5%{
+    transform:rotate(39deg);
+  }
+
+  100%{
+    transform:rotate(30deg);
+  }
+}
+
+@keyframes rear-leg-b{
+
+  0%{
+    transform:rotate(-31deg);
+  }
+
+  12.5%{
+    transform:rotate(-11deg);
+  }
+
+  25%{
+    transform:rotate(15deg);
+  }
+
+  37.5%{
+    transform:rotate(33deg);
+  }
+
+  50%{
+    transform:rotate(18deg);
+  }
+
+  62.5%{
+    transform:rotate(-5deg);
+  }
+
+  75%{
+    transform:rotate(-28deg);
+  }
+
+  87.5%{
+    transform:rotate(-40deg);
+  }
+
+  100%{
+    transform:rotate(-31deg);
+  }
+}
+
+@keyframes front-leg-a{
+
+  0%{
+    transform:rotate(-29deg);
+  }
+
+  12.5%{
+    transform:rotate(-4deg);
+  }
+
+  25%{
+    transform:rotate(20deg);
+  }
+
+  37.5%{
+    transform:rotate(38deg);
+  }
+
+  50%{
+    transform:rotate(16deg);
+  }
+
+  62.5%{
+    transform:rotate(-5deg);
+  }
+
+  75%{
+    transform:rotate(-29deg);
+  }
+
+  87.5%{
+    transform:rotate(-42deg);
+  }
+
+  100%{
+    transform:rotate(-29deg);
+  }
+}
+
+@keyframes front-leg-b{
+
+  0%{
+    transform:rotate(34deg);
+  }
+
+  12.5%{
+    transform:rotate(10deg);
+  }
+
+  25%{
+    transform:rotate(-14deg);
+  }
+
+  37.5%{
+    transform:rotate(-35deg);
+  }
+
+  50%{
+    transform:rotate(-18deg);
+  }
+
+  62.5%{
+    transform:rotate(5deg);
+  }
+
+  75%{
+    transform:rotate(29deg);
+  }
+
+  87.5%{
+    transform:rotate(42deg);
+  }
+
+  100%{
+    transform:rotate(34deg);
+  }
+}
+
+
+/* ==========================================================
+   BODY BOUNCE
+========================================================== */
+
+@keyframes horse-body-bob{
+
+  0%,
+  100%{
+    transform:
+      translateY(0);
+  }
+
+  25%{
+    transform:
+      translateY(-.7px);
+  }
+
+  50%{
+    transform:
+      translateY(-1.4px);
+  }
+
+  75%{
+    transform:
+      translateY(-.4px);
+  }
+}
+
+
+/* ==========================================================
+   TAIL
+========================================================== */
+
+.horse-tail{
+
+  position:absolute;
+
+  left:5px;
+  top:14px;
+
+  width:25px;
+  height:21px;
+
+  transform:
+    rotate(-24deg);
+
+  transform-origin:
+    right center;
+
+  z-index:2;
+
+  animation:
+    tail-swish
+    .56s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+.horse-tail span{
+
+  position:absolute;
+
+  width:6px;
+  height:18px;
+
+  border-radius:70%;
+
+  background:
+    linear-gradient(
+      180deg,
+      #2b1811,
+      #0e0806
+    );
+
+  transform-origin:
+    right top;
+}
+
+.horse-tail span:nth-child(1){
+
+  left:10px;
+  top:0;
+
+  transform:
+    rotate(-12deg);
+}
+
+.horse-tail span:nth-child(2){
+
+  left:7px;
+  top:3px;
+
+  transform:
+    rotate(0deg);
+}
+
+.horse-tail span:nth-child(3){
+
+  left:3px;
+  top:6px;
+
+  transform:
+    rotate(13deg);
+}
+
+@keyframes tail-swish{
+
+  from{
+    transform:
+      rotate(-30deg)
+      translateX(0);
+  }
+
+  to{
+    transform:
+      rotate(-13deg)
+      translateX(-2px);
+  }
+}
+
+
+/* ==========================================================
+   DUST
+========================================================== */
+
+.horse-dust{
+
+  position:absolute;
+
+  left:-9px;
+  top:38px;
+
+  width:34px;
+  height:15px;
+
+  z-index:1;
+
+  opacity:0;
+
+  pointer-events:none;
+}
+
+.runner-gallop
+.horse-dust{
+
+  opacity:1;
+}
+
+.horse-dust i{
+
+  position:absolute;
+
+  display:block;
+
+  width:3px;
+  height:3px;
+
+  border-radius:50%;
+
+  background:
+    rgba(209,190,147,.52);
+
+  animation:
+    dust-travel
+    .58s
+    ease-out
+    infinite;
+}
+
+.horse-dust i:nth-child(1){
+
+  left:18px;
+  top:8px;
+}
+
+.horse-dust i:nth-child(2){
+
+  left:11px;
+  top:6px;
+
+  width:4px;
+  height:4px;
+
+  animation-delay:.08s;
+}
+
+.horse-dust i:nth-child(3){
+
+  left:5px;
+  top:5px;
+
+  width:2px;
+  height:2px;
+
+  animation-delay:.16s;
+}
+
+.horse-dust i:nth-child(4){
+
+  left:25px;
+  top:11px;
+
+  animation-delay:.12s;
+}
+
+@keyframes dust-travel{
+
+  0%{
+    opacity:.72;
+
+    transform:
+      translate(0,0)
+      scale(.5);
+  }
+
+  100%{
+    opacity:0;
+
+    transform:
+      translate(-14px,-7px)
+      scale(1.45);
+  }
+}
+
+
+/* ==========================================================
+   LEADER EFFECT
+========================================================== */
+
+.horse-aura{
+
+  position:absolute;
+
+  left:7px;
+  top:8px;
+
+  width:69px;
+  height:34px;
+
+  border-radius:50%;
+
+  box-shadow:
+    0 0 18px
+      rgba(126,231,135,.12);
+
+  opacity:0;
+
+  pointer-events:none;
+}
+
+.runner-visual.leading
+.horse-aura{
+
+  opacity:1;
+
+  animation:
+    leader-aura
+    1.2s
+    ease-in-out
+    infinite;
+}
+
+@keyframes leader-aura{
+
+  0%,
+  100%{
+    opacity:.18;
+  }
+
+  50%{
+    opacity:.70;
+  }
+}
+
+
+/* ==========================================================
+   LABEL
+========================================================== */
+
+.runner-label{
+
+  position:relative;
+
+  z-index:20;
+
+  min-width:45px;
+
+  padding:
+    4px 6px;
+
+  border:
+    1px solid
+    #425847;
+
+  background:
+    rgba(6,13,9,.80);
+
+  border-radius:8px;
+
+  backdrop-filter:
+    blur(4px);
+
+  box-shadow:
+    0 3px 8px
+      rgba(0,0,0,.22);
+}
+
+.runner-label strong{
+
+  display:block;
+
+  font-size:9px;
+
+  font-weight:950;
+
+  white-space:nowrap;
+}
+
+.runner-label span{
+
+  display:block;
+
+  color:#8ea091;
+
+  font-size:8px;
+}
+
+.runner-visual.leading
+.runner-label{
+
+  border-color:
+    var(--gold);
+
+  box-shadow:
+    0 0 0 1px
+      rgba(211,173,85,.18),
+
+    0 0 14px
+      rgba(211,173,85,.06);
+}
+
+.runner-visual.passing
+.runner-label{
+
+  border-color:
+    var(--blue);
+}
+
+.finished-runner
+.runner-label{
+
+  border-color:
+    var(--accent);
+}
+
+
+/* ==========================================================
+   SPEED PHASES
+========================================================== */
+
+.runner-pre
+.horse-art,
+.runner-pre
+.horse-leg,
+.runner-pre
+.horse-tail,
+.runner-pre
+.mane{
+
+  animation-duration:
+    .72s;
+}
+
+.runner-gallop
+.horse-art,
+.runner-gallop
+.horse-leg,
+.runner-gallop
+.horse-tail,
+.runner-gallop
+.mane,
+.runner-gallop
+.jockey-body,
+.runner-gallop
+.jockey-head{
+
+  animation-duration:
+    .44s;
+}
+
+.runner-finish
+.horse-art,
+.runner-finish
+.horse-leg,
+.runner-finish
+.horse-tail,
+.runner-finish
+.mane{
+
+  animation-duration:
+    .30s;
+}
+
+.runner-settled
+.horse-art{
+
+  animation:none;
+}
+
+
+/* ==========================================================
+   CAMERA EFFECTS
+   ========================================================== */
+
+.visual-track.camera-mid
+.track-lane-lines{
+
+  transform:
+    scale(1.02);
+
+  opacity:.88;
+}
+
+.visual-track.camera-tight
+.track-lane-lines{
+
+  transform:
+    scale(1.05);
+
+  opacity:.94;
+}
+
+.visual-track.camera-finish
+.track-lane-lines{
+
+  transform:
+    scale(1.08);
+
+  opacity:1;
+}
+
+.visual-track.camera-finish
+.runner-visual:not(.leading){
+
+  filter:
+    brightness(.84)
+    saturate(.88);
+}
+
+.visual-track.camera-finish
+.runner-visual.leading{
+
+  filter:
+    brightness(1.06)
+    saturate(1.08)
+    drop-shadow(
+      0 0 10px
+      rgba(126,231,135,.15)
+    );
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media(max-width:760px){
+
+  .visual-track{
+    min-height:390px;
+  }
+
+  .runner-visual{
+    width:108px !important;
+  }
+
+  .runner-visual
+  .horse-art{
+
+    width:75px !important;
+    height:47px !important;
+
+    flex-basis:
+      75px;
+  }
+
+  .runner-label{
+
+    min-width:40px;
+
+    padding:
+      3px 5px;
+  }
+
+  .runner-label strong{
+    font-size:8px;
+  }
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+========================================================== */
+
+@media(prefers-reduced-motion:reduce){
+
+  .track-lane-lines,
+  .horse-art,
+  .horse-leg,
+  .horse-tail,
+  .mane,
+  .jockey-body,
+  .jockey-head,
+  .horse-dust i,
+  .horse-aura{
+
+    animation:none !important;
+  }
+
+  .horse-dust{
+    opacity:.15;
+  }
+}
+
+/* ==========================================================
+   RaceMarket V4.18 — Immersive Race Visual
+   Visual layer only. Race/market calculations remain unchanged.
+========================================================== */
+
+.visual-track{
+  isolation:isolate;
+  position:relative !important;
+  min-height:410px !important;
+  overflow:hidden !important;
+  border-color:#4a644e !important;
+
+  background:
+    radial-gradient(ellipse at 50% 8%,rgba(136,167,111,.16),transparent 34%),
+    linear-gradient(180deg,#08120c 0%,#10271a 22%,#183a22 52%,#15351f 100%) !important;
+
+  box-shadow:
+    inset 0 0 58px rgba(0,0,0,.33),
+    inset 0 -65px 90px rgba(0,0,0,.24),
+    0 18px 44px rgba(0,0,0,.25);
+}
+
+.track-skyline{
+  position:absolute;
+  top:0;left:0;right:0;
+  height:60px;
+  z-index:1;
+  overflow:hidden;
+  opacity:.92;
+}
+
+.track-skyline span{
+  position:absolute;
+  bottom:9px;
+  width:72px;
+  height:25px;
+  border-radius:50% 50% 5px 5px;
+  background:linear-gradient(180deg,rgba(53,79,56,.95),rgba(17,32,21,.96));
+  box-shadow:18px 4px 0 rgba(31,52,34,.72),38px -5px 0 rgba(39,62,42,.64);
+}
+.track-skyline span:nth-child(1){left:-10px}
+.track-skyline span:nth-child(2){left:130px;transform:scale(.88)}
+.track-skyline span:nth-child(3){left:310px;transform:scale(1.18)}
+.track-skyline span:nth-child(4){right:160px;transform:scale(.90)}
+.track-skyline span:nth-child(5){right:-28px;transform:scale(1.12)}
+
+.track-skyline i{
+  position:absolute;
+  top:12px;
+  width:4px;
+  height:11px;
+  border-radius:3px;
+  background:rgba(243,239,206,.74);
+  box-shadow:0 0 9px rgba(243,239,206,.28);
+}
+.track-skyline i:nth-of-type(1){left:8%}
+.track-skyline i:nth-of-type(2){left:26%}
+.track-skyline i:nth-of-type(3){left:51%}
+.track-skyline i:nth-of-type(4){left:75%}
+.track-skyline i:nth-of-type(5){left:92%}
+
+.track-rail{
+  position:absolute;
+  left:0;right:0;
+  height:9px;
+  z-index:6;
+  background:linear-gradient(180deg,rgba(242,240,221,.76),rgba(154,160,141,.57));
+  border-top:1px solid rgba(255,255,255,.26);
+  border-bottom:1px solid rgba(0,0,0,.42);
+  box-shadow:0 2px 8px rgba(0,0,0,.25);
+}
+.track-rail-top{top:47px}
+.track-rail-bottom{bottom:25px}
+.track-rail::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(90deg,transparent 0 44px,rgba(20,32,24,.7) 45px 48px);
+  opacity:.70;
+}
+
+.track-lane-lines{
+  z-index:3 !important;
+  background:
+    repeating-linear-gradient(to bottom,
+      transparent 0,
+      transparent 43px,
+      rgba(244,240,220,.095) 44px,
+      rgba(244,240,220,.095) 45px) !important;
+  opacity:.88;
+}
+
+.track-lane-lines::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(90deg,transparent 0 74px,rgba(255,255,255,.016) 74px 76px);
+}
+
+.track-speed-lines{
+  position:absolute;
+  left:0;right:0;
+  top:48px;bottom:26px;
+  z-index:2;
+  pointer-events:none;
+  background:repeating-linear-gradient(104deg,
+    transparent 0 28px,
+    rgba(239,240,218,.03) 28px 31px,
+    transparent 31px 68px);
+  opacity:.20;
+}
+.race-live .track-speed-lines{
+  animation:track-rush 1.4s linear infinite;
+}
+@keyframes track-rush{
+  from{transform:translateX(0)}
+  to{transform:translateX(-120px)}
+}
+
+.track-start-gate{
+  position:absolute;
+  left:4px;
+  top:48px;bottom:26px;
+  width:28px;
+  z-index:7;
+  opacity:.82;
+  pointer-events:none;
+}
+.track-start-gate span{
+  position:absolute;
+  left:11px;
+  width:3px;height:100%;
+  background:rgba(235,234,215,.43);
+}
+.track-start-gate span:nth-child(2){left:4px}
+.track-start-gate span:nth-child(3){left:18px}
+.track-start-gate span:nth-child(4){left:25px}
+.track-start-gate b{
+  position:absolute;
+  left:0;right:0;
+  top:17px;bottom:17px;
+  border-top:2px solid rgba(235,234,215,.44);
+  border-bottom:2px solid rgba(235,234,215,.44);
+}
+.race-live .track-start-gate{opacity:.24}
+
+.finish-zone{
+  position:absolute;
+  top:48px;right:15px;bottom:26px;
+  width:19px;
+  z-index:8;
+  pointer-events:none;
+}
+.finish-line{
+  position:absolute !important;
+  inset:0 !important;
+  width:12px !important;
+  height:auto !important;
+  opacity:.96 !important;
+  background:repeating-linear-gradient(to bottom,
+    #f8f5e8 0,
+    #f8f5e8 12px,
+    #171d17 12px,
+    #171d17 24px) !important;
+  box-shadow:0 0 14px rgba(255,255,255,.17);
+}
+.finish-glow{
+  position:absolute;
+  inset:-24px -12px;
+  background:radial-gradient(ellipse at center,rgba(245,243,220,.12),transparent 68%);
+  opacity:.30;
+}
+.camera-finish .finish-glow{
+  opacity:.82;
+  animation:finish-flash .78s ease-in-out infinite alternate;
+}
+@keyframes finish-flash{
+  from{opacity:.25}
+  to{opacity:.80}
+}
+
+.track-vignette{
+  position:absolute;
+  inset:0;
+  z-index:30;
+  pointer-events:none;
+  box-shadow:
+    inset 0 22px 28px rgba(0,0,0,.20),
+    inset 0 -24px 32px rgba(0,0,0,.28),
+    inset 24px 0 28px rgba(0,0,0,.08),
+    inset -24px 0 28px rgba(0,0,0,.08);
+}
+
+/* Runner motion */
+.runner-visual{
+  z-index:12 !important;
+  transition:left .92s cubic-bezier(.15,.78,.20,1) !important;
+  will-change:left,top,filter;
+}
+.runner-motion-trail{
+  position:absolute;
+  left:-43px;top:21px;
+  width:48px;height:4px;
+  border-radius:999px;
+  background:linear-gradient(90deg,transparent,rgba(232,221,192,.14),rgba(232,221,192,.03));
+  opacity:0;
+  pointer-events:none;
+}
+.runner-fast .runner-motion-trail{
+  opacity:.92;
+  animation:runner-trail .48s linear infinite;
+}
+.runner-cruise .runner-motion-trail{opacity:.34}
+
+@keyframes runner-trail{
+  0%{transform:scaleX(.5);opacity:.10}
+  45%{transform:scaleX(1);opacity:.58}
+  100%{transform:translateX(-10px) scaleX(1.35);opacity:0}
+}
+
+.runner-visual.runner-fast .horse-art{
+  filter:drop-shadow(0 8px 5px rgba(0,0,0,.38)) drop-shadow(-9px 0 8px rgba(220,205,164,.08));
+}
+.runner-visual.runner-slow .horse-art{
+  filter:drop-shadow(0 6px 5px rgba(0,0,0,.28));
+}
+
+/* Speed-sensitive gallop */
+.runner-fast .horse-art,
+.runner-fast .horse-leg,
+.runner-fast .horse-tail,
+.runner-fast .mane,
+.runner-fast .jockey-body,
+.runner-fast .jockey-head{
+  animation-duration:.37s !important;
+}
+.runner-cruise .horse-art,
+.runner-cruise .horse-leg,
+.runner-cruise .horse-tail,
+.runner-cruise .mane,
+.runner-cruise .jockey-body,
+.runner-cruise .jockey-head{
+  animation-duration:.48s !important;
+}
+.runner-slow .horse-art,
+.runner-slow .horse-leg,
+.runner-slow .horse-tail,
+.runner-slow .mane,
+.runner-slow .jockey-body,
+.runner-slow .jockey-head{
+  animation-duration:.64s !important;
+}
+
+.runner-dust .horse-dust{opacity:1 !important}
+.runner-dust .horse-dust i{animation-duration:.43s}
+
+.runner-label{
+  box-shadow:0 3px 9px rgba(0,0,0,.28);
+  transition:border-color .20s ease,box-shadow .20s ease,transform .20s ease;
+}
+.runner-visual.selected-runner .runner-label{
+  transform:translateY(-1px);
+  box-shadow:0 0 0 1px rgba(211,173,85,.24),0 5px 13px rgba(0,0,0,.28);
+}
+.runner-visual.leading .runner-label{
+  border-color:var(--gold,#d3ad55);
+  animation:leader-pulse 1.25s ease-in-out infinite;
+}
+@keyframes leader-pulse{
+  0%,100%{box-shadow:0 0 0 1px rgba(211,173,85,.12),0 5px 12px rgba(0,0,0,.24)}
+  50%{box-shadow:0 0 0 1px rgba(211,173,85,.36),0 0 15px rgba(211,173,85,.08)}
+}
+
+.camera-finish .runner-visual{
+  transition:left .48s cubic-bezier(.12,.84,.14,1) !important;
+}
+.camera-finish .runner-visual.leading .horse-art{
+  filter:brightness(1.06) saturate(1.1) drop-shadow(0 8px 8px rgba(0,0,0,.40)) drop-shadow(0 0 10px rgba(211,173,85,.08));
+}
+
+.race-pre .runner-visual{transition:none !important}
+.race-finished .track-speed-lines,
+.race-settled .track-speed-lines{
+  animation:none !important;
+  opacity:.08;
+}
+
+@media(max-width:760px){
+  .visual-track{min-height:390px !important}
+  .track-skyline{height:57px}
+  .track-rail-top{top:45px}
+  .finish-zone,.track-start-gate{top:46px}
+  .runner-motion-trail{left:-34px;width:40px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .track-speed-lines,
+  .runner-motion-trail,
+  .runner-visual.leading .runner-label,
+  .camera-finish .finish-glow,
+  .horse-art,
+  .horse-leg,
+  .horse-tail,
+  .mane,
+  .jockey-body,
+  .jockey-head,
+  .horse-dust i{
+    animation:none !important;
+  }
+  .runner-visual{transition:none !important}
+}
+
+/* V4.22 support for 14–20 horse fields */
+.visual-track.large-field{
+  min-height:460px;
+}
+.visual-track.mega-field{
+  min-height:560px;
+}
+@media(max-width:760px){
+  .visual-track.large-field{min-height:520px}
+  .visual-track.mega-field{min-height:680px}
+}
+
+/* V4.24 — special runner ability */
+.special-ability-badge{
+  position:absolute;
+  left:50%;
+  top:-22px;
+  transform:translateX(-50%);
+  z-index:10;
+  padding:4px 8px;
+  border-radius:999px;
+  border:1px solid #66572e;
+  background:rgba(10,16,11,.92);
+  color:#dec374;
+  font-size:7px;
+  font-weight:950;
+  letter-spacing:.05em;
+  white-space:nowrap;
+  box-shadow:0 5px 14px rgba(0,0,0,.28);
+}
+.special-ability-badge.active{
+  border-color:#d3ad55;
+  background:rgba(57,45,18,.95);
+  color:#fff0a8;
+  box-shadow:
+    0 0 0 1px rgba(211,173,85,.14),
+    0 0 20px rgba(211,173,85,.24);
+}
+.runner-visual.special-active .horse-art{
+  filter:drop-shadow(0 0 13px rgba(240,211,138,.40));
+}
+.runner-visual.special-active .horse-aura{
+  opacity:1;
+  animation:specialAbilityPulse .62s ease-in-out infinite alternate;
+}
+@keyframes specialAbilityPulse{
+  from{transform:scale(.94);opacity:.50}
+  to{transform:scale(1.10);opacity:1}
+}
+
+/* V4.25: browser-frame interpolation for smooth horse movement */
+.runner-visual{
+  will-change:left,top;
+  transition:filter .22s ease,opacity .22s ease;
+}
+
+/* ==========================================================
+   RACEMARKET — SURFACE-SPECIFIC TRACK MATERIALS
+   Dirt = clay / soil / kickback
+   Turf = living grass / mowing stripes
+   ========================================================== */
+
+
+/* ==========================================================
+   BASE TRACK
+========================================================== */
+
+.visual-track{
+
+  background:
+    linear-gradient(
+      180deg,
+      #18291a 0%,
+      #18351e 48%,
+      #13291a 100%
+    ) !important;
+
+  border-color:
+    #3f5a43 !important;
+}
+
+
+/* ==========================================================
+   DIRT TRACK
+========================================================== */
+
+.visual-track[data-surface="Dirt"]{
+
+  background:
+
+    radial-gradient(
+      ellipse at 52% 45%,
+      rgba(191,131,77,.10),
+      transparent 45%
+    ),
+
+    repeating-linear-gradient(
+      96deg,
+      rgba(255,218,166,.018) 0 3px,
+      transparent 3px 17px
+    ),
+
+    linear-gradient(
+      180deg,
+      #49372b 0%,
+      #6b4b35 23%,
+      #80583d 48%,
+      #714b34 76%,
+      #503526 100%
+    ) !important;
+
+  border-color:
+    #72523b !important;
+
+  box-shadow:
+
+    inset 0 0 65px
+      rgba(29,17,10,.30),
+
+    inset 0 -85px 100px
+      rgba(39,20,10,.24),
+
+    0 18px 44px
+      rgba(0,0,0,.28);
+}
+
+
+/* dirt texture */
+
+.visual-track[data-surface="Dirt"]
+.track-lane-lines{
+
+  background:
+
+    repeating-linear-gradient(
+      84deg,
+      rgba(255,235,200,.035) 0 2px,
+      transparent 2px 11px
+    ),
+
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 43px,
+      rgba(60,32,19,.18) 44px,
+      rgba(60,32,19,.18) 45px
+    ),
+
+    repeating-linear-gradient(
+      12deg,
+      rgba(255,255,255,.018) 0 1px,
+      transparent 1px 31px
+    ) !important;
+
+  opacity:
+    .82;
+}
+
+
+/* dirt lane dividers */
+
+.visual-track[data-surface="Dirt"]
+.track-lane-lines::before{
+
+  content:"";
+
+  position:absolute;
+
+  inset:0;
+
+  background:
+
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 43px,
+      rgba(244,220,191,.065) 44px,
+      rgba(244,220,191,.065) 45px
+    );
+
+  opacity:.80;
+}
+
+
+/* visual dirt kickback / racing line */
+
+.visual-track[data-surface="Dirt"]
+.track-speed-lines{
+
+  background:
+
+    repeating-linear-gradient(
+      100deg,
+      transparent 0 31px,
+      rgba(245,214,176,.045) 31px 34px,
+      transparent 34px 72px
+    ) !important;
+
+  opacity:
+    .34;
+}
+
+
+/* dirt finish zone */
+
+.visual-track[data-surface="Dirt"]
+.finish-glow{
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(245,226,198,.13),
+      transparent 70%
+    );
+}
+
+
+/* ==========================================================
+   TURF TRACK
+========================================================== */
+
+.visual-track[data-surface="Turf"]{
+
+  background:
+
+    repeating-linear-gradient(
+      102deg,
+      rgba(123,165,91,.11) 0 7px,
+      rgba(71,122,68,.07) 7px 14px,
+      rgba(108,154,83,.11) 14px 21px
+    ),
+
+    linear-gradient(
+      180deg,
+      #1d4a26 0%,
+      #24602d 18%,
+      #287034 46%,
+      #215c2a 73%,
+      #173f20 100%
+    ) !important;
+
+  border-color:
+    #4c714b !important;
+
+  box-shadow:
+
+    inset 0 0 75px
+      rgba(9,31,12,.25),
+
+    inset 0 -80px 105px
+      rgba(6,24,9,.28),
+
+    0 18px 44px
+      rgba(0,0,0,.25);
+}
+
+
+/* turf mowing stripes */
+
+.visual-track[data-surface="Turf"]
+.track-lane-lines{
+
+  background:
+
+    repeating-linear-gradient(
+      90deg,
+      rgba(210,235,189,.075) 0 23px,
+      rgba(31,91,39,.075) 23px 46px
+    ),
+
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 43px,
+      rgba(226,240,210,.075) 44px,
+      rgba(226,240,210,.075) 45px
+    ) !important;
+
+  opacity:
+    .92;
+}
+
+
+/* subtle individual grass direction */
+
+.visual-track[data-surface="Turf"]
+.track-lane-lines::before{
+
+  content:"";
+
+  position:absolute;
+
+  inset:0;
+
+  background:
+
+    repeating-linear-gradient(
+      82deg,
+      transparent 0,
+      transparent 8px,
+      rgba(185,226,156,.025) 9px,
+      transparent 10px 18px
+    );
+
+  opacity:
+    .65;
+}
+
+
+/* turf speed texture */
+
+.visual-track[data-surface="Turf"]
+.track-speed-lines{
+
+  background:
+
+    repeating-linear-gradient(
+      96deg,
+      transparent 0 27px,
+      rgba(205,230,179,.055) 27px 30px,
+      transparent 30px 68px
+    ) !important;
+
+  opacity:
+    .40;
+}
+
+
+/* turf finish zone */
+
+.visual-track[data-surface="Turf"]
+.finish-glow{
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(204,231,191,.15),
+      transparent 70%
+    );
+}
+
+
+/* ==========================================================
+   SURFACE-SPECIFIC RAIL LIGHTING
+========================================================== */
+
+.visual-track[data-surface="Dirt"]
+.track-rail{
+
+  background:
+    linear-gradient(
+      180deg,
+      #d6cdbc,
+      #999484
+    );
+
+  box-shadow:
+    0 2px 9px
+    rgba(0,0,0,.34);
+}
+
+.visual-track[data-surface="Turf"]
+.track-rail{
+
+  background:
+    linear-gradient(
+      180deg,
+      #e4e1d0,
+      #adb5a3
+    );
+
+  box-shadow:
+    0 2px 9px
+    rgba(0,0,0,.28);
+}
+
+
+/* ==========================================================
+   SURFACE LABELING
+   ========================================================== */
+
+.visual-track[data-surface="Dirt"]::after{
+
+  content:"DIRT";
+
+  position:absolute;
+
+  left:14px;
+  bottom:10px;
+
+  color:
+    rgba(255,225,193,.28);
+
+  font-size:8px;
+
+  font-weight:950;
+
+  letter-spacing:.12em;
+
+  z-index:20;
+}
+
+.visual-track[data-surface="Turf"]::after{
+
+  content:"TURF";
+
+  position:absolute;
+
+  left:14px;
+  bottom:10px;
+
+  color:
+    rgba(212,237,197,.36);
+
+  font-size:8px;
+
+  font-weight:950;
+
+  letter-spacing:.12em;
+
+  z-index:20;
+}
+
+
+/* ==========================================================
+   DIRT DUST
+========================================================== */
+
+.visual-track[data-surface="Dirt"]
+.runner-dust{
+
+  filter:
+    saturate(.82);
+}
+
+.visual-track[data-surface="Dirt"]
+.horse-dust i{
+
+  background:
+    rgba(220,184,143,.62);
+}
+
+.visual-track[data-surface="Turf"]
+.horse-dust i{
+
+  background:
+    rgba(140,180,111,.22);
+}
+
+
+/* ==========================================================
+   TURF GRASS KICK
+========================================================== */
+
+.visual-track[data-surface="Turf"]
+.runner-dust
+.horse-dust{
+
+  opacity:
+    .72;
+}
+
+.visual-track[data-surface="Turf"]
+.horse-dust i:nth-child(1),
+.visual-track[data-surface="Turf"]
+.horse-dust i:nth-child(3){
+
+  width:4px;
+  height:2px;
+
+  border-radius:
+    80%;
+}
+
+
+/* ==========================================================
+   CAMERA TREATMENT
+========================================================== */
+
+.visual-track[data-surface="Dirt"].camera-finish{
+
+  background-color:
+    #6b4934;
+}
+
+.visual-track[data-surface="Turf"].camera-finish{
+
+  background-color:
+    #275f30;
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media(max-width:760px){
+
+  .visual-track[data-surface="Dirt"]{
+
+    background-size:
+      auto,
+      auto,
+      auto,
+      auto;
+  }
+
+  .visual-track[data-surface="Turf"]{
+
+    background-size:
+      38px 100%,
+      auto;
+  }
+}
+
+/* ==========================================================
+   V4.27 — Conditions / Camera / Post Colors / Venue Identity
+========================================================== */
+
+.horse-saddlecloth{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.22),
+      transparent 32%
+    ),
+    var(--post-color,#777);
+}
+
+.horse-body{
+  background:
+    radial-gradient(
+      ellipse at 28% 23%,
+      rgba(255,255,255,.13),
+      transparent 18%
+    ),
+    linear-gradient(
+      145deg,
+      var(--horse-light,#a87550),
+      var(--horse-main,var(--horse-body,#6f4933)) 48%,
+      var(--horse-dark,#2b1812)
+    );
+}
+
+.horse-neck,
+.horse-head{
+  background:
+    linear-gradient(
+      145deg,
+      var(--horse-light,#a87550),
+      var(--horse-main,var(--horse-body,#6f4933)) 65%,
+      var(--horse-dark,#2b1812)
+    );
+}
+
+/* Track condition visual treatments */
+.visual-track[data-condition="Muddy"] .horse-dust i,
+.visual-track[data-condition="Sloppy"] .horse-dust i{
+  background:rgba(101,70,50,.80);
+}
+
+.visual-track[data-condition="Sloppy"]{
+  filter:saturate(.80) brightness(.91);
+}
+
+.visual-track[data-condition="Muddy"]::after,
+.visual-track[data-condition="Sloppy"]::after,
+.visual-track[data-condition="Yielding"]::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:6;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(
+      106deg,
+      transparent 0 29px,
+      rgba(224,231,214,.065) 29px 31px,
+      transparent 31px 62px
+    );
+  opacity:.32;
+}
+
+.visual-track[data-condition="Yielding"]{
+  filter:saturate(.91) brightness(.93);
+}
+
+.visual-track[data-condition="Yielding"] .surface-texture{
+  opacity:.14;
+}
+
+.visual-track[data-condition="Sloppy"] .surface-texture{
+  opacity:.48;
+}
+
+/* Camera tracking illusion — only the environment scrolls. */
+.visual-track.camera-mid .surface-texture,
+.visual-track.camera-tight .surface-texture,
+.visual-track.camera-finish .surface-texture,
+.visual-track.camera-mid .track-scenery,
+.visual-track.camera-tight .track-scenery,
+.visual-track.camera-finish .track-scenery,
+.visual-track.camera-mid .distance-marker,
+.visual-track.camera-tight .distance-marker,
+.visual-track.camera-finish .distance-marker{
+  transition:transform .12s linear;
+}
+
+.visual-track.camera-mid .surface-texture{
+  transform:translateX(
+    calc(var(--environment-offset,0px) * -1)
+  );
+}
+
+.visual-track.camera-tight .surface-texture{
+  transform:translateX(
+    calc(var(--environment-offset,0px) * -1.45)
+  ) scaleX(1.025);
+}
+
+.visual-track.camera-finish .surface-texture{
+  transform:translateX(
+    calc(var(--environment-offset,0px) * -1.95)
+  ) scaleX(1.05);
+}
+
+.visual-track.camera-mid .track-scenery{
+  transform:translateX(
+    calc(var(--environment-offset,0px) * -.33)
+  );
+}
+
+.visual-track.camera-tight .track-scenery{
+  transform:translateX(
+    calc(var(--environment-offset,0px) * -.66)
+  ) scaleX(1.02);
+}
+
+.visual-track.camera-finish .track-scenery{
+  transform:translateX(
+    calc(var(--environment-offset,0px) * -1.0)
+  ) scaleX(1.045);
+}
+
+.visual-track.camera-mid .distance-marker{
+  transform:translateX(
+    calc(var(--environment-offset,0px) * -.22)
+  );
+}
+
+.visual-track.camera-tight .distance-marker{
+  transform:translateX(
+    calc(var(--environment-offset,0px) * -.45)
+  );
+}
+
+.visual-track.camera-finish .distance-marker{
+  transform:translateX(
+    calc(var(--environment-offset,0px) * -.80)
+  );
+}
+
+/* Venue identity panel */
+.venue-identity{
+  position:absolute;
+  top:55px;
+  right:10px;
+  z-index:24;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:6px 8px;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:7px;
+  background:rgba(5,11,7,.62);
+  backdrop-filter:blur(6px);
+  color:#e8e4d7;
+}
+
+.venue-monogram{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:25px;
+  height:20px;
+  border-radius:5px;
+  background:rgba(240,233,210,.10);
+  color:var(--amber,#f2cc60);
+  font-size:7px;
+  font-weight:950;
+}
+
+.venue-identity b{
+  display:block;
+  font-size:8px;
+}
+
+.venue-identity em{
+  display:block;
+  margin-top:2px;
+  color:#95a495;
+  font-size:6px;
+  font-style:normal;
+}
+
+/* Venue-specific atmosphere */
+.venue-churchill .grandstand-roof{
+  background:
+    linear-gradient(
+      90deg,
+      transparent 5%,
+      rgba(211,173,85,.25) 18%,
+      rgba(238,226,191,.18) 50%,
+      rgba(211,173,85,.25) 82%,
+      transparent 95%
+    );
+}
+
+.venue-saratoga .tree-line{
+  transform:scaleX(1.08);
+  opacity:.70;
+}
+
+.venue-santa-anita::after{
+  content:"";
+  position:absolute;
+  right:4%;
+  top:2px;
+  width:29%;
+  height:47px;
+  z-index:2;
+  pointer-events:none;
+  opacity:.33;
+  background:
+    linear-gradient(
+      155deg,
+      transparent 0 32%,
+      #6f7769 32% 41%,
+      transparent 41% 100%
+    );
+  clip-path:
+    polygon(
+      0 100%,
+      33% 56%,
+      48% 67%,
+      67% 34%,
+      80% 58%,
+      100% 15%,
+      100% 100%
+    );
+}
+
+.venue-gulfstream .tree-line i{
+  width:20px;
+  height:30px;
+  border-radius:50%;
+  background:linear-gradient(
+    135deg,
+    #38563c,
+    #163019
+  );
+}
+
+.venue-keeneland .tree-line{
+  opacity:.82;
+}
+
+.venue-belmont .tree-line{
+  opacity:.56;
+}
+
+@media(max-width:760px){
+  .venue-identity{
+    top:52px;
+    right:8px;
+    padding:5px 6px;
+  }
+
+  .venue-identity b{
+    font-size:7px;
+  }
+
+  .venue-identity em{
+    font-size:5.5px;
+  }
+}
+
+/* V4.27.1 overlay cleanup */
+.enhanced-start-gate .gate-stalls span{
+  color:transparent !important;
+  font-size:0 !important;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(225,221,199,.48),
+      rgba(225,221,199,.20)
+    ) !important;
+}
+
+.distance-marker b{
+  display:none !important;
+}
+
+.race-broadcast{
+  top:10px !important;
+  left:10px !important;
+  right:10px !important;
+  width:auto !important;
+  max-width:none !important;
+  min-height:28px;
+  justify-content:flex-start;
+  gap:7px !important;
+  padding:7px 10px !important;
+  border-radius:8px !important;
+  line-height:1 !important;
+  overflow:hidden;
+}
+
+.race-broadcast strong{
+  flex:0 0 auto;
+}
+
+.race-broadcast > span:not(.broadcast-live-dot):not(.broadcast-weather),
+.race-broadcast strong{
+  white-space:nowrap;
+}
+
+.race-broadcast .broadcast-weather{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.race-broadcast .broadcast-separator{
+  color:rgba(226,229,214,.30) !important;
+  flex:0 0 auto;
+}
+
+.venue-identity{
+  display:none !important;
+}
+
+.distance-marker{
+  top:65px;
+  bottom:25px;
+  opacity:.18 !important;
+}
+
+.distance-pole{
+  box-shadow:0 0 3px rgba(255,255,255,.05);
+}
+
+.track-scenery{
+  overflow:hidden;
+}
+
+@media(max-width:760px){
+  .race-broadcast{
+    left:7px !important;
+    right:7px !important;
+    top:8px !important;
+    gap:5px !important;
+    padding:6px 7px !important;
+    font-size:7px !important;
+  }
+
+  .race-broadcast strong{
+    font-size:7px !important;
+  }
+
+  .race-broadcast .broadcast-weather{
+    max-width:28vw;
+  }
+}
+
+
+/* ==========================================================
+   RaceMarket V4.32 — 2.5D BROADCAST PERSPECTIVE
+   The race engine remains 2D/data-driven. This final override
+   projects the course and runners into a depth-aware camera.
+========================================================== */
+
+.visual-track.perspective-3d{
+  --environment-offset:0px;
+  --camera-intensity:0;
+  --camera-bob:0;
+  --condition-wetness:0;
+  --condition-spray:0;
+
+  isolation:isolate;
+  position:relative !important;
+  min-height:520px !important;
+  overflow:hidden !important;
+  perspective:1100px;
+  perspective-origin:50% 23%;
+  transform-style:preserve-3d;
+
+  background:
+    linear-gradient(
+      180deg,
+      #9eabb0 0%,
+      #bfc9c4 17%,
+      #596e5c 25%,
+      #243528 25.5%,
+      #17211a 100%
+    ) !important;
+
+  border-color:#40504a !important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.12),
+    inset 0 -75px 100px rgba(0,0,0,.30),
+    0 20px 55px rgba(0,0,0,.34) !important;
+}
+
+.visual-track.perspective-3d.large-field{
+  min-height:560px !important;
+}
+
+.visual-track.perspective-3d.mega-field{
+  min-height:630px !important;
+}
+
+/* The old flat layers are replaced by the projected layers. */
+.visual-track.perspective-3d > .track-skyline,
+.visual-track.perspective-3d > .track-lane-lines,
+.visual-track.perspective-3d > .track-start-gate,
+.visual-track.perspective-3d > .finish-zone,
+.visual-track.perspective-3d > .distance-marker{
+  display:none !important;
+}
+
+/* ---------- Atmospheric depth ---------- */
+
+.track-atmosphere-3d{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+  transform:translateZ(-110px) scale(1.12);
+  transform-origin:50% 23%;
+}
+
+.track-sky-gradient{
+  position:absolute;
+  inset:0 0 70% 0;
+  background:
+    radial-gradient(
+      ellipse at 58% 72%,
+      rgba(255,244,196,.38),
+      transparent 34%
+    ),
+    linear-gradient(
+      180deg,
+      #81959c 0%,
+      #bac5bf 58%,
+      #d6d4b8 100%
+    );
+}
+
+.track-horizon-glow{
+  position:absolute;
+  left:-8%;
+  right:-8%;
+  top:17%;
+  height:17%;
+  background:
+    radial-gradient(
+      ellipse at 50% 50%,
+      rgba(255,243,198,.28),
+      transparent 64%
+    );
+  filter:blur(10px);
+  opacity:.80;
+}
+
+.track-aerial-haze{
+  position:absolute;
+  left:-8%;
+  right:-8%;
+  top:16%;
+  height:27%;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(219,225,208,.20),
+      rgba(187,198,181,.08) 48%,
+      transparent
+    );
+  filter:blur(5px);
+  opacity:.74;
+}
+
+.track-foreground-shade{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 52%,
+      rgba(3,8,5,.12) 76%,
+      rgba(2,5,3,.34) 100%
+    );
+}
+
+/* Weather changes light before it changes particles. */
+.visual-track.perspective-3d.weather-sunny .track-sky-gradient{
+  filter:saturate(1.04) brightness(1.04);
+}
+
+.visual-track.perspective-3d.weather-overcast .track-sky-gradient{
+  filter:saturate(.62) brightness(.80);
+}
+
+.visual-track.perspective-3d.weather-overcast .track-horizon-glow{
+  opacity:.23;
+}
+
+.visual-track.perspective-3d.weather-golden .track-sky-gradient{
+  background:
+    radial-gradient(
+      ellipse at 58% 72%,
+      rgba(255,224,145,.63),
+      transparent 36%
+    ),
+    linear-gradient(
+      180deg,
+      #887e72 0%,
+      #c0ad86 55%,
+      #e0c990 100%
+    );
+}
+
+.visual-track.perspective-3d.weather-haze .track-aerial-haze{
+  opacity:1;
+  filter:blur(9px);
+}
+
+.visual-track.perspective-3d.weather-rain .track-sky-gradient{
+  filter:saturate(.48) brightness(.66) contrast(1.08);
+}
+
+/* ---------- Distant venue plane ---------- */
+
+.visual-track.perspective-3d .track-scenery{
+  position:absolute !important;
+  left:-4% !important;
+  right:-4% !important;
+  top:5% !important;
+  width:108% !important;
+  height:24% !important;
+  z-index:2 !important;
+  overflow:hidden !important;
+  pointer-events:none;
+  transform:
+    translateZ(-72px)
+    scale(1.075) !important;
+  transform-origin:50% 100%;
+  filter:
+    saturate(.86)
+    contrast(1.04);
+}
+
+.visual-track.perspective-3d .venue-backdrop{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:
+    radial-gradient(
+      ellipse at 22% 78%,
+      rgba(40,75,43,.62),
+      transparent 30%
+    ),
+    radial-gradient(
+      ellipse at 70% 74%,
+      rgba(37,68,40,.57),
+      transparent 34%
+    );
+}
+
+.visual-track.perspective-3d .grandstand{
+  position:absolute;
+  left:14%;
+  right:14%;
+  bottom:7%;
+  height:66%;
+  z-index:2;
+  border:1px solid rgba(218,217,197,.12);
+  border-bottom-color:rgba(5,9,6,.68);
+  border-radius:5px 5px 2px 2px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(45,54,47,.92),
+      rgba(17,25,19,.92) 45%,
+      rgba(7,13,9,.96)
+    );
+  box-shadow:
+    0 9px 16px rgba(0,0,0,.34),
+    inset 0 1px rgba(255,255,255,.08);
+  clip-path:
+    polygon(
+      3% 8%,
+      97% 8%,
+      100% 100%,
+      0 100%
+    );
+}
+
+.visual-track.perspective-3d .grandstand-roof{
+  position:absolute;
+  left:-2%;
+  right:-2%;
+  top:0;
+  height:18%;
+  background:
+    linear-gradient(
+      180deg,
+      #9a9c8f,
+      #50574f 42%,
+      #1b211d 100%
+    ) !important;
+  border-bottom:1px solid rgba(0,0,0,.55);
+  box-shadow:
+    0 3px 7px rgba(0,0,0,.40);
+  clip-path:
+    polygon(
+      2% 100%,
+      6% 0,
+      94% 0,
+      98% 100%
+    );
+}
+
+.visual-track.perspective-3d .grandstand-tier{
+  position:absolute;
+  left:5%;
+  right:5%;
+  top:23%;
+  bottom:9%;
+  border-top:1px solid rgba(235,232,209,.12);
+  border-bottom:1px solid rgba(0,0,0,.44);
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(177,181,167,.07) 0 2px,
+      transparent 2px 10px
+    );
+}
+
+.visual-track.perspective-3d .grandstand-seats{
+  position:absolute;
+  left:7%;
+  right:7%;
+  top:30%;
+  bottom:12%;
+  display:grid;
+  grid-template-columns:repeat(10,1fr);
+  gap:2.4%;
+  align-items:end;
+}
+
+.visual-track.perspective-3d .grandstand-seats i{
+  height:64%;
+  border-radius:2px 2px 0 0;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(201,202,184,.22) 0 2px,
+      rgba(17,23,18,.28) 2px 5px
+    );
+  box-shadow:inset 0 1px rgba(255,255,255,.05);
+  opacity:.78;
+}
+
+.visual-track.perspective-3d .track-lighting{
+  position:absolute;
+  inset:0;
+  z-index:4;
+}
+
+.visual-track.perspective-3d .track-lighting span{
+  position:absolute;
+  bottom:6%;
+  width:2px;
+  height:74%;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(210,213,196,.72),
+      rgba(74,82,73,.42)
+    );
+  box-shadow:0 -4px 10px rgba(255,241,187,.22);
+  transform-origin:bottom;
+}
+
+.visual-track.perspective-3d .track-lighting span::before{
+  content:"";
+  position:absolute;
+  left:-7px;
+  top:-2px;
+  width:16px;
+  height:3px;
+  border-radius:999px;
+  background:rgba(239,235,202,.72);
+  box-shadow:0 0 12px rgba(255,241,187,.34);
+}
+
+.visual-track.perspective-3d .track-lighting span:nth-child(1){left:7%}
+.visual-track.perspective-3d .track-lighting span:nth-child(2){left:33%}
+.visual-track.perspective-3d .track-lighting span:nth-child(3){right:33%}
+.visual-track.perspective-3d .track-lighting span:nth-child(4){right:7%}
+
+.visual-track.perspective-3d .tree-line{
+  position:absolute;
+  left:-2%;
+  right:-2%;
+  bottom:0;
+  height:40%;
+  z-index:3;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-around;
+  gap:4%;
+}
+
+.visual-track.perspective-3d .tree-line i{
+  display:block;
+  width:10%;
+  height:65%;
+  border-radius:55% 55% 26% 26%;
+  background:
+    radial-gradient(
+      ellipse at 40% 34%,
+      #446346,
+      #1d3825 68%,
+      #0e2115
+    );
+  box-shadow:
+    10px 3px 0 rgba(22,49,29,.62),
+    -8px 5px 0 rgba(27,54,32,.54);
+  transform-origin:bottom;
+}
+
+.visual-track.perspective-3d .tree-line i:nth-child(2n){
+  height:82%;
+  transform:scaleX(.76);
+}
+
+.visual-track.perspective-3d .tree-line i:nth-child(3n){
+  height:54%;
+  transform:scaleX(1.12);
+}
+
+.visual-track.perspective-3d .venue-landmarks{
+  position:absolute;
+  inset:0;
+  z-index:5;
+}
+
+/* Venue signatures remain subtle enough to read as distance. */
+.visual-track.perspective-3d.venue-churchill .venue-landmarks::before,
+.visual-track.perspective-3d.venue-churchill .venue-landmarks::after{
+  content:"";
+  position:absolute;
+  bottom:4%;
+  width:15px;
+  height:62%;
+  background:
+    linear-gradient(
+      90deg,
+      #5c4935,
+      #b69a63 50%,
+      #59442f
+    );
+  clip-path:
+    polygon(
+      16% 100%,
+      16% 26%,
+      32% 17%,
+      41% 0,
+      50% 15%,
+      59% 0,
+      68% 17%,
+      84% 26%,
+      84% 100%
+    );
+  filter:drop-shadow(0 3px 3px rgba(0,0,0,.40));
+}
+
+.visual-track.perspective-3d.venue-churchill .venue-landmarks::before{left:24%}
+.visual-track.perspective-3d.venue-churchill .venue-landmarks::after{right:24%}
+
+.visual-track.perspective-3d.venue-santa-anita .venue-backdrop{
+  background:
+    linear-gradient(
+      165deg,
+      transparent 0 25%,
+      rgba(101,103,94,.62) 25% 35%,
+      transparent 35% 46%,
+      rgba(88,94,86,.70) 46% 58%,
+      transparent 58%
+    );
+  clip-path:
+    polygon(
+      0 100%,
+      16% 63%,
+      27% 72%,
+      43% 30%,
+      57% 58%,
+      72% 24%,
+      84% 55%,
+      100% 17%,
+      100% 100%
+    );
+}
+
+.visual-track.perspective-3d.venue-gulfstream .venue-landmarks::before,
+.visual-track.perspective-3d.venue-gulfstream .venue-landmarks::after{
+  content:"";
+  position:absolute;
+  right:13%;
+  bottom:4%;
+  width:36px;
+  height:74%;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 46%,
+      rgba(45,72,47,.92) 47% 54%,
+      transparent 55%
+    );
+  border-radius:50% 50% 0 0;
+  box-shadow:
+    -16px -9px 0 -12px rgba(38,79,43,.88),
+    16px -8px 0 -12px rgba(38,79,43,.88),
+    0 -14px 0 -12px rgba(38,79,43,.88);
+}
+
+.visual-track.perspective-3d.venue-gulfstream .venue-landmarks::after{
+  right:28%;
+  transform:scale(.78);
+}
+
+.visual-track.perspective-3d.venue-keeneland .venue-backdrop{
+  background:
+    radial-gradient(
+      ellipse at 20% 90%,
+      rgba(66,100,61,.88),
+      transparent 36%
+    ),
+    radial-gradient(
+      ellipse at 51% 82%,
+      rgba(75,108,66,.82),
+      transparent 41%
+    ),
+    radial-gradient(
+      ellipse at 83% 90%,
+      rgba(58,91,55,.88),
+      transparent 36%
+    );
+}
+
+.visual-track.perspective-3d.venue-saratoga .grandstand{
+  left:8%;
+  right:8%;
+  height:72%;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(54,56,49,.96),
+      rgba(19,25,19,.94)
+    );
+}
+
+.visual-track.perspective-3d.venue-belmont .grandstand{
+  left:5%;
+  right:5%;
+  height:59%;
+}
+
+/* ---------- Projected course plane ---------- */
+
+.visual-track.perspective-3d .track-surface-3d{
+  position:absolute;
+  left:-4%;
+  right:-4%;
+  top:22%;
+  bottom:-8%;
+  z-index:4;
+  overflow:hidden;
+  pointer-events:none;
+  clip-path:
+    polygon(
+      12.7% 0,
+      87.3% 0,
+      100% 100%,
+      0 100%
+    );
+  transform:
+    translateZ(0)
+    rotateX(1.4deg);
+  transform-origin:50% 0;
+  backface-visibility:hidden;
+  box-shadow:
+    inset 0 14px 24px rgba(0,0,0,.14),
+    inset 0 -90px 100px rgba(0,0,0,.22);
+}
+
+.visual-track.perspective-3d .track-surface-base{
+  position:absolute;
+  inset:0;
+  background-position:
+    calc(var(--environment-offset) * -1.1)
+    0;
+  background-repeat:repeat;
+  will-change:background-position;
+}
+
+.visual-track.perspective-3d[data-surface="Turf"] .track-surface-base{
+  background:
+    radial-gradient(
+      ellipse at 52% 12%,
+      rgba(187,220,147,.12),
+      transparent 36%
+    ),
+    repeating-linear-gradient(
+      94deg,
+      rgba(199,229,169,.052) 0 2px,
+      transparent 2px 11px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(116,171,91,.15) 0 34px,
+      rgba(39,105,49,.14) 34px 68px
+    ),
+    linear-gradient(
+      180deg,
+      #245b2d 0%,
+      #2f7738 42%,
+      #276631 73%,
+      #153b20 100%
+    );
+}
+
+.visual-track.perspective-3d[data-surface="Dirt"] .track-surface-base{
+  background:
+    radial-gradient(
+      ellipse at 50% 9%,
+      rgba(224,180,127,.13),
+      transparent 33%
+    ),
+    repeating-linear-gradient(
+      96deg,
+      rgba(255,226,189,.035) 0 2px,
+      transparent 2px 13px
+    ),
+    repeating-linear-gradient(
+      7deg,
+      rgba(59,31,19,.055) 0 2px,
+      transparent 2px 22px
+    ),
+    linear-gradient(
+      180deg,
+      #775039 0%,
+      #8a5b3f 38%,
+      #744930 72%,
+      #472d20 100%
+    );
+}
+
+.visual-track.perspective-3d .track-perspective-sections{
+  position:absolute;
+  inset:0;
+  opacity:.31;
+}
+
+.visual-track.perspective-3d .track-perspective-sections i{
+  position:absolute;
+  top:-7%;
+  bottom:-8%;
+  width:1px;
+  transform-origin:50% 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.02),
+      rgba(255,255,255,.10) 58%,
+      rgba(0,0,0,.14)
+    );
+}
+
+.visual-track.perspective-3d .track-perspective-sections i:nth-child(1){left:7%;transform:rotate(-4.8deg)}
+.visual-track.perspective-3d .track-perspective-sections i:nth-child(2){left:18%;transform:rotate(-3.6deg)}
+.visual-track.perspective-3d .track-perspective-sections i:nth-child(3){left:29%;transform:rotate(-2.4deg)}
+.visual-track.perspective-3d .track-perspective-sections i:nth-child(4){left:40%;transform:rotate(-1.2deg)}
+.visual-track.perspective-3d .track-perspective-sections i:nth-child(5){left:50%;transform:none}
+.visual-track.perspective-3d .track-perspective-sections i:nth-child(6){left:60%;transform:rotate(1.2deg)}
+.visual-track.perspective-3d .track-perspective-sections i:nth-child(7){left:71%;transform:rotate(2.4deg)}
+.visual-track.perspective-3d .track-perspective-sections i:nth-child(8){left:82%;transform:rotate(3.6deg)}
+.visual-track.perspective-3d .track-perspective-sections i:nth-child(9){left:93%;transform:rotate(4.8deg)}
+
+.visual-track.perspective-3d .track-perspective-lanes{
+  position:absolute;
+  inset:0;
+  z-index:4;
+}
+
+.visual-track.perspective-3d .track-perspective-lanes span{
+  position:absolute;
+  left:var(--lane-inset);
+  right:var(--lane-inset);
+  top:var(--lane-y);
+  height:1px;
+  border-radius:999px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(247,242,218,var(--lane-alpha)) 8%,
+      rgba(247,242,218,var(--lane-alpha)) 92%,
+      transparent
+    );
+  box-shadow:
+    0 1px rgba(0,0,0,.08);
+  transform-origin:center;
+}
+
+.visual-track.perspective-3d[data-surface="Dirt"] .track-perspective-lanes span{
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(72,40,24,var(--lane-alpha)) 8%,
+      rgba(72,40,24,var(--lane-alpha)) 92%,
+      transparent
+    );
+}
+
+.visual-track.perspective-3d .track-racing-sheen{
+  position:absolute;
+  inset:0;
+  z-index:5;
+  opacity:var(--track-sheen-opacity,.08);
+  background:
+    linear-gradient(
+      105deg,
+      transparent 0 19%,
+      rgba(237,241,226,.10) 27%,
+      transparent 35% 64%,
+      rgba(237,241,226,.065) 73%,
+      transparent 82%
+    );
+  mix-blend-mode:screen;
+}
+
+.visual-track.perspective-3d .track-near-grain{
+  position:absolute;
+  left:-12%;
+  right:-12%;
+  top:43%;
+  bottom:-10%;
+  z-index:6;
+  opacity:.38;
+  background:
+    repeating-linear-gradient(
+      97deg,
+      transparent 0 19px,
+      rgba(255,255,255,.026) 19px 21px,
+      transparent 21px 43px
+    );
+  background-position:
+    var(--environment-fast-x,0px)
+    0;
+  filter:blur(.12px);
+  will-change:background-position;
+}
+
+.visual-track.perspective-3d[data-surface="Dirt"] .track-near-grain{
+  background:
+    repeating-linear-gradient(
+      97deg,
+      transparent 0 17px,
+      rgba(62,34,21,.16) 17px 20px,
+      transparent 20px 45px
+    );
+}
+
+/* A fixed motion layer keeps the 3D plane full-bleed. */
+.visual-track.perspective-3d > .track-speed-lines{
+  display:block !important;
+  position:absolute !important;
+  left:-5% !important;
+  right:-5% !important;
+  top:22% !important;
+  bottom:-2% !important;
+  width:110% !important;
+  z-index:7 !important;
+  overflow:hidden;
+  pointer-events:none;
+  clip-path:
+    polygon(
+      12.7% 0,
+      87.3% 0,
+      100% 100%,
+      0 100%
+    );
+  background:
+    repeating-linear-gradient(
+      103deg,
+      transparent 0 42px,
+      rgba(241,239,218,.036) 42px 45px,
+      transparent 45px 92px
+    ) !important;
+  background-position:
+    var(--speed-line-x,0px)
+    0 !important;
+  opacity:var(--speed-opacity,.08) !important;
+  transform:none !important;
+  animation:none !important;
+}
+
+/* ---------- Perspective rails ---------- */
+
+.visual-track.perspective-3d > .track-rail{
+  position:absolute !important;
+  display:block !important;
+  transform:none !important;
+  pointer-events:none;
+  border:0 !important;
+  border-radius:999px;
+  background:
+    linear-gradient(
+      180deg,
+      #f0ede0 0%,
+      #b8b8aa 45%,
+      #767b72 100%
+    ) !important;
+}
+
+.visual-track.perspective-3d > .track-rail-top{
+  left:9.2% !important;
+  right:9.2% !important;
+  top:25.8% !important;
+  bottom:auto !important;
+  height:5px !important;
+  z-index:75 !important;
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.36),
+    inset 0 1px rgba(255,255,255,.42) !important;
+}
+
+.visual-track.perspective-3d > .track-rail-bottom{
+  left:-2.5% !important;
+  right:-2.5% !important;
+  top:auto !important;
+  bottom:2.5% !important;
+  height:10px !important;
+  z-index:1450 !important;
+  box-shadow:
+    0 5px 11px rgba(0,0,0,.44),
+    inset 0 2px rgba(255,255,255,.44) !important;
+}
+
+.visual-track.perspective-3d > .track-rail::before{
+  content:"";
+  position:absolute;
+  left:1%;
+  right:1%;
+  top:100%;
+  height:28px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 61px,
+      rgba(102,105,96,.90) 61px 65px,
+      transparent 65px 78px
+    );
+  opacity:.74;
+}
+
+.visual-track.perspective-3d > .track-rail-bottom::before{
+  top:auto;
+  bottom:100%;
+  height:47px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 75px,
+      rgba(98,101,93,.94) 75px 81px,
+      transparent 81px 98px
+    );
+  opacity:.82;
+}
+
+/* ---------- Slanted start and finish planes ---------- */
+
+.visual-track.perspective-3d .finish-plane-3d{
+  position:absolute;
+  left:86.7%;
+  top:26.6%;
+  bottom:3.8%;
+  width:6.4%;
+  z-index:90;
+  pointer-events:none;
+  clip-path:
+    polygon(
+      0 0,
+      22% 0,
+      100% 100%,
+      78% 100%
+    );
+  filter:
+    drop-shadow(0 0 7px rgba(255,255,255,.16))
+    drop-shadow(0 4px 7px rgba(0,0,0,.26));
+}
+
+.visual-track.perspective-3d .finish-plane-3d span{
+  position:absolute;
+  inset:0;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(248,246,235,.96) 0 10px,
+      rgba(20,24,21,.94) 10px 20px
+    );
+}
+
+.visual-track.perspective-3d .finish-plane-3d b{
+  position:absolute;
+  top:-18px;
+  left:-7px;
+  color:rgba(248,246,230,.74);
+  font-size:7px;
+  letter-spacing:.12em;
+  text-shadow:0 2px 4px rgba(0,0,0,.65);
+}
+
+.visual-track.perspective-3d.camera-finish .finish-plane-3d{
+  filter:
+    drop-shadow(0 0 12px rgba(255,249,218,.28))
+    drop-shadow(0 4px 7px rgba(0,0,0,.26));
+}
+
+.visual-track.perspective-3d .enhanced-start-gate{
+  position:absolute;
+  left:6.1%;
+  top:26.2%;
+  bottom:3.7%;
+  width:5.8%;
+  z-index:1300;
+  pointer-events:none;
+  opacity:.95;
+  transform:none !important;
+  transition:
+    opacity .55s ease,
+    translate .55s ease;
+}
+
+.visual-track.perspective-3d .enhanced-start-gate .gate-frame{
+  position:absolute;
+  inset:0;
+  clip-path:
+    polygon(
+      78% 0,
+      100% 0,
+      22% 100%,
+      0 100%
+    );
+  background:
+    linear-gradient(
+      90deg,
+      rgba(209,208,190,.88) 0 5%,
+      transparent 5% 45%,
+      rgba(190,191,176,.72) 45% 52%,
+      transparent 52% 95%,
+      rgba(104,112,103,.88) 95% 100%
+    );
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.38),
+    4px 5px 12px rgba(0,0,0,.32);
+}
+
+.visual-track.perspective-3d .enhanced-start-gate .gate-stalls{
+  position:absolute;
+  inset:2px;
+  display:grid;
+  grid-template-rows:repeat(var(--field-size),1fr);
+  gap:1px;
+  overflow:hidden;
+  clip-path:
+    polygon(
+      78% 0,
+      100% 0,
+      22% 100%,
+      0 100%
+    );
+}
+
+.visual-track.perspective-3d .enhanced-start-gate .gate-stalls span{
+  display:block;
+  min-height:1px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(8,13,10,.26),
+      rgba(221,219,200,.16),
+      rgba(8,13,10,.26)
+    ) !important;
+  border-top:1px solid rgba(229,226,204,.18);
+  border-bottom:1px solid rgba(229,226,204,.42);
+}
+
+.visual-track.perspective-3d .enhanced-start-gate .gate-bar{
+  position:absolute;
+  left:31%;
+  top:0;
+  bottom:0;
+  width:3px;
+  background:#d3d0bd;
+  transform:rotate(7deg);
+  transform-origin:bottom;
+  box-shadow:0 0 4px rgba(0,0,0,.34);
+}
+
+.visual-track.perspective-3d .enhanced-start-gate .gate-post{
+  position:absolute;
+  top:-3px;
+  bottom:-3px;
+  width:4px;
+  background:
+    linear-gradient(
+      90deg,
+      #676d63,
+      #d4d1bd,
+      #4a5049
+    );
+}
+
+.visual-track.perspective-3d .enhanced-start-gate .gate-post.left{
+  left:8%;
+  transform:rotate(7deg);
+  transform-origin:bottom;
+}
+
+.visual-track.perspective-3d .enhanced-start-gate .gate-post.right{
+  right:8%;
+  transform:rotate(7deg);
+  transform-origin:top;
+}
+
+.visual-track.perspective-3d.race-live .enhanced-start-gate,
+.visual-track.perspective-3d.race-finished .enhanced-start-gate,
+.visual-track.perspective-3d.race-settled .enhanced-start-gate{
+  opacity:.10;
+  translate:-24px 0;
+}
+
+/* ---------- Depth-aware runner plane ---------- */
+
+.visual-track.perspective-3d #visualRunnerLayer{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  z-index:1000 !important;
+  pointer-events:none !important;
+  transform-style:preserve-3d;
+}
+
+.visual-track.perspective-3d .runner-visual{
+  position:absolute !important;
+  z-index:var(--runner-z,200) !important;
+  width:118px !important;
+  height:50px !important;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin:0 !important;
+  pointer-events:none;
+  transform:
+    translate(-50%,-100%)
+    scale(var(--runner-scale,1)) !important;
+  transform-origin:50% 100%;
+  transition:
+    filter .20s ease,
+    opacity .20s ease !important;
+  will-change:left,top,transform;
+  opacity:var(--runner-opacity,1);
+  filter:
+    brightness(var(--runner-brightness,1))
+    saturate(var(--runner-saturation,1));
+}
+
+.visual-track.perspective-3d .runner-visual .horse-art{
+  transform:none !important;
+  transform-origin:50% 78%;
+  filter:
+    drop-shadow(
+      0 8px 5px
+      rgba(0,0,0,.42)
+    )
+    drop-shadow(
+      -4px 0 6px
+      rgba(255,242,201,.04)
+    );
+}
+
+.visual-track.perspective-3d .runner-visual::after{
+  content:"";
+  position:absolute;
+  left:5px;
+  bottom:-4px;
+  width:78px;
+  height:10px;
+  z-index:-1;
+  border-radius:50%;
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(3,7,4,.48),
+      transparent 70%
+    );
+  filter:blur(var(--runner-shadow-blur,1px));
+  transform:scaleX(var(--runner-shadow-scale,1));
+  transform-origin:center;
+}
+
+.visual-track.perspective-3d[data-surface="Dirt"] .runner-visual::after{
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(43,24,15,.52),
+      transparent 70%
+    );
+}
+
+.visual-track.perspective-3d .runner-motion-trail{
+  transform-origin:right center;
+}
+
+.visual-track.perspective-3d .runner-label{
+  margin-left:5px;
+  border-color:rgba(224,227,213,.18) !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5,11,8,.92),
+      rgba(5,10,7,.73)
+    ) !important;
+  box-shadow:
+    0 5px 12px rgba(0,0,0,.32) !important;
+}
+
+
+
+.visual-track.perspective-3d .runner-visual.near-finish{
+  flex-direction:row-reverse;
+}
+
+.visual-track.perspective-3d .runner-visual.near-finish .runner-label{
+  margin-left:0;
+  margin-right:5px;
+}
+
+.visual-track.perspective-3d .runner-label strong{
+  text-shadow:0 1px 2px rgba(0,0,0,.75);
+}
+
+.visual-track.perspective-3d .runner-visual.selected-runner{
+  filter:
+    brightness(1.08)
+    saturate(1.08)
+    drop-shadow(0 0 7px rgba(122,162,255,.15));
+}
+
+.visual-track.perspective-3d .runner-visual.leading{
+  filter:
+    brightness(1.08)
+    saturate(1.06)
+    drop-shadow(0 0 8px rgba(211,173,85,.14));
+}
+
+.visual-track.perspective-3d.camera-finish .runner-visual:not(.leading):not(.selected-runner){
+  filter:
+    brightness(.78)
+    saturate(.76)
+    blur(.12px);
+}
+
+/* Keep all articulated motion inside the scaled wrapper. */
+.visual-track.perspective-3d .runner-pre .horse-art,
+.visual-track.perspective-3d .runner-pre .horse-leg,
+.visual-track.perspective-3d .runner-pre .horse-tail,
+.visual-track.perspective-3d .runner-pre .mane,
+.visual-track.perspective-3d .runner-pre .jockey-body,
+.visual-track.perspective-3d .runner-pre .jockey-head,
+.visual-track.perspective-3d .runner-finish .horse-art,
+.visual-track.perspective-3d .runner-finish .horse-leg,
+.visual-track.perspective-3d .runner-finish .horse-tail,
+.visual-track.perspective-3d .runner-finish .mane,
+.visual-track.perspective-3d .runner-finish .jockey-body,
+.visual-track.perspective-3d .runner-finish .jockey-head,
+.visual-track.perspective-3d .runner-settled .horse-art,
+.visual-track.perspective-3d .runner-settled .horse-leg,
+.visual-track.perspective-3d .runner-settled .horse-tail,
+.visual-track.perspective-3d .runner-settled .mane,
+.visual-track.perspective-3d .runner-settled .jockey-body,
+.visual-track.perspective-3d .runner-settled .jockey-head{
+  animation-play-state:paused !important;
+}
+
+/* ---------- Broadcast overlays ---------- */
+
+.visual-track.perspective-3d .race-broadcast{
+  position:absolute !important;
+  top:10px !important;
+  left:10px !important;
+  right:10px !important;
+  z-index:3100 !important;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-height:29px;
+  padding:7px 10px !important;
+  border:1px solid rgba(225,229,215,.13);
+  border-radius:8px !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5,10,13,.83),
+      rgba(4,8,10,.68)
+    ) !important;
+  box-shadow:
+    0 7px 18px rgba(0,0,0,.28),
+    inset 0 1px rgba(255,255,255,.05);
+  backdrop-filter:blur(7px);
+  color:#dfe5df;
+  font-size:8px;
+}
+
+.visual-track.perspective-3d .broadcast-live-dot{
+  width:6px;
+  height:6px;
+  flex:0 0 auto;
+  border-radius:50%;
+  background:#ff7b72;
+  box-shadow:0 0 9px rgba(255,123,114,.54);
+}
+
+.visual-track.perspective-3d.race-live .broadcast-live-dot{
+  animation:perspectiveLivePulse 1s ease-in-out infinite;
+}
+
+@keyframes perspectiveLivePulse{
+  0%,100%{opacity:.44}
+  50%{opacity:1}
+}
+
+.visual-track.perspective-3d .venue-scene-label{
+  position:absolute;
+  right:11px;
+  top:47px;
+  z-index:3100;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:5px 8px;
+  border:1px solid rgba(230,221,195,.16);
+  border-radius:7px;
+  background:rgba(5,10,8,.72);
+  box-shadow:0 6px 15px rgba(0,0,0,.26);
+  backdrop-filter:blur(5px);
+  color:#e8e3d5;
+  white-space:nowrap;
+}
+
+.visual-track.perspective-3d .venue-scene-label > span{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:25px;
+  height:20px;
+  padding:0 4px;
+  border-radius:5px;
+  background:rgba(211,173,85,.12);
+  color:#e0c476;
+  font-size:7px;
+  font-weight:1000;
+}
+
+.visual-track.perspective-3d .venue-scene-label b{
+  display:block;
+  font-size:8px;
+  line-height:1.05;
+}
+
+.visual-track.perspective-3d .venue-scene-label em{
+  display:block;
+  margin-top:2px;
+  color:#9aa99d;
+  font-size:6px;
+  font-style:normal;
+}
+
+/* ---------- Weather particles in front of the 3D scene ---------- */
+
+.visual-track.perspective-3d .weather-layer{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:2400 !important;
+  display:block !important;
+  overflow:hidden !important;
+  pointer-events:none !important;
+  opacity:0;
+}
+
+.visual-track.perspective-3d .weather-layer i{
+  position:absolute;
+  left:var(--rain-x);
+  top:-42px;
+  display:block;
+  width:1px;
+  height:24px;
+  border-radius:999px;
+  opacity:.72;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(237,245,247,.03),
+      rgba(237,245,247,.82)
+    );
+  box-shadow:0 0 4px rgba(218,234,239,.15);
+  animation:
+    perspectiveRain
+    var(--rain-duration)
+    linear
+    infinite;
+  animation-delay:var(--rain-delay);
+}
+
+.visual-track.perspective-3d.weather-rain .weather-layer{
+  opacity:var(--rain-opacity,.66);
+}
+
+@keyframes perspectiveRain{
+  from{
+    transform:
+      translate3d(0,-38px,0)
+      rotate(12deg);
+  }
+  to{
+    transform:
+      translate3d(-54px,650px,0)
+      rotate(12deg);
+  }
+}
+
+/* Haze and wetness stay behind broadcast overlays. */
+.visual-track.perspective-3d .surface-texture{
+  position:absolute !important;
+  inset:22% -4% -8% -4% !important;
+  z-index:8 !important;
+  pointer-events:none;
+  clip-path:
+    polygon(
+      12.7% 0,
+      87.3% 0,
+      100% 100%,
+      0 100%
+    );
+  opacity:var(--surface-texture-opacity,.05) !important;
+  background:
+    repeating-linear-gradient(
+      103deg,
+      transparent 0 31px,
+      rgba(230,238,226,.07) 31px 33px,
+      transparent 33px 70px
+    ) !important;
+  mix-blend-mode:screen;
+  transform:none !important;
+}
+
+.visual-track.perspective-3d .track-vignette{
+  position:absolute;
+  inset:0;
+  z-index:2800;
+  pointer-events:none;
+  box-shadow:
+    inset 0 24px 34px rgba(0,0,0,.20),
+    inset 0 -35px 58px rgba(0,0,0,.34),
+    inset 28px 0 34px rgba(0,0,0,.11),
+    inset -28px 0 34px rgba(0,0,0,.11);
+}
+
+/* ---------- Camera stages ---------- */
+
+.visual-track.perspective-3d.camera-mid .track-atmosphere-3d{
+  filter:contrast(1.02);
+}
+
+.visual-track.perspective-3d.camera-tight .track-atmosphere-3d{
+  filter:contrast(1.04) saturate(.96);
+}
+
+.visual-track.perspective-3d.camera-finish .track-atmosphere-3d{
+  filter:contrast(1.08) saturate(.92);
+}
+
+.visual-track.perspective-3d.camera-tight .track-near-grain,
+.visual-track.perspective-3d.camera-finish .track-near-grain{
+  opacity:.56;
+}
+
+/* ---------- Mobile ---------- */
+
+@media(max-width:760px){
+
+  .visual-track.perspective-3d{
+    min-height:480px !important;
+    perspective:820px;
+    perspective-origin:50% 22%;
+  }
+
+  .visual-track.perspective-3d.large-field{
+    min-height:560px !important;
+  }
+
+  .visual-track.perspective-3d.mega-field{
+    min-height:670px !important;
+  }
+
+  .visual-track.perspective-3d .track-scenery{
+    left:-12% !important;
+    right:-12% !important;
+    width:124% !important;
+  }
+
+  .visual-track.perspective-3d .grandstand{
+    left:7%;
+    right:7%;
+  }
+
+  .visual-track.perspective-3d .track-lighting span:nth-child(2),
+  .visual-track.perspective-3d .track-lighting span:nth-child(3){
+    display:none;
+  }
+
+  .visual-track.perspective-3d .runner-visual{
+    width:108px !important;
+  }
+
+  .visual-track.perspective-3d .runner-label{
+    min-width:41px;
+    margin-left:2px;
+    padding:3px 5px;
+  }
+
+  .visual-track.perspective-3d .runner-label strong{
+    font-size:7.5px;
+  }
+
+  .visual-track.perspective-3d .venue-scene-label{
+    top:45px;
+    right:7px;
+    padding:4px 6px;
+  }
+
+  .visual-track.perspective-3d .venue-scene-label em{
+    display:none;
+  }
+
+  .visual-track.perspective-3d .race-broadcast{
+    left:7px !important;
+    right:7px !important;
+    gap:5px;
+    padding:6px 7px !important;
+    font-size:7px;
+  }
+
+  .visual-track.perspective-3d .race-broadcast .broadcast-weather{
+    max-width:25vw;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .visual-track.perspective-3d > .track-rail-bottom{
+    bottom:2.1% !important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+
+  .visual-track.perspective-3d .track-surface-base,
+  .visual-track.perspective-3d .track-near-grain,
+  .visual-track.perspective-3d > .track-speed-lines{
+    background-position:initial !important;
+  }
+
+  .visual-track.perspective-3d .weather-layer i,
+  .visual-track.perspective-3d .broadcast-live-dot{
+    animation:none !important;
+  }
+
+  .visual-track.perspective-3d .runner-visual{
+    transition:none !important;
+  }
+}
+
+
+/* Keep the perspective plane fixed while its material flows. */
+.visual-track.perspective-3d .track-surface-base{
+  background-position:
+    var(--environment-x,0px)
+    0 !important;
+}
+
+
+/* ==========================================================
+   RaceMarket V4.33 — BROADCAST UPGRADE
+   Persistent runners, directed cameras, interactive telemetry,
+   live race calls, and opt-in procedural sound controls.
+========================================================== */
+
+.visual-track.perspective-3d{
+  --broadcast-camera-x:0px;
+  --broadcast-camera-y:0px;
+  --broadcast-camera-zoom:1;
+  --broadcast-camera-origin-x:50%;
+  --broadcast-camera-origin-y:58%;
+  --broadcast-scenery-x:0px;
+  --broadcast-scenery-y:0px;
+  --broadcast-scenery-zoom:1;
+}
+
+/* The course is given extra horizontal material outside the
+   viewport so a camera pan cannot reveal an empty edge. */
+.visual-track.perspective-3d .track-surface-3d{
+  left:-24% !important;
+  right:-24% !important;
+  clip-path:
+    polygon(
+      22.3% 0,
+      77.7% 0,
+      100% 100%,
+      0 100%
+    ) !important;
+  transform:
+    translate3d(
+      var(--broadcast-camera-x),
+      var(--broadcast-camera-y),
+      0
+    )
+    scale(
+      var(--broadcast-camera-zoom)
+    )
+    rotateX(1.4deg) !important;
+  transform-origin:
+    var(--broadcast-camera-origin-x)
+    var(--broadcast-camera-origin-y) !important;
+  will-change:transform;
+}
+
+/* Runner coordinates and course geometry share the same smooth
+   camera transform. Individual horse transforms stay untouched. */
+.visual-track.perspective-3d #visualRunnerLayer{
+  transform:
+    translate3d(
+      var(--broadcast-camera-x),
+      var(--broadcast-camera-y),
+      0
+    )
+    scale(
+      var(--broadcast-camera-zoom)
+    ) !important;
+  transform-origin:
+    var(--broadcast-camera-origin-x)
+    var(--broadcast-camera-origin-y) !important;
+  transition:none !important;
+  will-change:transform;
+}
+
+.visual-track.perspective-3d > .track-speed-lines,
+.visual-track.perspective-3d .surface-texture,
+.visual-track.perspective-3d .finish-plane-3d,
+.visual-track.perspective-3d .enhanced-start-gate{
+  transform:
+    translate3d(
+      var(--broadcast-camera-x),
+      var(--broadcast-camera-y),
+      0
+    )
+    scale(
+      var(--broadcast-camera-zoom)
+    ) !important;
+  transform-origin:
+    var(--broadcast-camera-origin-x)
+    var(--broadcast-camera-origin-y) !important;
+  transition:none !important;
+  will-change:transform;
+}
+
+.visual-track.perspective-3d .track-scenery,
+.visual-track.perspective-3d > .track-skyline{
+  transform:
+    translate3d(
+      var(--broadcast-scenery-x),
+      var(--broadcast-scenery-y),
+      0
+    )
+    scale(
+      var(--broadcast-scenery-zoom)
+    ) !important;
+  transform-origin:50% 28% !important;
+  transition:none !important;
+  will-change:transform;
+}
+
+/* The rails are foreground broadcast framing and remain steady
+   while the course and runners move beneath the virtual lens. */
+.visual-track.perspective-3d > .track-rail{
+  transform:none !important;
+}
+
+/* ---------- Directed shot treatment ---------- */
+
+.visual-track.perspective-3d.camera-wide .track-aerial-haze{
+  opacity:.74;
+}
+
+.visual-track.perspective-3d.camera-pack .track-near-grain,
+.visual-track.perspective-3d.camera-leader .track-near-grain,
+.visual-track.perspective-3d.camera-selected .track-near-grain{
+  opacity:.47;
+}
+
+.visual-track.perspective-3d.camera-duel .track-near-grain,
+.visual-track.perspective-3d.camera-stretch .track-near-grain,
+.visual-track.perspective-3d.camera-finish .track-near-grain{
+  opacity:.60;
+}
+
+.visual-track.perspective-3d.camera-selected
+.runner-visual:not(.camera-focus-runner){
+  filter:
+    brightness(.87)
+    saturate(.86);
+}
+
+.visual-track.perspective-3d.camera-selected
+.runner-visual.camera-focus-runner,
+.visual-track.perspective-3d.camera-leader
+.runner-visual.camera-focus-runner,
+.visual-track.perspective-3d.camera-duel
+.runner-visual.camera-focus-runner{
+  filter:
+    brightness(1.10)
+    saturate(1.10)
+    drop-shadow(
+      0 0 9px
+      rgba(122,162,255,.24)
+    );
+}
+
+.visual-track.perspective-3d
+.runner-visual.camera-focus-runner
+.horse-aura{
+  opacity:.88 !important;
+  box-shadow:
+    0 0 0 1px
+      rgba(145,175,232,.28),
+    0 0 22px
+      rgba(122,162,255,.24);
+  animation:
+    broadcastFocusPulse
+    1.15s
+    ease-in-out
+    infinite !important;
+}
+
+@keyframes broadcastFocusPulse{
+  0%,100%{
+    transform:scale(.94);
+    opacity:.46;
+  }
+  50%{
+    transform:scale(1.10);
+    opacity:.95;
+  }
+}
+
+/* ---------- Persistent interactive runners ---------- */
+
+.visual-track.perspective-3d #visualRunnerLayer{
+  pointer-events:none !important;
+}
+
+.visual-track.perspective-3d .runner-visual{
+  pointer-events:auto !important;
+  cursor:pointer;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.visual-track.perspective-3d .runner-visual:focus-visible{
+  outline:
+    2px solid
+    rgba(145,175,232,.92);
+  outline-offset:5px;
+  border-radius:12px;
+}
+
+.visual-track.perspective-3d .runner-label-status{
+  display:flex;
+  align-items:center;
+  gap:2px;
+}
+
+.visual-track.perspective-3d
+.special-ability-badge[hidden],
+.visual-track.perspective-3d
+.finished-check[hidden]{
+  display:none !important;
+}
+
+/* ---------- Camera control bar ---------- */
+
+.broadcast-camera-controls{
+  position:absolute;
+  left:10px;
+  top:47px;
+  z-index:3800;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  max-width:
+    calc(
+      100% - 20px
+    );
+  min-height:31px;
+  padding:4px 5px;
+  border:
+    1px solid
+    rgba(224,229,218,.14);
+  border-radius:8px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(6,12,15,.88),
+      rgba(4,9,11,.75)
+    );
+  box-shadow:
+    0 8px 20px
+      rgba(0,0,0,.28),
+    inset 0 1px
+      rgba(255,255,255,.05);
+  backdrop-filter:
+    blur(8px)
+    saturate(1.05);
+  pointer-events:auto;
+}
+
+.camera-shot-label{
+  min-width:76px;
+  padding:0 5px;
+  color:#aeb9b4;
+  font-size:7px;
+  font-weight:950;
+  letter-spacing:.075em;
+  white-space:nowrap;
+}
+
+.camera-mode-buttons{
+  display:flex;
+  align-items:center;
+  gap:2px;
+}
+
+.camera-mode,
+.broadcast-sound-toggle{
+  min-height:22px;
+  border:
+    1px solid
+    transparent;
+  border-radius:5px;
+  background:transparent;
+  color:#909da2;
+  padding:4px 7px;
+  font-size:6.5px;
+  font-weight:950;
+  letter-spacing:.075em;
+  line-height:1;
+  cursor:pointer;
+  transition:
+    color .18s ease,
+    border-color .18s ease,
+    background .18s ease,
+    box-shadow .18s ease;
+}
+
+.camera-mode:hover,
+.camera-mode:focus-visible,
+.broadcast-sound-toggle:hover,
+.broadcast-sound-toggle:focus-visible{
+  color:#eef2ed;
+  border-color:
+    rgba(222,228,218,.18);
+  outline:none;
+}
+
+.camera-mode.active{
+  color:#e9f8f0;
+  border-color:
+    rgba(57,230,170,.33);
+  background:
+    rgba(57,230,170,.12);
+  box-shadow:
+    inset 0 1px
+      rgba(255,255,255,.04);
+}
+
+.broadcast-sound-toggle{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  margin-left:2px;
+  border-left-color:
+    rgba(220,227,216,.12);
+}
+
+.broadcast-sound-toggle span{
+  font-size:9px;
+  line-height:1;
+}
+
+.broadcast-sound-toggle b{
+  font-size:6.5px;
+  white-space:nowrap;
+}
+
+.broadcast-sound-toggle.active{
+  color:#eaf9f2;
+  border-color:
+    rgba(57,230,170,.28);
+  background:
+    rgba(57,230,170,.09);
+}
+
+.broadcast-sound-toggle:disabled{
+  cursor:not-allowed;
+  opacity:.46;
+}
+
+/* ---------- Tracked runner HUD ---------- */
+
+.runner-hud{
+  position:absolute;
+  top:87px;
+  right:11px;
+  z-index:3700;
+  width:
+    min(
+      232px,
+      calc(100% - 22px)
+    );
+  padding:9px;
+  border:
+    1px solid
+    rgba(222,227,215,.15);
+  border-radius:9px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(7,13,16,.91),
+      rgba(5,10,12,.78)
+    );
+  box-shadow:
+    0 12px 28px
+      rgba(0,0,0,.34),
+    inset 0 1px
+      rgba(255,255,255,.055);
+  backdrop-filter:
+    blur(10px)
+    saturate(1.05);
+  color:#eef1e9;
+  opacity:0;
+  transform:
+    translateY(-5px)
+    scale(.98);
+  transform-origin:top right;
+  pointer-events:none;
+  transition:
+    opacity .20s ease,
+    transform .20s ease;
+}
+
+.runner-hud.is-open{
+  opacity:1;
+  transform:none;
+  pointer-events:auto;
+}
+
+.runner-hud-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:8px;
+  padding-bottom:7px;
+  border-bottom:
+    1px solid
+    rgba(224,229,218,.09);
+}
+
+.runner-hud-head span{
+  display:block;
+  color:#82908e;
+  font-size:6.5px;
+  font-weight:950;
+  letter-spacing:.12em;
+}
+
+.runner-hud-head strong{
+  display:block;
+  max-width:185px;
+  margin-top:3px;
+  overflow:hidden;
+  color:#f4f3eb;
+  font-size:10px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.runner-hud-head button{
+  width:22px;
+  height:22px;
+  flex:0 0 22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:
+    1px solid
+    rgba(224,229,218,.12);
+  border-radius:5px;
+  background:
+    rgba(255,255,255,.025);
+  color:#9aa6a4;
+  font-size:15px;
+  line-height:1;
+  cursor:pointer;
+}
+
+.runner-hud-head button:hover,
+.runner-hud-head button:focus-visible{
+  color:#fff;
+  border-color:
+    rgba(224,229,218,.30);
+  outline:none;
+}
+
+.runner-hud-grid{
+  display:grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0,1fr)
+    );
+  gap:5px;
+  margin-top:7px;
+}
+
+.runner-hud-grid>div{
+  min-width:0;
+  padding:5px 6px;
+  border:
+    1px solid
+    rgba(223,228,216,.07);
+  border-radius:6px;
+  background:
+    rgba(255,255,255,.025);
+}
+
+.runner-hud-grid span{
+  display:block;
+  color:#778785;
+  font-size:5.5px;
+  font-weight:950;
+  letter-spacing:.10em;
+}
+
+.runner-hud-grid strong{
+  display:block;
+  margin-top:2px;
+  overflow:hidden;
+  color:#e8eee9;
+  font-size:8px;
+  font-variant-numeric:
+    tabular-nums;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.runner-hud-follow{
+  width:100%;
+  margin-top:7px;
+  padding:6px 8px;
+  border:
+    1px solid
+    rgba(145,175,232,.20);
+  border-radius:6px;
+  background:
+    rgba(122,162,255,.07);
+  color:#b8caf1;
+  font-size:6.5px;
+  font-weight:950;
+  letter-spacing:.10em;
+  cursor:pointer;
+}
+
+.runner-hud-follow.active{
+  border-color:
+    rgba(57,230,170,.28);
+  background:
+    rgba(57,230,170,.10);
+  color:#bff7df;
+}
+
+/* ---------- Live race-call caption ---------- */
+
+.broadcast-caption{
+  --caption-accent:#91afe8;
+  position:absolute;
+  left:14px;
+  bottom:17px;
+  z-index:3900;
+  display:grid;
+  gap:2px;
+  width:
+    min(
+      520px,
+      61%
+    );
+  padding:
+    9px 12px
+    10px 14px;
+  border:
+    1px solid
+    rgba(225,229,217,.15);
+  border-left:
+    3px solid
+    var(--caption-accent);
+  border-radius:8px;
+  background:
+    linear-gradient(
+      100deg,
+      rgba(5,10,13,.94),
+      rgba(5,10,12,.78)
+    );
+  box-shadow:
+    0 12px 30px
+      rgba(0,0,0,.35),
+    inset 0 1px
+      rgba(255,255,255,.045);
+  backdrop-filter:
+    blur(9px)
+    saturate(1.04);
+  opacity:0;
+  transform:
+    translateY(8px);
+  pointer-events:none;
+  transition:
+    opacity .22s ease,
+    transform .22s ease;
+}
+
+.broadcast-caption.is-visible{
+  opacity:1;
+  transform:none;
+}
+
+.broadcast-caption[data-type="start"]{
+  --caption-accent:#39e6aa;
+}
+
+.broadcast-caption[data-type="lead"],
+.broadcast-caption[data-type="stretch"]{
+  --caption-accent:#f0d38a;
+}
+
+.broadcast-caption[data-type="move"]{
+  --caption-accent:#91afe8;
+}
+
+.broadcast-caption[data-type="duel"]{
+  --caption-accent:#ff9b8d;
+}
+
+.broadcast-caption[data-type="ability"]{
+  --caption-accent:#ffe17d;
+}
+
+.broadcast-caption[data-type="finish"],
+.broadcast-caption[data-type="official"]{
+  --caption-accent:#7ee787;
+}
+
+.broadcast-caption span{
+  color:
+    var(--caption-accent);
+  font-size:6.5px;
+  font-weight:1000;
+  letter-spacing:.13em;
+}
+
+.broadcast-caption strong{
+  overflow:hidden;
+  color:#f5f4ec;
+  font-size:11px;
+  font-weight:850;
+  line-height:1.28;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  text-shadow:
+    0 1px 3px
+    rgba(0,0,0,.55);
+}
+
+/* ---------- Recent race-call tape ---------- */
+
+.broadcast-event-feed{
+  position:absolute;
+  right:14px;
+  bottom:17px;
+  z-index:3650;
+  width:
+    min(
+      330px,
+      31%
+    );
+  display:grid;
+  gap:4px;
+  pointer-events:none;
+}
+
+.broadcast-feed-row{
+  display:grid;
+  grid-template-columns:
+    34px
+    minmax(0,1fr);
+  gap:7px;
+  align-items:center;
+  min-height:24px;
+  padding:5px 7px;
+  border:
+    1px solid
+    rgba(223,229,217,.09);
+  border-radius:6px;
+  background:
+    rgba(5,10,12,.67);
+  box-shadow:
+    0 4px 12px
+    rgba(0,0,0,.18);
+  backdrop-filter:
+    blur(6px);
+}
+
+.broadcast-feed-row span{
+  color:#6f7d7c;
+  font-size:6px;
+  font-weight:950;
+  font-variant-numeric:
+    tabular-nums;
+  letter-spacing:.06em;
+}
+
+.broadcast-feed-row strong{
+  overflow:hidden;
+  color:#bcc6c1;
+  font-size:7px;
+  font-weight:750;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.broadcast-feed-row:first-child{
+  border-color:
+    rgba(223,229,217,.14);
+  background:
+    rgba(5,10,12,.79);
+}
+
+.broadcast-feed-row:first-child strong{
+  color:#e4e9e4;
+}
+
+/* Keep broadcast UI above rain and the foreground rail. */
+.visual-track.perspective-3d
+.broadcast-camera-controls,
+.visual-track.perspective-3d
+.runner-hud,
+.visual-track.perspective-3d
+.broadcast-caption,
+.visual-track.perspective-3d
+.broadcast-event-feed{
+  max-width:
+    calc(
+      100% - 14px
+    );
+}
+
+/* ---------- Responsive broadcast controls ---------- */
+
+@media(max-width:760px){
+
+  .broadcast-camera-controls{
+    left:7px;
+    right:7px;
+    top:43px;
+    max-width:none;
+    gap:3px;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+
+  .broadcast-camera-controls::-webkit-scrollbar{
+    display:none;
+  }
+
+  .camera-shot-label{
+    display:none;
+  }
+
+  .camera-mode,
+  .broadcast-sound-toggle{
+    flex:0 0 auto;
+    padding:4px 6px;
+    font-size:6px;
+  }
+
+  .broadcast-sound-toggle b{
+    font-size:6px;
+  }
+
+  .runner-hud{
+    top:81px;
+    right:7px;
+    width:
+      min(
+        210px,
+        calc(100% - 14px)
+      );
+    padding:8px;
+  }
+
+  .runner-hud-head strong{
+    max-width:162px;
+    font-size:9px;
+  }
+
+  .runner-hud-grid{
+    gap:4px;
+  }
+
+  .runner-hud-grid>div{
+    padding:4px 5px;
+  }
+
+  .runner-hud-grid strong{
+    font-size:7.5px;
+  }
+
+  .broadcast-caption{
+    left:7px;
+    right:7px;
+    bottom:12px;
+    width:auto;
+    max-width:none !important;
+    padding:8px 10px 9px 11px;
+  }
+
+  .broadcast-caption strong{
+    font-size:9px;
+    white-space:normal;
+  }
+
+  .broadcast-event-feed{
+    display:none;
+  }
+}
+
+@media(max-width:430px){
+
+  .camera-mode{
+    padding-left:5px;
+    padding-right:5px;
+  }
+
+  .broadcast-sound-toggle b{
+    display:none;
+  }
+
+  .runner-hud{
+    width:198px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+
+  .broadcast-caption,
+  .runner-hud,
+  .camera-mode,
+  .broadcast-sound-toggle{
+    transition:none !important;
+  }
+
+  .visual-track.perspective-3d
+  .runner-visual.camera-focus-runner
+  .horse-aura{
+    animation:none !important;
+  }
+}
+
+
+/* ==========================================================
+   RaceMarket V4.34 — TRADING UPGRADE
+   Dynamic order book, advanced ticket, order management,
+   account metrics, fills, and position controls.
+========================================================== */
+
+:root{
+  --trade-buy:#39e6aa;
+  --trade-sell:#ff806f;
+  --trade-blue:#91afe8;
+  --trade-panel:#0b1218;
+  --trade-panel-2:#101922;
+}
+
+/* ---------- Dynamic order book ---------- */
+
+.order-book-summary{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:6px;
+  margin:0 0 9px;
+}
+
+.order-book-summary>div{
+  min-width:0;
+  padding:8px 9px;
+  border:1px solid rgba(220,228,221,.075);
+  border-radius:8px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.026),
+      rgba(255,255,255,.012)
+    );
+  text-align:center;
+}
+
+.order-book-summary span{
+  display:block;
+  color:#718080;
+  font-size:6.5px;
+  font-weight:950;
+  letter-spacing:.10em;
+}
+
+.order-book-summary strong{
+  display:block;
+  margin-top:3px;
+  color:#e9efec;
+  font-size:12px;
+  font-variant-numeric:tabular-nums;
+}
+
+#bestBidPrice{
+  color:#9ae8bd;
+}
+
+#bestAskPrice{
+  color:#ffaaa0;
+}
+
+#orderBookSpread{
+  color:#b9c4c7;
+}
+
+.enhanced-book-grid{
+  gap:8px;
+  padding:7px !important;
+}
+
+.depth-ladder{
+  display:grid;
+  gap:2px;
+}
+
+.depth-row{
+  position:relative;
+  isolation:isolate;
+  min-width:0;
+  min-height:30px;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) 40px;
+  align-items:center;
+  gap:5px;
+  width:100%;
+  padding:5px 7px;
+  overflow:hidden;
+  border:1px solid transparent;
+  border-radius:6px;
+  background:rgba(255,255,255,.012);
+  color:#cbd4d1;
+  text-align:left;
+  cursor:pointer;
+  transition:
+    border-color .16s ease,
+    background .16s ease,
+    transform .16s ease;
+}
+
+.depth-row>i{
+  position:absolute;
+  z-index:-1;
+  top:2px;
+  bottom:2px;
+  width:var(--depth-width,20%);
+  border-radius:4px;
+  pointer-events:none;
+}
+
+.ask-row>i{
+  right:2px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,128,111,.14)
+    );
+}
+
+.bid-row>i{
+  left:2px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(57,230,170,.14),
+      transparent
+    );
+}
+
+.depth-row:hover:not(:disabled),
+.depth-row:focus-visible:not(:disabled){
+  z-index:2;
+  border-color:rgba(227,232,225,.16);
+  background:rgba(255,255,255,.035);
+  outline:none;
+  transform:translateY(-1px);
+}
+
+.depth-row:disabled{
+  cursor:not-allowed;
+  opacity:.50;
+}
+
+.depth-row.best-level{
+  border-color:rgba(222,230,222,.08);
+  background:rgba(255,255,255,.024);
+}
+
+.depth-price{
+  position:relative;
+  z-index:1;
+  font-size:10px;
+  font-weight:950;
+  font-variant-numeric:tabular-nums;
+}
+
+.ask-row .depth-price{
+  color:#ffaaa0;
+}
+
+.bid-row .depth-price{
+  color:#9ae8bd;
+}
+
+.depth-row>strong{
+  position:relative;
+  z-index:1;
+  justify-self:end;
+  color:#dfe6e2;
+  font-size:9px;
+  font-variant-numeric:tabular-nums;
+}
+
+.own-order-badge{
+  position:relative;
+  z-index:1;
+  justify-self:start;
+  padding:3px 5px;
+  border:1px solid rgba(145,175,232,.24);
+  border-radius:999px;
+  background:rgba(122,162,255,.09);
+  color:#bcd0f7;
+  font-size:5.5px;
+  font-weight:1000;
+  letter-spacing:.055em;
+  white-space:nowrap;
+}
+
+.book-help{
+  margin:8px 1px 0;
+  color:#6f7d7a;
+  font-size:7px;
+  line-height:1.35;
+}
+
+/* ---------- Advanced trade ticket ---------- */
+
+.enhanced-order-card{
+  overflow:hidden;
+}
+
+.order-type-tabs{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:5px;
+  margin:10px 0;
+  padding:4px;
+  border:1px solid rgba(222,229,219,.065);
+  border-radius:10px;
+  background:rgba(4,9,12,.46);
+}
+
+.order-type-tab{
+  min-width:0;
+  display:grid;
+  gap:2px;
+  padding:8px 9px;
+  border:1px solid transparent;
+  border-radius:7px;
+  background:transparent;
+  color:#83918f;
+  font-size:8px;
+  font-weight:1000;
+  letter-spacing:.075em;
+  cursor:pointer;
+  transition:
+    color .16s ease,
+    border-color .16s ease,
+    background .16s ease;
+}
+
+.order-type-tab small{
+  color:#657370;
+  font-size:6px;
+  font-weight:750;
+  letter-spacing:0;
+  text-transform:none;
+}
+
+.order-type-tab:hover,
+.order-type-tab:focus-visible{
+  color:#ecf2ef;
+  border-color:rgba(225,231,223,.13);
+  outline:none;
+}
+
+.order-type-tab.active{
+  color:#eaf9f2;
+  border-color:rgba(57,230,170,.27);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(57,230,170,.12),
+      rgba(57,230,170,.055)
+    );
+  box-shadow:inset 0 1px rgba(255,255,255,.035);
+}
+
+.order-type-tab.active small{
+  color:#9bc9b7;
+}
+
+.trade-field{
+  margin-top:10px;
+}
+
+.trade-field label,
+.field-label-row label{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin:0 0 6px;
+}
+
+.field-label-row{
+  display:block;
+}
+
+.price-entry-row{
+  position:relative;
+}
+
+.currency-prefix{
+  position:absolute;
+  z-index:2;
+  left:11px;
+  top:50%;
+  color:#72817f;
+  font-size:12px;
+  font-weight:850;
+  transform:translateY(-50%);
+  pointer-events:none;
+}
+
+.price-entry-row input{
+  padding-left:25px;
+}
+
+.price-entry-row input:disabled{
+  cursor:not-allowed;
+  color:#aeb8b5;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.025),
+      rgba(255,255,255,.012)
+    );
+  border-color:rgba(220,227,218,.075);
+  opacity:.80;
+}
+
+.price-shortcuts,
+.quantity-shortcuts{
+  display:grid;
+  gap:4px;
+  margin-top:6px;
+}
+
+.price-shortcuts{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+
+.quantity-shortcuts{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+}
+
+.price-shortcuts button,
+.quantity-shortcuts button{
+  min-width:0;
+  padding:6px 5px;
+  border:1px solid rgba(220,228,220,.08);
+  border-radius:6px;
+  background:rgba(255,255,255,.018);
+  color:#81908d;
+  font-size:6px;
+  font-weight:950;
+  letter-spacing:.055em;
+  cursor:pointer;
+}
+
+.price-shortcuts button:hover,
+.price-shortcuts button:focus-visible,
+.quantity-shortcuts button:hover,
+.quantity-shortcuts button:focus-visible{
+  border-color:rgba(145,175,232,.25);
+  color:#dbe7f7;
+  background:rgba(122,162,255,.06);
+  outline:none;
+}
+
+.trade-field.is-market .price-shortcuts{
+  opacity:.72;
+}
+
+.time-in-force-controls{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  max-height:48px;
+  margin-top:10px;
+  overflow:hidden;
+  opacity:1;
+  transition:
+    max-height .18s ease,
+    opacity .18s ease,
+    margin .18s ease;
+}
+
+.time-in-force-controls.is-hidden{
+  max-height:0;
+  margin-top:0;
+  opacity:0;
+  pointer-events:none;
+}
+
+.time-in-force-controls>span{
+  color:#74827f;
+  font-size:6.5px;
+  font-weight:950;
+  letter-spacing:.10em;
+}
+
+.time-in-force-controls>div{
+  display:flex;
+  gap:3px;
+  padding:3px;
+  border:1px solid rgba(220,227,218,.065);
+  border-radius:7px;
+  background:rgba(4,9,12,.42);
+}
+
+.tif-button{
+  min-width:45px;
+  padding:5px 7px;
+  border:1px solid transparent;
+  border-radius:5px;
+  background:transparent;
+  color:#74827f;
+  font-size:6.5px;
+  font-weight:1000;
+  cursor:pointer;
+}
+
+.tif-button.active{
+  border-color:rgba(145,175,232,.23);
+  background:rgba(122,162,255,.08);
+  color:#c8d8f7;
+}
+
+.enhanced-ticket-summary{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:5px;
+}
+
+.enhanced-ticket-summary>div{
+  min-width:0;
+  padding:8px;
+}
+
+.enhanced-ticket-summary span{
+  overflow:hidden;
+  font-size:6.5px;
+  letter-spacing:.055em;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.enhanced-ticket-summary strong{
+  overflow:hidden;
+  font-size:10px;
+  font-variant-numeric:tabular-nums;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.primary-btn:disabled{
+  cursor:not-allowed;
+  filter:saturate(.35);
+  opacity:.48;
+}
+
+.ticket-shortcuts{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:4px 5px;
+  margin-top:9px;
+  color:#687572;
+  font-size:6px;
+  line-height:1.45;
+}
+
+.ticket-shortcuts>span{
+  margin-right:2px;
+  color:#7c8a87;
+  font-weight:900;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+}
+
+.ticket-shortcuts kbd{
+  padding:2px 4px;
+  border:1px solid rgba(220,227,219,.10);
+  border-bottom-color:rgba(220,227,219,.18);
+  border-radius:4px;
+  background:rgba(255,255,255,.025);
+  color:#9ba8a5;
+  font-family:inherit;
+  font-size:5.5px;
+}
+
+/* ---------- Account summary ---------- */
+
+.trading-account-card{
+  margin-top:14px;
+  border-color:#2b3c48;
+  background:
+    radial-gradient(
+      circle at 0 0,
+      rgba(57,230,170,.055),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      #101820,
+      #0b1117
+    );
+}
+
+.trading-account-grid{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:0;
+  overflow:hidden;
+  border:1px solid rgba(221,228,220,.065);
+  border-radius:10px;
+  background:rgba(4,9,12,.35);
+}
+
+.trading-account-grid>div{
+  min-width:0;
+  padding:10px 11px;
+  border-right:1px solid rgba(221,228,220,.06);
+}
+
+.trading-account-grid>div:last-child{
+  border-right:0;
+}
+
+.trading-account-grid span{
+  display:block;
+  overflow:hidden;
+  color:#6e7c7a;
+  font-size:6.5px;
+  font-weight:950;
+  letter-spacing:.085em;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.trading-account-grid strong{
+  display:block;
+  margin-top:4px;
+  overflow:hidden;
+  color:#e7ecea;
+  font-size:12px;
+  font-variant-numeric:tabular-nums;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* ---------- Order activity ---------- */
+
+.trading-activity-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);
+  gap:14px;
+  margin-top:14px;
+}
+
+.open-orders-card,
+.trade-tape-card{
+  min-width:0;
+}
+
+.inline-count{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:20px;
+  height:18px;
+  margin-left:5px;
+  padding:0 5px;
+  border:1px solid rgba(145,175,232,.18);
+  border-radius:999px;
+  background:rgba(122,162,255,.06);
+  color:#b7c8e9;
+  font-size:8px;
+  vertical-align:2px;
+}
+
+.ghost-btn:disabled{
+  cursor:not-allowed;
+  opacity:.42;
+}
+
+.open-orders-list{
+  display:grid;
+  gap:6px;
+}
+
+.open-order-row{
+  display:grid;
+  grid-template-columns:48px minmax(0,1fr) 80px 61px;
+  gap:9px;
+  align-items:center;
+  min-width:0;
+  padding:9px;
+  border:1px solid rgba(221,228,220,.065);
+  border-radius:9px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.025),
+      rgba(255,255,255,.012)
+    );
+}
+
+.order-side-badge{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:24px;
+  padding:5px 6px;
+  border:1px solid;
+  border-radius:6px;
+  font-size:6.5px;
+  font-weight:1000;
+  letter-spacing:.075em;
+}
+
+.order-side-badge.buy{
+  border-color:rgba(57,230,170,.23);
+  background:rgba(57,230,170,.07);
+  color:#9deac3;
+}
+
+.order-side-badge.sell{
+  border-color:rgba(255,128,111,.24);
+  background:rgba(255,128,111,.07);
+  color:#ffb0a5;
+}
+
+.open-order-main{
+  min-width:0;
+}
+
+.open-order-main>strong{
+  display:block;
+  overflow:hidden;
+  color:#e9edeb;
+  font-size:10px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.open-order-main>span{
+  display:block;
+  margin-top:2px;
+  overflow:hidden;
+  color:#73817f;
+  font-size:6.5px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.order-fill-progress{
+  height:3px;
+  margin-top:6px;
+  overflow:hidden;
+  border-radius:999px;
+  background:rgba(255,255,255,.055);
+}
+
+.order-fill-progress i{
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:
+    linear-gradient(
+      90deg,
+      #5f8ff5,
+      #39e6aa
+    );
+}
+
+.open-order-fill{
+  min-width:0;
+  text-align:right;
+}
+
+.open-order-fill span,
+.open-order-fill small{
+  display:block;
+  color:#6e7c79;
+  font-size:5.5px;
+  font-weight:850;
+  letter-spacing:.055em;
+}
+
+.open-order-fill strong{
+  display:block;
+  margin:2px 0;
+  color:#dce4e1;
+  font-size:9px;
+  font-variant-numeric:tabular-nums;
+}
+
+.cancel-order-button,
+.close-position-button{
+  min-height:27px;
+  padding:6px 8px;
+  border:1px solid rgba(255,128,111,.18);
+  border-radius:6px;
+  background:rgba(255,128,111,.055);
+  color:#eaa197;
+  font-size:6px;
+  font-weight:1000;
+  letter-spacing:.065em;
+  cursor:pointer;
+}
+
+.cancel-order-button:hover,
+.cancel-order-button:focus-visible,
+.close-position-button:hover,
+.close-position-button:focus-visible{
+  border-color:rgba(255,128,111,.38);
+  background:rgba(255,128,111,.11);
+  color:#ffd1ca;
+  outline:none;
+}
+
+.cancel-order-button:disabled,
+.close-position-button:disabled{
+  cursor:not-allowed;
+  opacity:.35;
+}
+
+/* ---------- Trade tape ---------- */
+
+.trade-tape{
+  display:grid;
+  gap:4px;
+  max-height:356px;
+  overflow:auto;
+  scrollbar-color:#34424a transparent;
+  scrollbar-width:thin;
+}
+
+.trade-tape-row{
+  display:grid;
+  grid-template-columns:58px 66px minmax(0,1fr) 67px 65px;
+  gap:7px;
+  align-items:center;
+  min-width:0;
+  min-height:32px;
+  padding:6px 7px;
+  border:1px solid rgba(220,228,220,.055);
+  border-radius:7px;
+  background:rgba(255,255,255,.016);
+}
+
+.trade-tape-row span,
+.trade-tape-row em{
+  font-size:6.5px;
+  font-style:normal;
+}
+
+.trade-time{
+  color:#64716f;
+  font-variant-numeric:tabular-nums;
+}
+
+.trade-action{
+  padding:3px 4px;
+  border-radius:4px;
+  color:#9fa9a6;
+  font-weight:950;
+  letter-spacing:.045em;
+  text-align:center;
+}
+
+.trade-action.buy{
+  background:rgba(57,230,170,.07);
+  color:#93dfb8;
+}
+
+.trade-action.sell{
+  background:rgba(255,128,111,.07);
+  color:#eea098;
+}
+
+.trade-tape-row>strong{
+  overflow:hidden;
+  color:#dce3e0;
+  font-size:8px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.trade-details{
+  color:#87938f;
+  font-variant-numeric:tabular-nums;
+  text-align:right;
+}
+
+.trade-tape-row>em{
+  color:#b5c0bc;
+  font-variant-numeric:tabular-nums;
+  text-align:right;
+}
+
+/* ---------- Enhanced positions ---------- */
+
+.positions-head-actions{
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.enhanced-position-row{
+  grid-template-columns:
+    minmax(180px,1.6fr)
+    minmax(70px,.55fr)
+    minmax(88px,.70fr)
+    minmax(82px,.65fr)
+    minmax(85px,.65fr)
+    62px;
+  gap:10px;
+  padding:11px 8px;
+  border:1px solid transparent;
+  border-bottom-color:rgba(255,255,255,.05);
+  border-radius:8px;
+}
+
+.enhanced-position-row:hover{
+  border-color:rgba(221,228,220,.065);
+  background:rgba(255,255,255,.018);
+}
+
+.enhanced-position-row .position-meta strong{
+  display:block;
+  overflow:hidden;
+  color:#e8edeb;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.enhanced-position-row .pos-extra,
+.enhanced-position-row .pos-val{
+  min-width:0;
+}
+
+.enhanced-position-row .pos-extra strong,
+.enhanced-position-row .pos-val strong{
+  display:block;
+  overflow:hidden;
+  font-size:10px;
+  font-variant-numeric:tabular-nums;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* ---------- Responsive trading terminal ---------- */
+
+@media(max-width:980px){
+
+  .trading-account-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+
+  .trading-account-grid>div:nth-child(3){
+    border-right:0;
+  }
+
+  .trading-account-grid>div:nth-child(-n+3){
+    border-bottom:1px solid rgba(221,228,220,.06);
+  }
+
+  .trading-activity-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:760px){
+
+  .order-book-summary{
+    gap:4px;
+  }
+
+  .order-book-summary>div{
+    padding:7px 5px;
+  }
+
+  .depth-row{
+    grid-template-columns:37px minmax(0,1fr) 34px;
+    min-height:28px;
+    padding:4px 5px;
+  }
+
+  .enhanced-ticket-summary{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .trading-account-card{
+    padding:13px;
+  }
+
+  .trading-account-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .trading-account-grid>div,
+  .trading-account-grid>div:nth-child(3){
+    border-right:1px solid rgba(221,228,220,.06);
+    border-bottom:1px solid rgba(221,228,220,.06);
+  }
+
+  .trading-account-grid>div:nth-child(even){
+    border-right:0;
+  }
+
+  .trading-account-grid>div:nth-last-child(-n+2){
+    border-bottom:0;
+  }
+
+  .open-order-row{
+    grid-template-columns:43px minmax(0,1fr) 66px;
+    gap:7px;
+  }
+
+  .open-order-fill{
+    text-align:right;
+  }
+
+  .cancel-order-button{
+    grid-column:2/4;
+    width:100%;
+  }
+
+  .trade-tape-row{
+    grid-template-columns:49px 58px minmax(0,1fr) 58px;
+  }
+
+  .trade-tape-row>em{
+    display:none;
+  }
+
+  .enhanced-position-row{
+    grid-template-columns:minmax(0,1fr) auto auto;
+    gap:7px;
+  }
+
+  .enhanced-position-row .pos-extra:nth-of-type(2),
+  .enhanced-position-row .pos-extra:nth-of-type(3){
+    display:none;
+  }
+
+  .enhanced-position-row .pos-val{
+    text-align:right;
+  }
+
+  .close-position-button{
+    grid-column:2/4;
+  }
+}
+
+@media(max-width:430px){
+
+  .quantity-shortcuts{
+    grid-template-columns:repeat(5,minmax(0,1fr));
+  }
+
+  .price-shortcuts button,
+  .quantity-shortcuts button{
+    padding-left:2px;
+    padding-right:2px;
+    font-size:5.5px;
+  }
+
+  .ticket-shortcuts{
+    display:none;
+  }
+
+  .trading-account-grid strong{
+    font-size:10.5px;
+  }
+
+  .trade-tape-row{
+    grid-template-columns:52px minmax(0,1fr) 56px;
+  }
+
+  .trade-time{
+    display:none;
+  }
+
+  .trade-action{
+    font-size:5.5px !important;
+  }
+
+  .trade-details{
+    text-align:right;
+  }
+
+  .positions-head-actions{
+    align-items:flex-end;
+    flex-direction:column;
+    gap:5px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+
+  .depth-row,
+  .order-type-tab,
+  .time-in-force-controls{
+    transition:none !important;
+  }
+}
+
+
+/* ==========================================================
+   RaceMarket V4.35 — FULL WEBGL 3D RENDERER
+   Actual perspective geometry, procedural low-poly runners,
+   dynamic lighting/fog, 3D venue scenery, particles, and a
+   classic-render fallback. Race and trading logic are unchanged.
+========================================================== */
+
+/* ---------- Hardware-accelerated scene canvases ---------- */
+
+.race3d-canvas,
+.race3d-overlay{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  margin:0;
+  border:0;
+  border-radius:inherit;
+}
+
+.race3d-canvas{
+  z-index:900;
+  display:block;
+  background:
+    linear-gradient(
+      180deg,
+      #748d96,
+      #263c35 72%
+    );
+  cursor:crosshair;
+  touch-action:manipulation;
+  outline:none;
+}
+
+.race3d-canvas:hover{
+  cursor:pointer;
+}
+
+.race3d-canvas:focus-visible{
+  box-shadow:
+    inset 0 0 0 2px
+      rgba(145,175,232,.92),
+    inset 0 0 0 5px
+      rgba(5,10,13,.70);
+}
+
+.race3d-overlay{
+  z-index:3000;
+  display:block;
+  pointer-events:none;
+}
+
+.race3d-canvas[hidden],
+.race3d-overlay[hidden]{
+  display:none !important;
+}
+
+/* ---------- Mode switch / renderer status ---------- */
+
+.race-render-controls{
+  position:absolute;
+  left:10px;
+  top:84px;
+  z-index:3850;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  max-width:
+    calc(
+      100% - 255px
+    );
+  min-height:29px;
+  padding:4px 5px;
+  border:
+    1px solid
+    rgba(224,229,218,.14);
+  border-radius:8px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(6,12,15,.90),
+      rgba(4,9,11,.79)
+    );
+  box-shadow:
+    0 8px 20px
+      rgba(0,0,0,.30),
+    inset 0 1px
+      rgba(255,255,255,.05);
+  backdrop-filter:
+    blur(9px)
+    saturate(1.05);
+  pointer-events:auto;
+}
+
+.race3d-status{
+  min-width:102px;
+  padding:0 5px;
+  color:#b8c3be;
+  font-size:6.5px;
+  font-weight:1000;
+  font-variant-numeric:
+    tabular-nums;
+  letter-spacing:.08em;
+  white-space:nowrap;
+}
+
+.race3d-status::before{
+  content:"";
+  display:inline-block;
+  width:6px;
+  height:6px;
+  margin-right:5px;
+  border-radius:50%;
+  vertical-align:-.5px;
+  background:#39e6aa;
+  box-shadow:
+    0 0 9px
+    rgba(57,230,170,.50);
+}
+
+.race3d-status[data-state="classic"]::before{
+  background:#d3ad55;
+  box-shadow:
+    0 0 8px
+    rgba(211,173,85,.34);
+}
+
+.race-render-buttons{
+  display:flex;
+  align-items:center;
+  gap:2px;
+}
+
+.race-render-buttons button,
+.race3d-quality{
+  min-height:21px;
+  border:
+    1px solid
+    transparent;
+  border-radius:5px;
+  background:transparent;
+  color:#8f9ca1;
+  padding:4px 7px;
+  font-size:6.25px;
+  font-weight:1000;
+  letter-spacing:.075em;
+  line-height:1;
+  white-space:nowrap;
+  cursor:pointer;
+  transition:
+    color .16s ease,
+    border-color .16s ease,
+    background .16s ease;
+}
+
+.race-render-buttons button:hover,
+.race-render-buttons button:focus-visible,
+.race3d-quality:hover,
+.race3d-quality:focus-visible{
+  color:#f1f4ef;
+  border-color:
+    rgba(225,230,219,.20);
+  outline:none;
+}
+
+.race-render-buttons button.active{
+  color:#e8fbf2;
+  border-color:
+    rgba(57,230,170,.33);
+  background:
+    rgba(57,230,170,.12);
+}
+
+.race3d-quality{
+  margin-left:1px;
+  border-left-color:
+    rgba(223,229,218,.12);
+}
+
+.race3d-quality[data-quality="high"]{
+  color:#bdd0f6;
+}
+
+.race3d-quality[data-quality="eco"]{
+  color:#d7c98f;
+}
+
+/* ---------- Graceful fallback notice ---------- */
+
+.race3d-fallback{
+  position:absolute;
+  left:50%;
+  top:50%;
+  z-index:4100;
+  width:
+    min(
+      390px,
+      calc(100% - 28px)
+    );
+  padding:10px 13px;
+  transform:
+    translate(-50%,-50%);
+  border:
+    1px solid
+    rgba(226,197,113,.30);
+  border-radius:9px;
+  background:
+    rgba(7,12,14,.94);
+  box-shadow:
+    0 15px 38px
+    rgba(0,0,0,.42);
+  color:#e8dfc6;
+  font-size:9px;
+  font-weight:750;
+  line-height:1.45;
+  text-align:center;
+  backdrop-filter:
+    blur(10px);
+}
+
+.race3d-fallback[hidden]{
+  display:none !important;
+}
+
+/* ---------- WebGL owns all world-space visual layers ---------- */
+
+.visual-track.webgl-3d-active{
+  background:#17221e !important;
+  background-image:none !important;
+  filter:none !important;
+  contain:
+    layout
+    paint;
+}
+
+.visual-track.webgl-3d-active::before,
+.visual-track.webgl-3d-active::after{
+  opacity:0 !important;
+  background:none !important;
+  pointer-events:none !important;
+}
+
+/*
+  Hide only the classic world geometry. Broadcast overlays,
+  camera controls, tracked-runner HUD, captions, and market
+  controls remain ordinary accessible DOM.
+*/
+.visual-track.webgl-3d-active > .track-skyline,
+.visual-track.webgl-3d-active > .track-rail,
+.visual-track.webgl-3d-active > .track-start-gate,
+.visual-track.webgl-3d-active > .track-lane-lines,
+.visual-track.webgl-3d-active > .track-speed-lines,
+.visual-track.webgl-3d-active > .track-vignette,
+.visual-track.webgl-3d-active > .finish-zone,
+.visual-track.webgl-3d-active > .finish-plane-3d,
+.visual-track.webgl-3d-active > .surface-texture,
+.visual-track.webgl-3d-active > .enhanced-start-gate,
+.visual-track.webgl-3d-active > .distance-marker,
+.visual-track.webgl-3d-active > .weather-layer,
+.visual-track.webgl-3d-active > .track-surface-3d,
+.visual-track.webgl-3d-active > .track-surface-base,
+.visual-track.webgl-3d-active > .track-near-grain,
+.visual-track.webgl-3d-active > .track-aerial-haze,
+.visual-track.webgl-3d-active > .track-scenery,
+.visual-track.webgl-3d-active > #visualRunnerLayer{
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+/* Dynamic setup may insert some classic layers at arbitrary
+   sibling positions, so class selectors are repeated without
+   the child combinator as a defensive fallback. */
+.visual-track.webgl-3d-active .track-scenery,
+.visual-track.webgl-3d-active .enhanced-start-gate,
+.visual-track.webgl-3d-active .distance-marker,
+.visual-track.webgl-3d-active .surface-texture,
+.visual-track.webgl-3d-active .weather-layer,
+.visual-track.webgl-3d-active #visualRunnerLayer{
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+/* The generated broadcast strip stays above both WebGL canvases. */
+.visual-track.webgl-3d-active .race-broadcast{
+  z-index:3150 !important;
+}
+
+/* Keep all interactive broadcast chrome over projected labels. */
+.visual-track.webgl-3d-active
+.broadcast-camera-controls,
+.visual-track.webgl-3d-active
+.race-render-controls,
+.visual-track.webgl-3d-active
+.runner-hud,
+.visual-track.webgl-3d-active
+.broadcast-caption,
+.visual-track.webgl-3d-active
+.broadcast-event-feed{
+  isolation:isolate;
+}
+
+/* The HUD sits below both compact control bars. */
+.visual-track.webgl-3d-active .runner-hud{
+  top:124px;
+}
+
+/* ---------- Classic fallback restores the existing scene ---------- */
+
+.visual-track.classic-3d-active .race3d-canvas,
+.visual-track.classic-3d-active .race3d-overlay{
+  display:none !important;
+}
+
+/* ---------- WebGL state polish ---------- */
+
+.visual-track.webgl-3d-active[data-weather-name="Light Rain"]{
+  border-color:
+    rgba(131,156,159,.55) !important;
+}
+
+.visual-track.webgl-3d-active[data-surface="Dirt"]{
+  border-color:
+    #70513f !important;
+}
+
+.visual-track.webgl-3d-active[data-surface="Turf"]{
+  border-color:
+    #426f4b !important;
+}
+
+.visual-track.webgl-3d-active.camera-finish{
+  box-shadow:
+    inset 0 0 70px
+      rgba(0,0,0,.24),
+    0 20px 48px
+      rgba(0,0,0,.30),
+    0 0 0 1px
+      rgba(240,211,138,.07);
+}
+
+/* ---------- Responsive renderer chrome ---------- */
+
+@media(max-width:900px){
+
+  .race-render-controls{
+    max-width:
+      calc(
+        100% - 225px
+      );
+  }
+
+  .race3d-status{
+    min-width:86px;
+  }
+}
+
+@media(max-width:760px){
+
+  .race-render-controls{
+    left:7px;
+    right:7px;
+    top:78px;
+    max-width:none;
+    min-height:28px;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+
+  .race-render-controls::-webkit-scrollbar{
+    display:none;
+  }
+
+  .race3d-status{
+    min-width:87px;
+    flex:0 0 auto;
+    font-size:6px;
+  }
+
+  .race-render-buttons,
+  .race-render-buttons button,
+  .race3d-quality{
+    flex:0 0 auto;
+  }
+
+  .race-render-buttons button,
+  .race3d-quality{
+    padding:4px 6px;
+    font-size:5.8px;
+  }
+
+  .visual-track.webgl-3d-active .runner-hud{
+    top:114px;
+  }
+
+  .race3d-fallback{
+    font-size:8px;
+  }
+}
+
+@media(max-width:430px){
+
+  .race3d-status{
+    min-width:74px;
+    max-width:74px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .race3d-quality{
+    max-width:80px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+
+  .race-render-buttons button,
+  .race3d-quality{
+    transition:none !important;
+  }
+}
+
+
+/* ==========================================================
+   Finish-state animation fix
+   The first winner changes the global race phase to "finished",
+   but every other horse should keep galloping until it individually
+   crosses the line. Only a runner with .finished-runner stops.
+========================================================== */
+
+.visual-track.perspective-3d .runner-visual.runner-finish:not(.finished-runner) .horse-art,
+.visual-track.perspective-3d .runner-visual.runner-finish:not(.finished-runner) .horse-leg,
+.visual-track.perspective-3d .runner-visual.runner-finish:not(.finished-runner) .horse-tail,
+.visual-track.perspective-3d .runner-visual.runner-finish:not(.finished-runner) .mane,
+.visual-track.perspective-3d .runner-visual.runner-finish:not(.finished-runner) .jockey-body,
+.visual-track.perspective-3d .runner-visual.runner-finish:not(.finished-runner) .jockey-head{
+  animation-play-state:running !important;
+}
+
+.visual-track.perspective-3d .runner-visual.finished-runner .horse-art,
+.visual-track.perspective-3d .runner-visual.finished-runner .horse-leg,
+.visual-track.perspective-3d .runner-visual.finished-runner .horse-tail,
+.visual-track.perspective-3d .runner-visual.finished-runner .mane,
+.visual-track.perspective-3d .runner-visual.finished-runner .jockey-body,
+.visual-track.perspective-3d .runner-visual.finished-runner .jockey-head{
+  animation-play-state:paused !important;
+}
+
+/* Compact WebGL broadcast callouts */
+.visual-track.perspective-3d .runner-label{
+  min-width:40px;
+  padding:3px 5px;
+  border-radius:5px;
+}
+.visual-track.perspective-3d .runner-label strong{
+  font-size:8px;
+}
+.visual-track.perspective-3d .runner-label span{
+  font-size:7px;
+}
+
+
+/* ==========================================================
+   RaceMarket V4.36 — LABEL STABILITY + EXPANDED CAMERAS
+========================================================== */
+
+/*
+  The WebGL overlay owns the broadcast labels, so these rules
+  primarily refine the camera control bar and the classic fallback.
+  WebGL labels are now temporally smoothed in race3d.js.
+*/
+
+.broadcast-camera-controls{
+  flex-wrap:nowrap;
+}
+
+.camera-mode[data-camera-mode="topdown"]{
+  color:#a9c6ef;
+}
+
+.camera-mode[data-camera-mode="free"]{
+  color:#d7c38a;
+}
+
+.camera-mode[data-camera-mode="topdown"].active{
+  color:#e7f0ff;
+  border-color:rgba(145,175,232,.34);
+  background:rgba(122,162,255,.12);
+}
+
+.camera-mode[data-camera-mode="free"].active{
+  color:#fff3ca;
+  border-color:rgba(211,173,85,.34);
+  background:rgba(211,173,85,.11);
+}
+
+.free-camera-hint{
+  flex:0 0 auto;
+  padding-left:6px;
+  border-left:1px solid rgba(220,227,216,.12);
+  color:#8f9c96;
+  font-size:6px;
+  font-weight:900;
+  letter-spacing:.06em;
+  white-space:nowrap;
+}
+
+.free-camera-hint[hidden]{
+  display:none !important;
+}
+
+/* Compact fallback labels: never let the classic scene recreate
+   the oversized card treatment that prompted the label revision. */
+.visual-track.classic-3d-active .runner-label{
+  min-width:58px !important;
+  padding:4px 6px !important;
+  border-radius:6px !important;
+  box-shadow:0 3px 8px rgba(0,0,0,.26) !important;
+}
+
+.visual-track.classic-3d-active .runner-label strong{
+  font-size:8px !important;
+}
+
+.visual-track.classic-3d-active .runner-label span{
+  font-size:6.5px !important;
+}
+
+@media(max-width:900px){
+  .free-camera-hint{
+    display:none;
+  }
+
+  .camera-mode{
+    padding-left:6px;
+    padding-right:6px;
+  }
+}
+
+@media(max-width:760px){
+  .broadcast-camera-controls{
+    right:7px;
+    overflow-x:auto;
+    overflow-y:hidden;
+  }
+
+  .camera-mode{
+    min-width:43px;
+  }
+}
